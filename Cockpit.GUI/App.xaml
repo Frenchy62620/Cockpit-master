@@ -1,0 +1,27 @@
+﻿<Application x:Class="Cockpit.GUI.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:Cockpit.GUI.Common.Converters"
+             xmlns:bootstrap="clr-namespace:Cockpit.GUI.Bootstrap">
+    <Application.Resources>
+        <!--<ResourceDictionary Source="Themes\ExpressionDark.xaml">-->
+        <ResourceDictionary Source="Themes\Expression2010.xaml">
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary>
+                    <bootstrap:Bootstrapper x:Key="Bootstrapper" />
+
+                    <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+                    <converters:MyConverterAdorner x:Key="MyConverterAdorner" />
+                    <converters:MyConverterSize x:Key="MyConverterSize" />
+                    <converters:MyConverterMargin x:Key="MyConverterMargin" />
+                    <converters:MyconverterColorToSolidColorBrush x:Key="MyconverterColorToSolidColorBrush" />
+                    <converters:MyMultiConverterMargin x:Key="MyMultiConverterMargin" />
+                    <converters:DrawGlyphes x:Key="DrawGlyphes"/>
+                    <converters:MultiplyConverter x:Key="MultiplyConverter" />
+                    <converters:FormatNumber x:Key="MyFormatNumber" />
+
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

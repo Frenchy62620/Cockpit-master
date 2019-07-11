@@ -1,0 +1,14 @@
+<UserControl x:Class="Cockpit.GUI.Common.CustomControls.FolderPickerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Cockpit.GUI.Common.CustomControls"
+             Width="Auto">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="20" />
+        </Grid.ColumnDefinitions>
+        <TextBox Grid.Column="0" FontSize="12" Margin="2" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FolderPickerView}}, Path=FolderName}" />
+        <Button Click="Button_Click" Grid.Column="1" Height="15" FontSize="10" Padding="0" Margin="0,0,4,0" Content="..."  />
+    </Grid>
+</UserControl>

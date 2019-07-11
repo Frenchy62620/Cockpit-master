@@ -1,0 +1,96 @@
+﻿<UserControl x:Class="Cockpit.GUI.Views.Profile.Panels.ToolBoxView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:gg="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
+             xmlns:vm="clr-namespace:Cockpit.GUI.Views.Profile"
+             xmlns:cal="clr-namespace:Caliburn.Micro;assembly=Caliburn.Micro"
+             xmlns:micro="http://www.caliburnproject.org"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <UserControl.Resources>
+        <!--<ResourceDictionary>-->
+        <DataTemplate x:Key="BoxDragAdorner">
+            <Grid >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="60" />
+                    <!--<RowDefinition Height="40" />-->
+                </Grid.RowDefinitions>
+                <Image  Source="{Binding SelectedToolBoxItem.FullImageName}"    HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" />
+                <!--<TextBlock   Text="{Binding SelectedToolBoxItem.ShortImageName}"
+                             TextAlignment="Center" TextWrapping="Wrap" Grid.Row="1"/>-->
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="ToolboxControlLayout" DataType="{x:Type vm:ToolBoxItem}">
+            <!--<AdornerDecorator>-->
+            <Border Name="Border" CornerRadius="4" Padding="0,2" Margin="5,2" Width="75" BorderThickness="1">
+                <Border.Style>
+                    <Style>
+                        <Setter Property="Border.BorderBrush" Value="White"/>
+                        <Setter Property="Border.Background" Value="WhiteSmoke"/>
+                        <Style.Triggers>
+                            <Trigger Property="Border.IsMouseOver" Value="True">
+                                <Setter Property="Border.BorderBrush" Value="Black" />
+                                <Setter Property="Border.Background" Value="Wheat"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60" />
+                        <RowDefinition Height="40" />
+                    </Grid.RowDefinitions>
+                    <Image   Grid.Row="0" Source="{Binding FullImageName}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="1" />
+                    <TextBlock Grid.Row="1" Text="{Binding Path=ShortImageName}" TextAlignment="Center"  Margin="1" TextWrapping="Wrap" />
+
+                </Grid>
+            </Border>
+            <!--</AdornerDecorator>-->
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding Path=IsBeingDragged}" Value="True">
+                    <Setter TargetName="Border" Property="Background" Value="LightGray" />
+                    <Setter TargetName="Border" Property="BorderBrush" Value="Red" />
+                    <Setter TargetName="Border" Property="BorderThickness" Value="3" />
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <DataTemplate x:Key="ToolboxGroupLayout" DataType="{x:Type vm:ToolBoxGroup}">
+            <Expander Header="{Binding Path=GroupName}" Margin="2,0">
+                <ListView ItemsSource="{Binding ToolBoxItems}" SelectedItem="{Binding SelectedToolBoxItem}" 
+                          ItemTemplate="{StaticResource ToolboxControlLayout}" SelectionMode="Single" 
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal"  
+                                       gg:DragDrop.IsDragSource="True" gg:DragDrop.IsDropTarget="True" 
+                                       gg:DragDrop.DragAdornerTemplate="{StaticResource BoxDragAdorner}"
+                                       gg:DragDrop.DragHandler ="{Binding}" 
+                                       gg:DragDrop.DragMouseAnchorPoint="{Binding AnchorMouse, Converter={StaticResource MyConverterAdorner}}" 
+                                       gg:DragDrop.DragAdornerTranslation="{Binding Translation, Converter={StaticResource MyConverterAdorner}}">
+                            </WrapPanel>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ListView>
+            </Expander>
+        </DataTemplate>
+
+        <!--</ResourceDictionary>-->
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <!--<ComboBox Grid.Row="0" x:Name="DeviceTypes" />-->
+
+        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Margin="6">
+            <ItemsControl x:Name="tb" Grid.Row="1" ItemsSource="{Binding ToolBoxGroups}" BorderThickness="0" 
+                          ItemTemplate="{StaticResource ToolboxGroupLayout}" HorizontalContentAlignment="Stretch"  />
+        </ScrollViewer>
+    </Grid>
+</UserControl>

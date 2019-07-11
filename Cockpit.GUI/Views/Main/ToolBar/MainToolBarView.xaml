@@ -1,0 +1,79 @@
+﻿<UserControl x:Class="Cockpit.GUI.Views.Main.ToolBar.MainToolBarView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:local="clr-namespace:Cockpit.GUI.Views.Main.ToolBar"
+             mc:Ignorable="d" 
+             d:DesignHeight="30" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style x:Key="tbChanged" TargetType="{x:Type Button}">
+            <Setter Property="IsEnabled" Value="True" />
+            <Style.Triggers>
+                <DataTrigger Binding ="{Binding MonitorViewModel.EnableIcons}" Value ="False">
+                    <Setter Property="IsEnabled" Value="False"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <ToolBarTray IsLocked="True" Background="Transparent">
+            <ToolBar Height="28" Background="Transparent" IsEnabled="{Binding MonitorViewModel.EnableIcons}"  >
+                <!--<Button x:Name="MoveForward" Command="{Binding MoveForward}">
+                    <Image Source="{StaticResource BringForwardIcon}" />
+                    <Button.ToolTip>Bring control forward so it displays on top of other controls.</Button.ToolTip>
+                </Button>
+                <Button x:Name="MoveBack" Command="{Binding MoveBack}">
+                    <Image Source="{StaticResource SendBackIcon}" />
+                    <Button.ToolTip>Send control back so it displays under other controls.</Button.ToolTip>
+                </Button>-->
+                <!--<Separator />-->
+                <Button  Command="{Binding AlignTop}" >
+                    <Image Source="{StaticResource AlignTop}" />
+                    <Button.ToolTip>Align selected controls to the top of the first selected control.</Button.ToolTip>
+                </Button>
+                <Button Command="{Binding AlignBottom}">
+                    <Image Source="{StaticResource AlignBottom}"  />
+                    <Button.ToolTip>Align selected controls to the bottom of the first selected control.</Button.ToolTip>
+                </Button>
+                <Button Command="{Binding AlignHorizontalCenter}">
+                    <Image Source="{StaticResource AlignHCenter}" />
+                    <Button.ToolTip>Align selected controls to the vertical center of the first selected control.</Button.ToolTip>
+                </Button>
+                <Button Command="{Binding AlignLeft}">
+                    <Image Source="{StaticResource AlignLeft}" />
+                    <Button.ToolTip>Align selected controls to the left of the first selected control.</Button.ToolTip>
+                </Button>
+                <Button Command="{Binding AlignRight}">
+                    <Image Source="{StaticResource AlignRight}" />
+                    <Button.ToolTip>Align selected controls to the right of the first selected control.</Button.ToolTip>
+                </Button>
+                <Button Command="{Binding AlignVerticalCenter}">
+                    <Image Source="{StaticResource AlignVCenter}" />
+                    <Button.ToolTip>Align selected controls to the horizontal center of the first selected control.</Button.ToolTip>
+                </Button>
+                <Separator />
+                <Button Command="{Binding DistributeHorizontalCenter}">
+                    <Image Source="{StaticResource DistributeHorizontal}" />
+                    <Button.ToolTip>Distribute horizontally selected controls evenly spaced on center.</Button.ToolTip>
+                </Button>
+                <Button Command="{Binding DistributeVerticalCenter}">
+                    <Image Source="{StaticResource DistributeVertical}" />
+                    <Button.ToolTip>Distribute vertically selected controls evenly spaced on center.</Button.ToolTip>
+                </Button>
+                <Separator />
+                <Button Command="{Binding SpaceHorizontal}">
+                    <Image Source="{StaticResource SpaceHorizontal}" />
+                    <Button.ToolTip>Space evenly selected controls horizontaly.</Button.ToolTip>
+                </Button>
+                <Button Command="{Binding SpaceVertical}">
+                    <Image Source="{StaticResource SpaceVertical}" />
+                    <Button.ToolTip>Space evenly selected controls verticaly.</Button.ToolTip>
+                </Button>
+            </ToolBar>
+
+        </ToolBarTray>
+    </Grid>
+</UserControl>

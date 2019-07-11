@@ -1,0 +1,110 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.572
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cockpit.Console", "FreePIE.Console\Cockpit.Console.csproj", "{D0368562-09D1-4E6E-8BD3-C1138764971E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cockpit.Core.Contracts", "FreePIE.Core.Contracts\Cockpit.Core.Contracts.csproj", "{58285BD6-810D-4BBD-8249-230C3B0AC76F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cockpit.Core", "FreePIE.Core\Cockpit.Core.csproj", "{BCF7160F-9CB9-46E5-91CA-EE15E1D5ED54}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cockpit.Core.Plugins", "FreePIE.Core.Plugins\Cockpit.Core.Plugins.csproj", "{65D8F959-C4AD-4EC9-9EFA-9EBB9D8CA7CB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{77C0351A-C1CF-4A50-BE67-4EC19DEA5ADD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cockpit.GUI", "FreePIE.GUI\Cockpit.GUI.csproj", "{EF29A2A3-A29C-4D9A-A8E2-A59925DEA82D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{65D8F959-C4AD-4EC9-9EFA-9EBB9D8CA7CB} = {65D8F959-C4AD-4EC9-9EFA-9EBB9D8CA7CB}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Buildtools", "Buildtools", "{8C6C45A2-3D6D-46DE-B61A-6D37ED1F12E0}"
+	ProjectSection(SolutionItems) = preProject
+		BuildTools\build_installer.bat = BuildTools\build_installer.bat
+		BuildTools\build_installer.xml = BuildTools\build_installer.xml
+		BuildTools\build_output.xml = BuildTools\build_output.xml
+		BuildTools\get_git_version.xml = BuildTools\get_git_version.xml
+		BuildTools\License.rtf = BuildTools\License.rtf
+		BuildTools\Main.wxs = BuildTools\Main.wxs
+		README.md = README.md
+		BuildTools\write_VersionInfo.xml = BuildTools\write_VersionInfo.xml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{40AC540E-1AFB-42B0-BAB7-9892CC66AC07}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D0368562-09D1-4E6E-8BD3-C1138764971E}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{D0368562-09D1-4E6E-8BD3-C1138764971E}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{D0368562-09D1-4E6E-8BD3-C1138764971E}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{D0368562-09D1-4E6E-8BD3-C1138764971E}.Debug|x86.ActiveCfg = Debug|x86
+		{D0368562-09D1-4E6E-8BD3-C1138764971E}.Debug|x86.Build.0 = Debug|x86
+		{D0368562-09D1-4E6E-8BD3-C1138764971E}.Release|Any CPU.ActiveCfg = Release|x86
+		{D0368562-09D1-4E6E-8BD3-C1138764971E}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{D0368562-09D1-4E6E-8BD3-C1138764971E}.Release|Mixed Platforms.Build.0 = Release|x86
+		{D0368562-09D1-4E6E-8BD3-C1138764971E}.Release|x86.ActiveCfg = Release|x86
+		{D0368562-09D1-4E6E-8BD3-C1138764971E}.Release|x86.Build.0 = Release|x86
+		{58285BD6-810D-4BBD-8249-230C3B0AC76F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58285BD6-810D-4BBD-8249-230C3B0AC76F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58285BD6-810D-4BBD-8249-230C3B0AC76F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{58285BD6-810D-4BBD-8249-230C3B0AC76F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{58285BD6-810D-4BBD-8249-230C3B0AC76F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{58285BD6-810D-4BBD-8249-230C3B0AC76F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58285BD6-810D-4BBD-8249-230C3B0AC76F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58285BD6-810D-4BBD-8249-230C3B0AC76F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{58285BD6-810D-4BBD-8249-230C3B0AC76F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{58285BD6-810D-4BBD-8249-230C3B0AC76F}.Release|x86.ActiveCfg = Release|Any CPU
+		{BCF7160F-9CB9-46E5-91CA-EE15E1D5ED54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCF7160F-9CB9-46E5-91CA-EE15E1D5ED54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCF7160F-9CB9-46E5-91CA-EE15E1D5ED54}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{BCF7160F-9CB9-46E5-91CA-EE15E1D5ED54}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{BCF7160F-9CB9-46E5-91CA-EE15E1D5ED54}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BCF7160F-9CB9-46E5-91CA-EE15E1D5ED54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCF7160F-9CB9-46E5-91CA-EE15E1D5ED54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCF7160F-9CB9-46E5-91CA-EE15E1D5ED54}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{BCF7160F-9CB9-46E5-91CA-EE15E1D5ED54}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{BCF7160F-9CB9-46E5-91CA-EE15E1D5ED54}.Release|x86.ActiveCfg = Release|Any CPU
+		{65D8F959-C4AD-4EC9-9EFA-9EBB9D8CA7CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65D8F959-C4AD-4EC9-9EFA-9EBB9D8CA7CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65D8F959-C4AD-4EC9-9EFA-9EBB9D8CA7CB}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{65D8F959-C4AD-4EC9-9EFA-9EBB9D8CA7CB}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{65D8F959-C4AD-4EC9-9EFA-9EBB9D8CA7CB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{65D8F959-C4AD-4EC9-9EFA-9EBB9D8CA7CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65D8F959-C4AD-4EC9-9EFA-9EBB9D8CA7CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65D8F959-C4AD-4EC9-9EFA-9EBB9D8CA7CB}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{65D8F959-C4AD-4EC9-9EFA-9EBB9D8CA7CB}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{65D8F959-C4AD-4EC9-9EFA-9EBB9D8CA7CB}.Release|x86.ActiveCfg = Release|Any CPU
+		{EF29A2A3-A29C-4D9A-A8E2-A59925DEA82D}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{EF29A2A3-A29C-4D9A-A8E2-A59925DEA82D}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{EF29A2A3-A29C-4D9A-A8E2-A59925DEA82D}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{EF29A2A3-A29C-4D9A-A8E2-A59925DEA82D}.Debug|x86.ActiveCfg = Debug|x86
+		{EF29A2A3-A29C-4D9A-A8E2-A59925DEA82D}.Debug|x86.Build.0 = Debug|x86
+		{EF29A2A3-A29C-4D9A-A8E2-A59925DEA82D}.Release|Any CPU.ActiveCfg = Release|x86
+		{EF29A2A3-A29C-4D9A-A8E2-A59925DEA82D}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{EF29A2A3-A29C-4D9A-A8E2-A59925DEA82D}.Release|Mixed Platforms.Build.0 = Release|x86
+		{EF29A2A3-A29C-4D9A-A8E2-A59925DEA82D}.Release|x86.ActiveCfg = Release|x86
+		{EF29A2A3-A29C-4D9A-A8E2-A59925DEA82D}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {42A0C11D-819C-45FD-83F7-44FA64CB2D83}
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = FreePIE.vsmdi
+	EndGlobalSection
+EndGlobal
