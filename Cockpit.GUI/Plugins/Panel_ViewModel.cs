@@ -1,4 +1,5 @@
 ﻿using Cockpit.Core.Common.Events;
+using Cockpit.GUI.Events;
 using Cockpit.GUI.Plugins.Properties;
 using System.Windows;
 using System.Windows.Input;
@@ -74,6 +75,7 @@ namespace Cockpit.GUI.Plugins
         public void MouseDoubleClickOnPanel(MouseButtonEventArgs e)
         {
             System.Diagnostics.Debug.WriteLine($"MouseDoubleClickOnPanel {e.ClickCount}");
+            eventAggregator.Publish(new PanelLoadingViewEvent("panel"));
             
         }
         #endregion

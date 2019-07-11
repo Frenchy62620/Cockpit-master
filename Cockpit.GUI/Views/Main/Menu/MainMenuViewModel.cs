@@ -22,6 +22,7 @@ namespace Cockpit.GUI.Views.Main.Menu
         Core.Common.Events.IHandle<ExitingEvent>,
         Core.Common.Events.IHandle<ActiveProfileDocumentChangedEvent>,
         Core.Common.Events.IHandle<ScriptErrorEvent>,
+        Core.Common.Events.IHandle<PanelLoadingViewEvent>,
         Core.Common.Events.IHandle<FileEvent>
     {
         private readonly IResultFactory resultFactory;
@@ -92,6 +93,16 @@ namespace Cockpit.GUI.Views.Main.Menu
                 //document.LoadFileContent(fileSystem.ReadAllText(filePath));
                 AddRecentScript(filePath);
             }
+
+            eventAggregator.Publish(new ProfileDocumentAddedEvent(document));
+        }
+
+        public void CreatePanelViewModel(string panel)
+        {
+
+            var document = profileEditorFactory()
+                .Configure(panel);
+
 
             eventAggregator.Publish(new ProfileDocumentAddedEvent(document));
         }
@@ -244,5 +255,12 @@ namespace Cockpit.GUI.Views.Main.Menu
         public IEnumerable<PanelViewModel> Views { get; set; }
 
         public IObservableCollection<RecentFileViewModel> RecentScripts { get; set; }
+
+
+
+        public void Handle(PanelLoadingViewEvent message)
+        {
+            CreatePanelViewModel(message.Profile);
+        }
     }
 }
