@@ -27,11 +27,12 @@ namespace Cockpit.GUI.Plugins.Properties
                 ViewModelBinder.Bind(this, view, null);
             }
 
-            NameUC = (string)settings[1];
+            NameUC = (string)settings[2];
 
             HAlignTypes = Enum.GetValues(typeof(HorizontalAlignment)).Cast<HorizontalAlignment>().Take(3).ToList();
             VAlignTypes = Enum.GetValues(typeof(VerticalAlignment)).Cast<VerticalAlignment>().Take(3).ToList();
-            var index = 3;
+
+            var index = 4;
             Image = ((string[])settings[index])[0];
             PushedImage = ((string[])settings[index++])[1];
             IndexImage = (int)settings[index++];

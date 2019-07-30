@@ -205,4 +205,19 @@ namespace Cockpit.GUI.Common.Converters
         }
 
     }
+
+    [ValueConversion(typeof(string), typeof(Point))]
+    public class MyConverterRender : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            double[] param = value.ToString().Split(',').Select(x => System.Convert.ToDouble(x, CultureInfo.InvariantCulture)).ToArray();
+            return new Point(param[0], param[1]);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

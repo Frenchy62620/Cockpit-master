@@ -198,15 +198,15 @@ namespace Cockpit.GUI.Shells
 
         public void Handle(ProfileDocumentAddedEvent message)
         {
-            var script = Profiles.FirstOrDefault(s => s.ContentId == message.Document.ContentId);
-
-            if (script == null)
+            //var panel = Profiles.FirstOrDefault(s => s.ContentId == message.Document.ContentId);
+            var panel = Profiles.FirstOrDefault(s => s.Title== message.Document.Title);
+            if (panel == null)
             {
-                script = message.Document;
-                Profiles.Add(script);
+                panel = message.Document;
+                Profiles.Add(panel);
             }
 
-            script.IsPanelActive = true;            
+            panel.IsPanelActive = true;            
             ActiveDocument = message.Document;
         }
 

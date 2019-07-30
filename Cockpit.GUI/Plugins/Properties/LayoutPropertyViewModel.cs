@@ -21,15 +21,15 @@ namespace Cockpit.GUI.Plugins.Properties
                 
             }
 
-            NameUC = (string)settings[1];
+            NameUC = (string)settings[2];
 
-            UCLeft = ((int[])settings[2])[0];
-            UCTop = ((int[])settings[2])[1];
+            UCLeft = ((int[])settings[3])[0];
+            UCTop = ((int[])settings[3])[1];
             
-            var width = (double)((int[])settings[2])[2];
-            var height = (double)((int[])settings[2])[3];
+            var width = (double)((int[])settings[3])[2];
+            var height = (double)((int[])settings[3])[3];
 
-            SelectedSwitchRotation = (LayoutRotation)((int[])settings[2])[4];
+            SelectedSwitchRotation = (LayoutRotation)((int[])settings[3])[4];
 
             Factor = height / width;
 

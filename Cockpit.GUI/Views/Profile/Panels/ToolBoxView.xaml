@@ -44,7 +44,7 @@
                         <RowDefinition Height="40" />
                     </Grid.RowDefinitions>
                     <Image   Grid.Row="0" Source="{Binding FullImageName}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="1" />
-                    <TextBlock Grid.Row="1" Text="{Binding Path=ShortImageName}" TextAlignment="Center"  Margin="1" TextWrapping="Wrap" />
+                    <TextBlock Grid.Row="1" Text="{Binding Path=ShortImageName}" TextAlignment="Center"  Margin="1" TextWrapping="Wrap" Foreground="Black"/>
 
                 </Grid>
             </Border>
@@ -89,7 +89,7 @@
         <!--<ComboBox Grid.Row="0" x:Name="DeviceTypes" />-->
 
         <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Margin="6">
-            <ItemsControl x:Name="tb" Grid.Row="1" ItemsSource="{Binding ToolBoxGroups}" BorderThickness="0" 
+            <ItemsControl x:Name="tb" Grid.Row="1" ItemsSource="{Binding ToolBoxGroups}" BorderThickness="0" Background="White" Foreground="Red"
                           ItemTemplate="{StaticResource ToolboxGroupLayout}" HorizontalContentAlignment="Stretch"  />
         </ScrollViewer>
     </Grid>

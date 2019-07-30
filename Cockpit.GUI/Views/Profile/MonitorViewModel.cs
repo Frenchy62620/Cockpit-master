@@ -118,17 +118,17 @@ namespace Cockpit.GUI.Views.Profile
                 param = new Ninject.Parameters.Parameter[]
                 {
                         new ConstructorArgument("settings", new object[]{                                                   //PushButton
-                            true,                                                                                               //0  is in Mode Editor?
-                            $"{nameUC}",                                                                                        //1  name of UC
-                            new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, 0 },//2  [Left, Top, Width, Height, Angle]
+                            true, this,                                                                                         //0  is in Mode Editor?
+                            $"{nameUC}",                                                                                        //2  name of UC
+                            new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, 0 },//3  [Left, Top, Width, Height, Angle]
 
-                            new string[]{ FullImage, FullImage1 }, 0,                                                           //3  [images] & startimageposition
-                            2d, 0.8d, (PushButtonGlyph)0, Colors.White,                                                         //5  Glyph: Thickness, Scale, Type, Color
-                            "Hello", "1,1", "Franklin Gothic", "Normal", "Normal",                                              //9  Text, TextPushOffset, Family, Style, Weight
-                            12d, new double[] { 0d, 0d, 0d, 0d },                                                               //14 Size, [padding L,T,R,B]
-                            new int[] { 1, 1 },  Colors.White,                                                                  //16 [TextAlign H,V], TextColor
+                            new string[]{ FullImage, FullImage1 }, 0,                                                           //4  [images] & startimageposition
+                            2d, 0.8d, (PushButtonGlyph)0, Colors.White,                                                         //6  Glyph: Thickness, Scale, Type, Color
+                            "Hello", "1,1", "Franklin Gothic", "Normal", "Normal",                                              //10 Text, TextPushOffset, Family, Style, Weight
+                            12d, new double[] { 0d, 0d, 0d, 0d },                                                               //15 Size, [padding L,T,R,B]
+                            new int[] { 1, 1 },  Colors.White,                                                                  //17 [TextAlign H,V], TextColor
 
-                            1                                                                                                   //18 Button Type
+                            1                                                                                                   //19 Button Type
                                                                         }, true)
                 };
 
@@ -144,7 +144,7 @@ namespace Cockpit.GUI.Views.Profile
                     {
                         // Layout
                         new ConstructorArgument("settings", new object[]{
-                            true,                                                                                               //0  In Mode Editor?
+                            true, this,                                                                                         //0  In Mode Editor?
                             $"{nameUC}",                                                                                        //1  name of UC
                             new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, 0 } //2  [Left, Top, Width, Height, Angle]
                         }, true)
@@ -153,7 +153,7 @@ namespace Cockpit.GUI.Views.Profile
                     new Ninject.Parameters.Parameter[]
                     {
                         new ConstructorArgument("settings", new object[]{
-                            true,                                                                                               //0  In Mode Editor?
+                            true, this,                                                                                         //0  In Mode Editor?
                             $"{nameUC}",                                                                                        //1  name of UC
                             new string[]{ FullImage, FullImage1 }, 0,                                                           //2  images, start image position
                             2d, 0.8d, (PushButtonGlyph)0, Colors.White,                                                         //4  Glyph: Thickness, Scale, Type, Color
@@ -166,7 +166,7 @@ namespace Cockpit.GUI.Views.Profile
                     new Ninject.Parameters.Parameter[]
                     {
                         new ConstructorArgument("settings", new object[]{
-                            true,                                                                                               //0  In Mode Editor?
+                            true, this,                                                                                         //0  In Mode Editor?
                             $"{nameUC}",                                                                                        //1  name of UC
                             1                                                                                                   //2 Button Type
                         }, true)}
@@ -180,11 +180,11 @@ namespace Cockpit.GUI.Views.Profile
                 param = new Ninject.Parameters.Parameter[]
                 {
                         new ConstructorArgument("settings", new object[]{                                                   //Panel Button
-                            true,                                                                                               //0 is in Mode Editor?
-                            $"{nameUC}",                                                                                        //1 name of UC
-                            new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, 0 },//2 [Left, Top, Width, Height, Angle]
+                            true, this,                                                                                         //0 is in Mode Editor?
+                            $"{nameUC}",                                                                                        //2 name of UC
+                            new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, 0 },//3 [Left, Top, Width, Height, Angle]
 
-                            FullImage,                                                                                          //3 [images] 
+                            FullImage,                                                                                          //4 image
 
                             2, 1d, 2, 3 }, true)
                 };
@@ -202,10 +202,10 @@ namespace Cockpit.GUI.Views.Profile
                 {
                         new ConstructorArgument("settings", new object[]{                                                   //Switch Button
                             true,                                                                                               //0 is in Mode Editor?
-                            $"{nameUC}",                                                                                        //1 name of UC
-                            new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, AngleSwitch },//2 [Left, Top, Width, Height, Angle]
+                            $"{nameUC}",                                                                                        //2 name of UC
+                            new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, AngleSwitch },//3 [Left, Top, Width, Height, Angle]
 
-                            new string[]{ FullImage, FullImage1, FullImage2 , "", "", "" }, 0,                                  //3 [images] & startimageposition
+                            new string[]{ FullImage, FullImage1, FullImage2 , "", "", "" }, 0,                                  //4 [images] & startimageposition
 
                             2, 1d, 2, 3 }, true)
                 };
@@ -235,13 +235,24 @@ namespace Cockpit.GUI.Views.Profile
 
         private static int untitledIndex;
         private int untitledId;
-        public MonitorViewModel Configure(string filePath)
+        public MonitorViewModel Configure(string filePath, bool panel = false)
         {
             FilePath = filePath;
             if (string.IsNullOrEmpty(filePath))
             {
                 untitledId = untitledIndex++;
             }
+            if (panel) Title = FilePath;
+            return this;
+        }
+        public MonitorViewModel ConfigurePanel(Panel_ViewModel panel)
+        {
+            this.MonitorHeight = panel.Layout.Height;
+            this.MonitorWidth = panel.Layout.Width;
+            this.LayoutMonitor.BackgroundImage = panel.Appearance.BackgroundImage;
+            //this.LayoutMonitor.SelectedAlignmentType = ImageAlignment.Centered;
+
+            this.Title = panel.Layout.NameUC;
             return this;
         }
 
@@ -341,7 +352,7 @@ namespace Cockpit.GUI.Views.Profile
             }
         }
 
-        public void PreviewMouseLeftButtonDownOnContentControl(object sender, MouseEventArgs e)
+        public void MouseLeftButtonDownOnContentControl(object sender, MouseEventArgs e)
         {
 
             var s = sender as ContentControl;

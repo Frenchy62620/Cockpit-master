@@ -9,6 +9,7 @@ using Cockpit.Core.ScriptEngine;
 using Cockpit.GUI.Common.Strategies;
 using Cockpit.GUI.Events;
 using Cockpit.GUI.Events.Command;
+using Cockpit.GUI.Plugins;
 using Cockpit.GUI.Result;
 using Cockpit.GUI.Shells;
 using Cockpit.GUI.Views.Profile;
@@ -97,11 +98,11 @@ namespace Cockpit.GUI.Views.Main.Menu
             eventAggregator.Publish(new ProfileDocumentAddedEvent(document));
         }
 
-        public void CreatePanelViewModel(string panel)
+        public void CreatePanelViewModel(Panel_ViewModel panel)
         {
 
             var document = profileEditorFactory()
-                .Configure(panel);
+                .ConfigurePanel(panel);
 
 
             eventAggregator.Publish(new ProfileDocumentAddedEvent(document));

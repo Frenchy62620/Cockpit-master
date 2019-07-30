@@ -3,15 +3,13 @@ using Cockpit.GUI.Events;
 using System.IO;
 using System.Text;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.GUI.Plugins.Properties
 {
     public class PanelAppearanceViewModel:PluginProperties, Core.Common.Events.IHandle<PropertyMonitorEvent>
     {
-        private readonly SolidColorBrush color1 = new SolidColorBrush(Colors.White);
-        private readonly SolidColorBrush color2 = new SolidColorBrush(Colors.LightGray);
+
         private readonly PluginModel Plugin;
         private readonly IEventAggregator eventAggregator;
         public string NameUC { get; private set; }
@@ -26,16 +24,17 @@ namespace Cockpit.GUI.Plugins.Properties
                 ViewModelBinder.Bind(this, view, null);
             }
 
-            NameUC = (string)settings[1];
+            NameUC = (string)settings[2];
 
-            var index = 3;
+
+
+            var index = 4;
             BackgroundImage = (string)settings[index];
             this.eventAggregator = eventAggregator;
 
-            FillBackground = false;
+
             BackgroundColor = Colors.Gray;
-            BackgroundColor1 = color1;
-            BackgroundColor2 = color2;
+            FillBackground = false;
 
             eventAggregator.Subscribe(this);
 
@@ -80,9 +79,10 @@ namespace Cockpit.GUI.Plugins.Properties
             set {
                 fillBackground = value;
                 NotifyOfPropertyChange(() => FillBackground);
-                var b = new SolidColorBrush(BackgroundColor);
-                BackgroundColor1 = value ? b : color1;
-                BackgroundColor2 = value ? b : color2;
+                if (value)
+                    FillColor = new SolidColorBrush(BackgroundColor);
+                else
+                    FillColor = new SolidColorBrush(Colors.Transparent);
             }
         }
 
@@ -94,27 +94,18 @@ namespace Cockpit.GUI.Plugins.Properties
             {
                 backgroundColor = value;
                 NotifyOfPropertyChange(() => BackgroundColor);
+                FillColor = new SolidColorBrush(BackgroundColor);
             }
         }
 
-        private SolidColorBrush backgroundColor1;
-        public SolidColorBrush BackgroundColor1
+        private SolidColorBrush fillcolor;
+        public SolidColorBrush FillColor
         {
-            get { return backgroundColor1; }
+            get { return fillcolor; }
             set
             {
-                backgroundColor1 = value;
-                NotifyOfPropertyChange(() => BackgroundColor1);
-            }
-        }
-        private SolidColorBrush backgroundColor2;
-        public SolidColorBrush BackgroundColor2
-        {
-            get { return backgroundColor2; }
-            set
-            {
-                backgroundColor2 = value;
-                NotifyOfPropertyChange(() => BackgroundColor2);
+                fillcolor = value;
+                NotifyOfPropertyChange(() => FillColor);
             }
         }
 

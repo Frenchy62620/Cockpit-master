@@ -73,6 +73,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Margin="4,10,2,2" FontSize="12" FontWeight="Bold" Text="Background"/>
         <Label Grid.Column="0" Grid.Row="3" FontSize="10" HorizontalAlignment="Right"  Content="Fill"/>
@@ -89,49 +90,52 @@
         <Label Grid.Column="0" Grid.Row="5" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource LabelImageStyle}" Content="Alignment" />
         <ComboBox Grid.Column="1" Grid.Row="5" FontSize="10" Margin="0,2,0,2" HorizontalAlignment="Left" Style="{StaticResource ComboImageStyle}" />
 
-        <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="6" Orientation="Horizontal">
+        <Label Grid.Column="0" Grid.Row="6" FontSize="10" HorizontalAlignment="Right" Content="Mode Apparition" />
+        <ComboBox Grid.Column="1" Grid.Row="6" FontSize="10" Margin="0,2,0,2" HorizontalAlignment="Left" />
+
+        <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="7" Orientation="Horizontal">
             <TextBlock Margin="4,11,2,2" FontSize="12" FontWeight="Bold" Text="Border" />
             <CheckBox Margin="4,11,2,2" IsChecked="{Binding Path=DrawBorder}"
                       ToolTip="When check border will be renderd around the edge of the panel." />
         </StackPanel>
 
-        <Label Grid.Column="0" Grid.Row="7" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}">
+        <Label Grid.Column="0" Grid.Row="8" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}">
             <TextBlock TextAlignment="Right">Top<LineBreak/>Left</TextBlock>
         </Label>
-        <ip:ImagePickerView Grid.Column="1" Grid.Row="7" VerticalAlignment="Center" ImageFilename="{Binding Path=TopLeftCornerImage,Mode=TwoWay}"
+        <ip:ImagePickerView Grid.Column="1" Grid.Row="8" VerticalAlignment="Center" ImageFilename="{Binding Path=TopLeftCornerImage,Mode=TwoWay}"
                             Style="{StaticResource BorderImagePickerStyle}" />
 
-        <Label Grid.Column="0" Grid.Row="8" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}">Top</Label>
-        <ip:ImagePickerView Grid.Column="1" Grid.Row="8" ImageFilename="{Binding Path=TopBorderImage,Mode=TwoWay}" 
+        <Label Grid.Column="0" Grid.Row="9" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}">Top</Label>
+        <ip:ImagePickerView Grid.Column="1" Grid.Row="9" ImageFilename="{Binding Path=TopBorderImage,Mode=TwoWay}" 
                             Style="{StaticResource BorderImagePickerStyle}" />
 
-        <Label Grid.Column="0" Grid.Row="9" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}">
+        <Label Grid.Column="0" Grid.Row="10" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}">
             <TextBlock TextAlignment="Right">Top<LineBreak/>Right</TextBlock>
         </Label>
-        <ip:ImagePickerView Grid.Column="1" Grid.Row="9" VerticalAlignment="Center" ImageFilename="{Binding Path=TopRightCornerImage,Mode=TwoWay}" 
+        <ip:ImagePickerView Grid.Column="1" Grid.Row="10" VerticalAlignment="Center" ImageFilename="{Binding Path=TopRightCornerImage,Mode=TwoWay}" 
                             Style="{StaticResource BorderImagePickerStyle}" />
 
-        <Label Grid.Column="0" Grid.Row="10" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}" Content="Left" />
-        <ip:ImagePickerView Grid.Column="1" Grid.Row="10" ImageFilename="{Binding Path=LeftBorderImage,Mode=TwoWay}" Style="{StaticResource BorderImagePickerStyle}" />
+        <Label Grid.Column="0" Grid.Row="11" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}" Content="Left" />
+        <ip:ImagePickerView Grid.Column="1" Grid.Row="11" ImageFilename="{Binding Path=LeftBorderImage,Mode=TwoWay}" Style="{StaticResource BorderImagePickerStyle}" />
 
-        <Label Grid.Column="0" Grid.Row="11" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}" Content="Right" />
-        <ip:ImagePickerView Grid.Column="1" Grid.Row="11" ImageFilename="{Binding Path=RightBorderImage,Mode=TwoWay}" 
+        <Label Grid.Column="0" Grid.Row="12" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}" Content="Right" />
+        <ip:ImagePickerView Grid.Column="1" Grid.Row="12" ImageFilename="{Binding Path=RightBorderImage,Mode=TwoWay}" 
                             Style="{StaticResource BorderImagePickerStyle}" />
 
-        <Label Grid.Column="0" Grid.Row="12" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}">
+        <Label Grid.Column="0" Grid.Row="13" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}">
             <TextBlock TextAlignment="Right">Bottom<LineBreak/>Left</TextBlock>
         </Label>
-        <ip:ImagePickerView Grid.Column="1" Grid.Row="12" VerticalAlignment="Center" ImageFilename="{Binding Path=BottomLeftCornerImage,Mode=TwoWay}" 
+        <ip:ImagePickerView Grid.Column="1" Grid.Row="13" VerticalAlignment="Center" ImageFilename="{Binding Path=BottomLeftCornerImage,Mode=TwoWay}" 
                             Style="{StaticResource BorderImagePickerStyle}" />
 
-        <Label Grid.Column="0" Grid.Row="13" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}" Content="Bottom" />
-        <ip:ImagePickerView Grid.Column="1" Grid.Row="13" ImageFilename="{Binding Path=BottomBorderImage,Mode=TwoWay}"
+        <Label Grid.Column="0" Grid.Row="14" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}" Content="Bottom" />
+        <ip:ImagePickerView Grid.Column="1" Grid.Row="14" ImageFilename="{Binding Path=BottomBorderImage,Mode=TwoWay}"
                             Style="{StaticResource BorderImagePickerStyle}" />
 
-        <Label Grid.Column="0" Grid.Row="14" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}">
+        <Label Grid.Column="0" Grid.Row="15" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource BorderLabelStyle}">
             <TextBlock TextAlignment="Right">Bottom<LineBreak/>Right</TextBlock>
         </Label>
-        <ip:ImagePickerView Grid.Column="1" Grid.Row="14" VerticalAlignment="Center" ImageFilename="{Binding PathBottomRightCornerImage,Mode=TwoWay}" 
+        <ip:ImagePickerView Grid.Column="1" Grid.Row="15" VerticalAlignment="Center" ImageFilename="{Binding PathBottomRightCornerImage,Mode=TwoWay}" 
                             Style="{StaticResource BorderImagePickerStyle}" />
 
 

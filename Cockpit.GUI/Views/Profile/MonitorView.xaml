@@ -33,12 +33,11 @@
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="6">
             <Grid cal:Message.Attach="[Event MouseDown] = [Action MouseLeftButtonDownOnMonitorView($source, $mousepoint, $eventArgs)];
                                       [Event PreviewKeyDown] = [Action KeyTest($source, $pressedKey)]"
-                  gg:DragDrop.DropHandler="{Binding}"
-                  gg:DragDrop.IsDropTarget="True"
-                  gg:DragDrop.DropAdornerTemplate="{StaticResource BoxDragAdorner}">
+>
 
                 <!--, diag:PresentationTraceSources.TraceLevel=High}[Gesture Ctrl+E,A] = [Action KeyTest($source ,$pressedKey)]"-->
-                <Rectangle x:Name="MainRectangle" Width="{Binding MonitorWidth}" Height="{Binding MonitorHeight}" StrokeThickness="4" Stroke="Black" >
+                <Rectangle x:Name="MainRectangle" Width="{Binding MonitorWidth}" Height="{Binding MonitorHeight}" StrokeThickness="4" Stroke="Black"
+                           HorizontalAlignment="Left" VerticalAlignment="Top" >
                     <!--gg:DragDrop.DropAdornerTemplate="{StaticResource BoxDragAdorner}">-->
                     <!--cal:Message.Attach="[Event MouseLeftButtonDown] = [Action MouseLeftButtonDownOnMonitorView($source, $mousepoint, $eventArgs)];
                                                [Event PreviewKeyDown] = [Action KeyTest($source, $pressedKey)]; 
@@ -55,32 +54,27 @@
                         </DrawingBrush>
                     </Rectangle.Fill>
                 </Rectangle>
-                
-                <Rectangle>
+
+                <Rectangle Width="{Binding MonitorWidth}" Height="{Binding MonitorHeight}" StrokeThickness="4" Stroke="Black" 
+                           HorizontalAlignment="Left" VerticalAlignment="Top"
+                           gg:DragDrop.DropHandler="{Binding}"
+                           gg:DragDrop.IsDropTarget="True"
+                           gg:DragDrop.DropAdornerTemplate="{StaticResource BoxDragAdorner}" >
                     <Rectangle.Fill>
-                        <!--<Image x:Name="BackgroundImage"   Stretch="Uniform"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,0,0" 
-                       Source="{Binding LayoutMonitor.BackgroundImage}" />-->
-                        <!--gg:DragDrop.DropHandler="{Binding}" 
-                       gg:DragDrop.IsDropTarget="True" 
-                       gg:DragDrop.DragMouseAnchorPoint="0.0,0.0"-->
-                        <!--gg:DragDrop.DropAdornerTemplate="{StaticResource BoxDragAdorner}"-->
-                        <!--cal:Message.Attach="[Event MouseLeftButtonDown] = [Action MouseLeftButtonDownOnMonitorView($source, $mousepoint, $eventArgs)];
-                                           [Event PreviewKeyDown] = [Action KeyTest($pressedKey)]; 
-                                           [Gesture Ctrl+E,A] = [Action KeyTest($source ,$pressedKey)]" />-->
-                        <ImageBrush ImageSource="{Binding LayoutMonitor.BackgroundImage}"
+                        <ImageBrush ImageSource="{Binding LayoutMonitor.BackgroundImage}" 
                                     Viewport="0,0,1,1" Stretch="Fill"
                                     ViewportUnits="RelativeToBoundingBox" 
                                     TileMode="None" />
                     </Rectangle.Fill>
                 </Rectangle>
-                
+
                 <ItemsControl ItemsSource="{Binding MyCockpitViewModels}" >
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <!--<Border BorderThickness="{Binding IsUCSelected, Converter={StaticResource MyConverterMargin}}" BorderBrush="Red" >-->
                             <AdornerDecorator >
                                 <ContentControl cal:View.Model="{Binding}" 
-                                                cal:Message.Attach="[Event MouseLeftButtonDown] = [Action PreviewMouseLeftButtonDownOnContentControl($source, $eventArgs)];
+                                                cal:Message.Attach="[Event MouseLeftButtonDown] = [Action MouseLeftButtonDownOnContentControl($source, $eventArgs)];
                                                                     [Event Loaded] = [Action ContentControlLoaded($source)];
                                                                     [Event MouseDoubleClick] = [Action MouseDoubleClickOnContentControl($source, $eventArgs)];
                                                                     [Event MouseWheel] = [Action MouseWheelOnContentControl($source, $eventArgs)]" >

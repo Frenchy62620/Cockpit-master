@@ -25,7 +25,7 @@ namespace Cockpit.GUI.Plugins
             Behavior = new PushButtonBehaviorViewModel(eventAggregator, settings);
 
 
-            NameUC = (string)settings[1];
+            NameUC = (string)settings[2];
 
 
             //Frame = false;

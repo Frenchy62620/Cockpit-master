@@ -1,10 +1,12 @@
-﻿namespace Cockpit.GUI.Events
+﻿using Cockpit.GUI.Plugins;
+
+namespace Cockpit.GUI.Events
 {
     public  class PanelLoadingViewEvent
     {
-        public string Profile { get; set; }
+        public Panel_ViewModel Profile { get; set; }
 
-        public PanelLoadingViewEvent(string profile)
+        public PanelLoadingViewEvent(Panel_ViewModel profile)
         {
             Profile = profile;
         }

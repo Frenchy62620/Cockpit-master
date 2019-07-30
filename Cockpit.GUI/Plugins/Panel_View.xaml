@@ -8,11 +8,11 @@
     xmlns:gg="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
     mc:Ignorable="d" d:DesignHeight="150" d:DesignWidth="70" ToolTip="{Binding ToolTip}"    
     VerticalAlignment = "Top" HorizontalAlignment = "Left" ClipToBounds="True" Background="Transparent"
-    cal:Message.Attach="[Event MouseEnter] = [Action MouseEnter($eventArgs)];
-                        [Event MouseDoubleClick] = [Action MouseDoubleClickOnPanel($eventArgs)]">
-
-    <!--<UserControl.Resources>
-        <DataTemplate x:Key="UCDragAdorner">
+    cal:Message.Attach="[Event MouseDown] = [Action MouseLeftButtonDownOnPanelView($source, $mousepoint, $eventArgs)]">
+    <!--cal:Message.Attach="[Event MouseEnter] = [Action MouseEnter($eventArgs)];
+                        [Event MouseDoubleClick] = [Action MouseDoubleClickOnPanel($dataContext, $eventArgs)]"-->
+    <UserControl.Resources>
+        <DataTemplate x:Key="BoxDragAdorner">
             <Grid x:Name="Over">
 
                 <Rectangle Width="{Binding SelectedToolBoxItem.ImageWidth}" 
@@ -22,14 +22,15 @@
                             Width="{Binding SelectedToolBoxItem.ImageWidth}" 
                             Height="{Binding SelectedToolBoxItem.ImageHeight}" HorizontalAlignment="Center"
                             />
-                --><!--, diag:PresentationTraceSources.TraceLevel=High-->
-                <!--<TextBlock Text="{Binding FullName}" HorizontalAlignment="Center"/>--><!--
+                <!--, diag:PresentationTraceSources.TraceLevel=High-->
+                <!--<TextBlock Text="{Binding FullName}" HorizontalAlignment="Center"/>-->
 
             </Grid>
         </DataTemplate>
-    </UserControl.Resources>-->
+    </UserControl.Resources>
 
-    <Grid  Width="{Binding Path=Layout.Width}" Height="{Binding Path=Layout.Height}" >
+    <Grid  Width="{Binding Path=Layout.Width}" Height="{Binding Path=Layout.Height}" 
+            >
 
                 <!--<Rectangle x:Name="MainRectangle" Width="{Binding Path=Layout.Width}" Height="{Binding Path=Layout.Height}" StrokeThickness="4" Stroke="Black" 
 
@@ -39,11 +40,54 @@
 
 
                 </Rectangle>-->
-        <Image x:Name="BackgroundImage" Stretch="Uniform"  Width="{Binding Path=Layout.Width}" Height="{Binding Path=Layout.Height}" 
-               HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,0,0" Source="{Binding Appearance.BackgroundImage}"/>
-        <!--cal:Message.Attach="[Event MouseLeftButtonDown] = [Action MouseLeftButtonDown($source,  $eventArgs)]"/>-->
-        <!--cal:Message.Attach="[Event PreviewMouseLeftButtonDown] = [Action MouseLeftButtonDownOnMonitorView($source, $mousepoint, $eventArgs)];
-                                   [Event PreviewKeyDown] = [Action KeyTest($pressedKey)]"-->
-        <!--HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,0,0"-->
+        <Rectangle Width="{Binding Layout.Width}" Height="{Binding Layout.Height}" StrokeThickness="4" Stroke="Black" 
+                           HorizontalAlignment="Left" VerticalAlignment="Top" Fill="{Binding Appearance.FillColor}" />
+
+        <Rectangle Width="{Binding Layout.Width}" Height="{Binding Layout.Height}" StrokeThickness="4" Stroke="Black" 
+                           HorizontalAlignment="Left" VerticalAlignment="Top"
+                           gg:DragDrop.DropHandler="{Binding}"
+                           gg:DragDrop.IsDropTarget="True"
+                           gg:DragDrop.DropAdornerTemplate="{StaticResource BoxDragAdorner}" >
+            <Rectangle.Fill>
+                <ImageBrush ImageSource="{Binding Appearance.BackgroundImage}" 
+                                    Viewport="0,0,1,1" Stretch="Fill"
+                                    ViewportUnits="RelativeToBoundingBox" 
+                                    TileMode="None" />
+            </Rectangle.Fill>
+        </Rectangle>
+        <ItemsControl ItemsSource="{Binding MyCockpitViewModels}" >
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <!--<Border BorderThickness="{Binding IsUCSelected, Converter={StaticResource MyConverterMargin}}" BorderBrush="Red" >-->
+                    <AdornerDecorator >
+                        <ContentControl cal:View.Model="{Binding}" 
+                            cal:Message.Attach="[Event MouseLeftButtonDown] = [Action MouseLeftButtonDownOnContentControl($source, $eventArgs)];
+                                                                    [Event Loaded] = [Action ContentControlLoaded($source)]">
+                            <ContentControl.RenderTransform>
+                                <TransformGroup>
+                                    <RotateTransform Angle="{Binding Layout.AngleRotation}" />
+                                </TransformGroup>
+                            </ContentControl.RenderTransform>
+                        </ContentControl>
+                    </AdornerDecorator>
+                    <!--</Border>-->
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <!-- Replace panel with a canvas -->
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
+            <!-- Set position of each element in the canvas -->
+            <ItemsControl.ItemContainerStyle>
+                <Style TargetType="{x:Type ContentPresenter}">
+                    <Setter Property="Canvas.Left" Value="{Binding Layout.UCLeft}" />
+                    <Setter Property="Canvas.Top" Value="{Binding Layout.UCTop}" />
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+
+        </ItemsControl>
     </Grid>
 </UserControl>

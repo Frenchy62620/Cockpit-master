@@ -22,9 +22,9 @@ namespace Cockpit.GUI.Plugins.Properties
                 var view = ViewLocator.LocateForModel(this, null, null);
                 ViewModelBinder.Bind(this, view, null);
             }
-            NameUC = (string)settings[1];
+            NameUC = (string)settings[2];
 
-            var index = 3;
+            var index = 4;
             PositionImage0 = ((string[])settings[index])[0];
             PositionImage1 = ((string[])settings[index])[1];
             PositionImage2 = ((string[])settings[index])[2];

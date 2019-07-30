@@ -11,7 +11,7 @@ namespace Cockpit.GUI.Plugins.Properties
         public PushButtonBehaviorViewModel(IEventAggregator eventAggregator, params object[] settings)
         {
             PushButtonTypes = Enum.GetValues(typeof(PushButtonType)).Cast<PushButtonType>().ToList();
-            SelectedPushButtonType = (PushButtonType)(int)settings[18];
+            SelectedPushButtonType = (PushButtonType)(int)settings[19];
             Name = "Behavior";
         }
 

@@ -19,12 +19,10 @@ namespace Cockpit.GUI.Plugins
         public Switch_ViewModel(IEventAggregator eventAggregator, params object[] settings)
         {
             Layout = new LayoutPropertyViewModel(eventAggregator, settings);
-
             Behavior = new SwitchBehaviorViewModel(eventAggregator, settings);
             Appearance = new SwitchAppearanceViewModel(eventAggregator, Behavior, settings);
 
-
-            NameUC = (string)settings[1];
+            NameUC = (string)settings[2];
 
             ////ScaleX = (double)settings[10];
             //ScaleX = 1;

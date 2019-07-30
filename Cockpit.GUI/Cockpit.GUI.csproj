@@ -9,7 +9,7 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Cockpit.GUI</RootNamespace>
-    <AssemblyName>FreePIE</AssemblyName>
+    <AssemblyName>Cockpit</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -204,10 +204,11 @@
       <DependentUpon>MonitorPropertyView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Plugins\Properties\MonitorPropertyViewModel.cs" />
-    <Compile Include="Plugins\Properties\PanelAppearancePropertyEditorView.xaml.cs">
-      <DependentUpon>PanelAppearancePropertyEditorView.xaml</DependentUpon>
+    <Compile Include="Plugins\Properties\PanelAppearanceView.xaml.cs">
+      <DependentUpon>PanelAppearanceView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Plugins\Properties\PanelAppearancePropertyEditorViewModel.cs" />
+    <Compile Include="Plugins\Properties\PanelAppearanceViewModel.cs" />
+    <Compile Include="Plugins\Properties\PanelSideApparition.cs" />
     <Compile Include="Plugins\Properties\PushButtonAppearanceView.xaml.cs">
       <DependentUpon>PushButtonAppearanceView.xaml</DependentUpon>
     </Compile>
@@ -341,7 +342,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Plugins\Properties\PanelAppearancePropertyEditorView.xaml">
+    <Page Include="Plugins\Properties\PanelAppearanceView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
