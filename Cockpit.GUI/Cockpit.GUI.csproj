@@ -182,6 +182,7 @@
     <Compile Include="Events\PanelLoadingViewEvent.cs" />
     <Compile Include="Events\ProfileEvent.cs" />
     <Compile Include="Events\MonitorViewStartedEvent.cs" />
+    <Compile Include="Events\RemoveAdornerlEvent.cs" />
     <Compile Include="Events\PropertyMonitorEvent.cs" />
     <Compile Include="Events\WindowStateChangedEvent.cs" />
     <Compile Include="Events\ProfileStateChangedEvent.cs" />

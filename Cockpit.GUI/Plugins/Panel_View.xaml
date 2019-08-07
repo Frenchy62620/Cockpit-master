@@ -8,7 +8,8 @@
     xmlns:gg="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
     mc:Ignorable="d" d:DesignHeight="150" d:DesignWidth="70" ToolTip="{Binding ToolTip}"    
     VerticalAlignment = "Top" HorizontalAlignment = "Left" ClipToBounds="True" Background="Transparent"
-    cal:Message.Attach="[Event MouseDown] = [Action MouseLeftButtonDownOnPanelView($source, $mousepoint, $eventArgs)]">
+    cal:Message.Attach="[Event MouseDown] = [Action MouseLeftButtonDownOnPanelView($source, $mousepoint, $eventArgs)];
+                        [Event PreviewKeyDown] = [Action KeyTest($pressedKey, $eventargs)]"  >
     <!--cal:Message.Attach="[Event MouseEnter] = [Action MouseEnter($eventArgs)];
                         [Event MouseDoubleClick] = [Action MouseDoubleClickOnPanel($dataContext, $eventArgs)]"-->
     <UserControl.Resources>
@@ -58,11 +59,11 @@
         <ItemsControl ItemsSource="{Binding MyCockpitViewModels}" >
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <!--<Border BorderThickness="{Binding IsUCSelected, Converter={StaticResource MyConverterMargin}}" BorderBrush="Red" >-->
+                    <!--<Border BorderThickness="4" BorderBrush="Red" Visibility="{Binding }" >-->
                     <AdornerDecorator >
                         <ContentControl cal:View.Model="{Binding}" 
-                            cal:Message.Attach="[Event MouseLeftButtonDown] = [Action MouseLeftButtonDownOnContentControl($source, $eventArgs)];
-                                                                    [Event Loaded] = [Action ContentControlLoaded($source)]">
+                            cal:Message.Attach="[Event MouseLeftButtonDown] = [Action MouseLeftButtonDownOnContentControl($source, $dataContext, $eventArgs)];
+                                                [Event Loaded] = [Action ContentControlLoaded($source, $dataContext)]">
                             <ContentControl.RenderTransform>
                                 <TransformGroup>
                                     <RotateTransform Angle="{Binding Layout.AngleRotation}" />

@@ -6,19 +6,27 @@ namespace Cockpit.GUI.Views.Profile
 {
     public class MyAdorner : Adorner
     {
-        private readonly bool first;
-        public MyAdorner(UIElement targetElement, bool first) : base(targetElement)
+        private readonly int color;
+        public MyAdorner(UIElement targetElement, int color) : base(targetElement)
         {
-            this.first = first;
+            this.color = color;
         }
 
         protected override void OnRender(DrawingContext drawingContext)
         {
             Rect adornedElementRect = new Rect(this.AdornedElement.DesiredSize);
-            if (first)
-                drawingContext.DrawRectangle(null, new Pen(Brushes.Orange, 4), adornedElementRect);
-            else
-                drawingContext.DrawRectangle(null, new Pen(Brushes.Green, 4), adornedElementRect);
+            switch(color)
+            {
+                case 1:
+                    drawingContext.DrawRectangle(null, new Pen(Brushes.Red, 4), adornedElementRect);
+                    break;
+                case 2:
+                    drawingContext.DrawRectangle(null, new Pen(Brushes.Green, 4), adornedElementRect);
+                    break;
+                default:
+                    drawingContext.DrawRectangle(null, new Pen(Brushes.Orange, 4), adornedElementRect);
+                    break;
+            }
         }
     }
 }

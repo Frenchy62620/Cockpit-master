@@ -19,7 +19,7 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.GUI.Plugins
 {
-    public class Panel_ViewModel : PluginModel, IDropTarget
+    public class Panel_ViewModel : PluginModel, IDropTarget, Core.Common.Events.IHandle<RemoveAdornerEvent>
     {
         private readonly IEventAggregator eventAggregator;
         private readonly IResolutionRoot resolutionRoot;
@@ -28,14 +28,18 @@ namespace Cockpit.GUI.Plugins
         public LayoutPropertyViewModel Layout { get; private set; }
 
         public Dictionary<ContentControl, bool> DictContentcontrol = new Dictionary<ContentControl, bool>();
-        public ContentControl FirstSelected { get; set; } = null;
 
+        public bool keepAdorner = false;
+        public string lastNameUC = "";
 
+        MonitorViewModel mv { get; set; }
         public Panel_ViewModel(IEventAggregator eventAggregator, IResolutionRoot resolutionRoot, params object[] settings)
         {
             this.resolutionRoot = resolutionRoot;
             this.eventAggregator = eventAggregator;
+            this.eventAggregator.Subscribe(this);
 
+            mv = (MonitorViewModel)settings[1];
             Layout = new LayoutPropertyViewModel(eventAggregator, settings);
             Appearance = new PanelAppearanceViewModel(eventAggregator, this, settings);
 
@@ -51,16 +55,11 @@ namespace Cockpit.GUI.Plugins
             //ScaleXX = settings.Side % 2 == 0; //ToLeft or ToRight? or ToUp or ToBottom?
 
             NameUC = (string)settings[2];
-            Container = settings[1];
-            if (settings[1] is Panel_ViewModel)
-                Container = (Panel_ViewModel)settings[1];
-            if (settings[1] is MonitorViewModel)
-                Container = settings[1] as MonitorViewModel;
-            this.eventAggregator.Subscribe(this);
-            Container = settings[1] as Panel_ViewModel;
+        }
+        ~Panel_ViewModel()
+        {
 
         }
-
         public BindableCollection<PluginModel> MyCockpitViewModels { get; set; }
         public object Container { get; set; }
 
@@ -129,6 +128,59 @@ namespace Cockpit.GUI.Plugins
         }
 
 
+        public void KeyTest(object sender, KeyEventArgs e)
+        {
+            if (e == null) return;
+            var key = e.Key;
+            e.Handled = true;
+            //ModifierKeys.Alt 1
+            //ModifierKeys.Control 2
+            //ModifierKeys.Shift 4
+            //ModifierKeys.Windows 8
+
+            var step = (Keyboard.Modifiers & ModifierKeys.Control) != 0 ? 200 : 1;
+            switch (key)
+            {
+                case Key.Left:
+                    {
+                        var list = DictContentcontrol.Where(item => item.Value).Select(item => item.Key.DataContext as PluginModel);
+                        foreach (var k in list)
+                        {
+                            k.Left = k.Left - step;
+                        }
+                    }
+                    break;
+                case Key.Right:
+                    {
+                        var list = DictContentcontrol.Where(item => item.Value).Select(item => item.Key.DataContext as PluginModel);
+                        foreach (var k in list)
+                        {
+                            k.Left = k.Left + step;
+                        }
+                    }
+
+                    break;
+                case Key.Up:
+                    {
+                        var list = DictContentcontrol.Where(item => item.Value).Select(item => item.Key.DataContext as PluginModel);
+                        foreach (var k in list)
+                        {
+                            k.Top = k.Top - step;
+                        }
+                    }
+                    break;
+                case Key.Down:
+                    {
+                        var list = DictContentcontrol.Where(item => item.Value).Select(item => item.Key.DataContext as PluginModel);
+                        foreach (var k in list)
+                        {
+                            k.Top = k.Top + step;
+                        }
+                    }
+                    break;
+            }
+        }
+
         #region Mouse Events
         //public void MouseLeftButtonDown(IInputElement elem, MouseButtonEventArgs e)
         //{
@@ -142,67 +194,59 @@ namespace Cockpit.GUI.Plugins
         //{
         //    //ToolTip = $"({UCLeft}, {UCTop})\n({ScaleX:0.##}, {(ScaleX * ImageSize[0]):0.##}, {(ScaleX * ImageSize[1]):0.##})";
         //}
-        public void MouseLeftButtonDownOnContentControl(ContentControl s, MouseEventArgs e)
+        public void MouseLeftButtonDownOnContentControl(ContentControl cc, PluginModel pm, MouseEventArgs e)
         {
-            //e.Handled = true;
 
-            if (s.DataContext.ToString().Contains("Panel_ViewModel"))
-
-                System.Diagnostics.Debug.WriteLine($"nbr click = {e.RightButton} s = {s.DataContext}");
 
             var CtrlDown = (Keyboard.Modifiers & ModifierKeys.Control) != 0;
-
-            if (!IsAlreadySelected(s) || CtrlDown)
-                e.Handled = true;
-
-            if (CtrlDown)
+            if (!CtrlDown || mv.hash_name_general.Count == 0)
             {
-                if (DictContentcontrol[s])
+                mv.RemoveAdorners();
+                mv.AddNewAdorner(cc, pm);
+                e.Handled = true;
+            }
+            else
+            {
+                if (mv.hash_name_general.Contains(pm.NameUC))
                 {
-                    if (FirstSelected != null && s == FirstSelected)
-                    {
-                        RemoveAdorners();
-                        FirstSelected = null;
-                        NbrSelected = 0;
-                    }
-                    else
-                    {
-                        if (NbrSelected > 0)
-                        {
-                            RemoveAdorner(s);
-                            NbrSelected = DictContentcontrol.Where(item => item.Value).Count();
-                        }
-                    }
+                    mv.RemoveAdorner(cc, pm);
+                    mv.UpdateFirstAdorner();
+                    e.Handled = true;
                 }
                 else
                 {
-                    if (NbrSelected == 0)
-                        FirstSelected = s;
-                    AddNewAdorner(s, NbrSelected++ == 0);
-                }
-            }
-            else
-            {
-                if (!DictContentcontrol[s])
-                {
-                    RemoveAdorners();
-                    AddNewAdorner(s, true);
-                    FirstSelected = s;
-                    NbrSelected = 1;
+                    //if (MyCockpitViewModels.Any(t => t.NameUC.Equals(pm.NameUC)))
+                    //{
+                    //    mv.AddNewAdorner(cc, pm, 2);
+                    //    e.Handled = true;
+                    //}
+                    if (MyCockpitViewModels.Any(t => t.NameUC.Equals(mv.hash_name_general.ElementAt(0))))
+                    {
+                        mv.AddNewAdorner(cc, pm, 2);
+                        e.Handled = true;
+                    }
+                    else
+                    {
+                        mv.RemoveAdorners();
+                        mv.AddNewAdorner(cc, pm);
+                        e.Handled = true;
+                    }
                 }
             }
 
 
-            if (NbrSelected == 0)
+            if (mv.hash_name_general.Count() == 0)
                 eventAggregator.Publish(new DisplayPropertiesEvent(new[] { (PluginProperties)Layout, Appearance }));
             else
-                eventAggregator.Publish(new DisplayPropertiesEvent((FirstSelected.DataContext as PluginModel).GetProperties()));
+                eventAggregator.Publish(new DisplayPropertiesEvent(mv.SortedDico[mv.hash_name_general.ElementAt(0)].pm.GetProperties()));
+
         }
 
         public void MouseLeftButtonDownOnPanelView(IInputElement elem, Point pos, MouseEventArgs e)
         {
-            RemoveAdorners();
-            eventAggregator.Publish(new DisplayPropertiesEvent(new[] { (PluginProperties)Layout, Appearance }));
+            //eventAggregator.Publish(new RemoveAdornerEvent());
+            //RemoveAdorners();
+            //eventAggregator.Publish(new DisplayPropertiesEvent(new[] { (PluginProperties)Layout, Appearance }));
         }
         #endregion
 
@@ -264,66 +308,86 @@ namespace Cockpit.GUI.Plugins
         #endregion
 
 
-        public void ContentControlLoaded(ContentControl s)
+        public void ContentControlLoaded(ContentControl cc, PluginModel pm)
         {
-            //var s = sender as ContentControl;
-            s.Focus();
-            RemoveAdorners();
-            AddNewAdorner(s, true);
-            FirstSelected = s;
-            NbrSelected = 1;
+            if (mv.SortedDico.ContainsKey(pm.NameUC))
+                return;
+            mv.SortedDico[pm.NameUC] = new Elements(cc, pm);
 
-            eventAggregator.Publish(new DisplayPropertiesEvent((s.DataContext as PluginModel).GetProperties()));
+            //mv.RemoveAdorners();
+            //mv.AddNewAdorner(cc, pm);
+
+            RemoveAdorners();
+            AddNewAdorner(cc, pm);
+
+            eventAggregator.Publish(new DisplayPropertiesEvent(mv.SortedDico[mv.hash_name_general.ElementAt(0)].pm.GetProperties()));
+            cc.Focus();
+
         }
 
-        private void RemoveAdorner(ContentControl s)
+        public void RemoveAdorner(ContentControl cc, PluginModel pm)
         {
-            var adornerLayer = AdornerLayer.GetAdornerLayer(s);
+            var adornerLayer = AdornerLayer.GetAdornerLayer(cc);
             if (adornerLayer != null)
             {
-                Adorner[] adorners = adornerLayer.GetAdorners(s);
+                Adorner[] adorners = adornerLayer.GetAdorners(cc);
                 if (adorners != null)
                     foreach (var adorner in adorners)
                         if (typeof(MyAdorner).IsAssignableFrom(adorner.GetType()))
                             adornerLayer.Remove(adorner);
             }
-            DictContentcontrol[s] = false;
+            mv.hash_name_general.Remove(pm.NameUC);
         }
 
-        private void RemoveAdorners(ContentControl s = null)
+        public void RemoveAdorners()
         {
-            foreach (var item in DictContentcontrol.Keys.ToList())
+            foreach (var name in mv.hash_name_general)
             {
-                if (!(DictContentcontrol[item]) || (s != null && s == item)) continue;
-
-                DictContentcontrol[item] = false;
-                var adornerLayer = AdornerLayer.GetAdornerLayer(item);
+                var cc = mv.SortedDico[name].cc;
+                var adornerLayer = AdornerLayer.GetAdornerLayer(cc);
                 if (adornerLayer != null)
                 {
-                    Adorner[] adorners = adornerLayer.GetAdorners(item);
+                    Adorner[] adorners = adornerLayer.GetAdorners(cc);
                     if (adorners != null)
                         foreach (var adorner in adorners)
                             if (typeof(MyAdorner).IsAssignableFrom(adorner.GetType()))
                                 adornerLayer.Remove(adorner);
                 }
             }
+            mv.hash_name_general.Clear();
         }
 
-        public void AddNewAdorner(ContentControl s, bool first = false)
+        public void AddNewAdorner(ContentControl cc, PluginModel pm, int color = 0)
         {
-            var adornerLayer = AdornerLayer.GetAdornerLayer(s);
+            var adornerLayer = AdornerLayer.GetAdornerLayer(cc);
             if (adornerLayer != null)
             {
-                MyAdorner myAdorner = new MyAdorner(s, first);
+                MyAdorner myAdorner = new MyAdorner(cc, color);
                 adornerLayer.Add(myAdorner);
-                DictContentcontrol[s] = true;
+                mv.hash_name_general.Add(pm.NameUC);
             }
         }
 
-        private bool IsAlreadySelected(ContentControl s)
+        public void UpdateFirstAdorner()
         {
-            return DictContentcontrol[s];
+            if (mv.hash_name_general.Count == 0) return;
+            var cc = mv.SortedDico[mv.hash_name_general.ElementAt(0)].cc;
+
+            var adornerLayer = AdornerLayer.GetAdornerLayer(cc);
+            if (adornerLayer != null)
+            {
+                Adorner[] adorners = adornerLayer.GetAdorners(cc);
+                if (adorners != null)
+                    foreach (var adorner in adorners)
+                        if (typeof(MyAdorner).IsAssignableFrom(adorner.GetType()))
+                            adornerLayer.Remove(adorner);
+
+                MyAdorner myAdorner = new MyAdorner(cc, 0);
+                adornerLayer.Add(myAdorner);
+            }
         }
+
+
 
         #region DragOver & Drop
         void IDropTarget.DragOver(IDropInfo dropInfo)
@@ -350,9 +414,15 @@ namespace Cockpit.GUI.Plugins
             var num = MyCockpitViewModels.Count;
             var nameUC = tbg.SelectedToolBoxItem.ShortImageName;
 
-            var nbr = MyCockpitViewModels.Select(t => t.NameUC.Equals(nameUC)).Count();
-            if (nbr > 0)
+            //var nbr = MyCockpitViewModels.Select(t => t.NameUC.Equals(nameUC)).Count();
+            //if (nbr > 0)
+            //{
+            //    nameUC = $"{nameUC}_{nbr}";
+            //}
+
+            if (mv.SortedDico.ContainsKey(nameUC))
             {
+                var nbr = mv.SortedDico.Count(t => t.Key.StartsWith(nameUC));
                 nameUC = $"{nameUC}_{nbr}";
             }
 
@@ -404,7 +474,7 @@ namespace Cockpit.GUI.Plugins
                     new Ninject.Parameters.Parameter[]
                     {
                         new ConstructorArgument("settings", new object[]{
-                            true, this,                                                                                         //0  In Mode Editor?
+                            true, mv,                                                                                         //0  In Mode Editor?
                             $"{nameUC}",                                                                                        //2  name of UC
                             new string[]{ FullImage, FullImage1 }, 0,                                                           //3  images, start image position
                             2d, 0.8d, (PushButtonGlyph)0, Colors.White,                                                         //5  Glyph: Thickness, Scale, Type, Color
@@ -431,7 +501,7 @@ namespace Cockpit.GUI.Plugins
                 param = new Ninject.Parameters.Parameter[]
                 {
                         new ConstructorArgument("settings", new object[]{                                                   //Panel Button
-                            true, this,                                                                                         //0 is in Mode Editor?
+                            true, mv,                                                                                         //0 is in Mode Editor?
                             $"{nameUC}",                                                                                        //2 name of UC
                             new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, 0 },//3 [Left, Top, Width, Height, Angle]
 
@@ -468,14 +538,25 @@ namespace Cockpit.GUI.Plugins
             var typeClass = Type.GetType(model);
             //var viewmodel = Activator.CreateInstance(typeClass);
             var viewmodel = resolutionRoot.TryGet(typeClass, param);
-            var view = ViewLocator.LocateForModel(viewmodel, null, null);
-            ViewModelBinder.Bind(viewmodel, view, null);
+            //var view = ViewLocator.LocateForModel(viewmodel, null, null);
+            
+            //ViewModelBinder.Bind(viewmodel, view, null);
             var v = viewmodel as PluginModel;
             //v.ZoomFactorFromPluginModel = ZoomFactorFromMonitorViewModel;
             MyCockpitViewModels.Add((PluginModel)viewmodel);
-
         }
 
         #endregion
+
+        public void Handle(RemoveAdornerEvent message)
+        {
+            //if (keepAdorner)
+            //{
+            //    keepAdorner = false;
+            //    return;
+            //}
+            //else
+            //    RemoveAdorners();
+        }
     }
 }

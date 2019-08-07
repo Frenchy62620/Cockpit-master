@@ -31,10 +31,11 @@
 
     <Grid >
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="6">
-            <Grid cal:Message.Attach="[Event MouseDown] = [Action MouseLeftButtonDownOnMonitorView($source, $mousepoint, $eventArgs)];
+            <Grid cal:Message.Attach="[Event MouseLeftButtonDown] = [Action MouseLeftButtonDownOnMonitorView($source, $mousepoint, $eventArgs)];
                                       [Event PreviewKeyDown] = [Action KeyTest($source, $pressedKey)]"
 >
-
+                <!--cal:Message.Attach="[Event MouseDown] = [Action MouseLeftButtonDownOnMonitorView($source, $mousepoint, $eventArgs)];
+                                      [Event PreviewKeyDown] = [Action KeyTest($source, $pressedKey)]"-->
                 <!--, diag:PresentationTraceSources.TraceLevel=High}[Gesture Ctrl+E,A] = [Action KeyTest($source ,$pressedKey)]"-->
                 <Rectangle x:Name="MainRectangle" Width="{Binding MonitorWidth}" Height="{Binding MonitorHeight}" StrokeThickness="4" Stroke="Black"
                            HorizontalAlignment="Left" VerticalAlignment="Top" >
@@ -74,10 +75,11 @@
                             <!--<Border BorderThickness="{Binding IsUCSelected, Converter={StaticResource MyConverterMargin}}" BorderBrush="Red" >-->
                             <AdornerDecorator >
                                 <ContentControl cal:View.Model="{Binding}" 
-                                                cal:Message.Attach="[Event MouseLeftButtonDown] = [Action MouseLeftButtonDownOnContentControl($source, $eventArgs)];
-                                                                    [Event Loaded] = [Action ContentControlLoaded($source)];
+                                                cal:Message.Attach="[Event MouseLeftButtonDown] = [Action MouseLeftButtonDownOnContentControl($source, $dataContext, $eventArgs)];
+                                                                    [Event Loaded] = [Action ContentControlLoaded($source, $dataContext)];
                                                                     [Event MouseDoubleClick] = [Action MouseDoubleClickOnContentControl($source, $eventArgs)];
-                                                                    [Event MouseWheel] = [Action MouseWheelOnContentControl($source, $eventArgs)]" >
+                                                                    [Event MouseWheel] = [Action MouseWheelOnContentControl($source, $eventArgs)];
+                                                [Event PreviewMouseLeftButtonDown] = [Action PreviewMouseLeftButtonDownOnContentControl($source, $eventArgs)]">
                                     <ContentControl.RenderTransform>
                                         <TransformGroup>
                                             <RotateTransform Angle="{Binding Layout.AngleRotation}" />

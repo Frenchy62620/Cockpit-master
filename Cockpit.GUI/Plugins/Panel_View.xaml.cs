@@ -11,5 +11,9 @@ namespace Cockpit.GUI.Plugins
         {
             InitializeComponent();
         }
+        ~Panel_View()
+        {
+
+        }
     }
 }

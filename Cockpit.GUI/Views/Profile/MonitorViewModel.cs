@@ -21,10 +21,25 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.GUI.Views.Profile
 {
-    public class MonitorViewModel : PanelViewModel, IDropTarget
+    public class Elements
+    {
+        public ContentControl cc;
+        public PluginModel pm;
+
+        public Elements(ContentControl cc, PluginModel pm)
+        {
+            this.cc = cc;
+            this.pm = pm;
+        }
+    }
+
+    public class MonitorViewModel : PanelViewModel, IDropTarget, Core.Common.Events.IHandle<RemoveAdornerEvent>
     {
         public double ZoomFactorFromMonitorViewModel;
         public Dictionary<ContentControl, bool> DictContentcontrol = new Dictionary<ContentControl, bool>();
+
+        public SortedDictionary<string, Elements> SortedDico = new SortedDictionary<string, Elements>();
+        public HashSet<string> hash_name_general = new HashSet<string>();
 
         private readonly IEventAggregator eventAggregator;
         private readonly IResolutionRoot resolutionRoot;
@@ -34,7 +49,7 @@ namespace Cockpit.GUI.Views.Profile
         public MonitorPropertyViewModel LayoutMonitor { get; set; }
         public ContentControl FirstSelected { get; set; } = null;
 
-
+        public bool keepAdorner = false;
 
         public MonitorViewModel(IEventAggregator eventAggregator, IResolutionRoot resolutionRoot, FileSystem fileSystem, DisplayManager displayManager)
         {
@@ -99,9 +114,21 @@ namespace Cockpit.GUI.Views.Profile
             var num = MyCockpitViewModels.Count;
             var nameUC = tbg.SelectedToolBoxItem.ShortImageName;
 
-            var nbr = MyCockpitViewModels.Select(t => t.NameUC.Equals(nameUC)).Count();
-            if (nbr > 0)
+            //var nbr = MyCockpitViewModels.Select(t => t.NameUC.Equals(nameUC)).Count();
+            //if (nbr > 0)
+            //{
+            //    nameUC = $"{nameUC}_{nbr}";
+            //}
+
+            //if (!hash.Add(nameUC))
+            //{
+            //    var nbr = hash.Select(t => t.StartsWith(nameUC)).Count();
+            //    nameUC = $"{nameUC}_{nbr}";
+            //}
+
+            if (SortedDico.ContainsKey(nameUC))
             {
+                var nbr = SortedDico.Count(t => t.Key.StartsWith(nameUC));
                 nameUC = $"{nameUC}_{nbr}";
             }
 
@@ -136,6 +163,8 @@ namespace Cockpit.GUI.Views.Profile
                 properties = new string[] { "Cockpit.GUI.Plugins.Properties.LayoutPropertyViewModel",
                                             "Cockpit.GUI.Plugins.Properties.PushButtonAppearanceViewModel",
                                             "Cockpit.GUI.Plugins.Properties.PushButtonBehaviorViewModel"};
+
+
 
 
                 paramproperties = new Ninject.Parameters.Parameter[][]
@@ -217,14 +246,16 @@ namespace Cockpit.GUI.Views.Profile
             var typeClass = Type.GetType(model);
             //var viewmodel = Activator.CreateInstance(typeClass);
             var viewmodel = resolutionRoot.TryGet(typeClass, param);
-            var view = ViewLocator.LocateForModel(viewmodel, null, null);
-            ViewModelBinder.Bind(viewmodel, view, null);
+
+            //var view = ViewLocator.LocateForModel(viewmodel, null, null);
+            // ViewModelBinder.Bind(viewmodel, view, null);
             var v = viewmodel as PluginModel;
             v.ZoomFactorFromPluginModel = ZoomFactorFromMonitorViewModel;
-            //v.AngleRot = model.Contains("Switch") ? AngleSwitch : 0;
-            //RemoveAdorners();
+
             MyCockpitViewModels.Add((PluginModel)viewmodel);
-            //eventAggregator.Publish(new DragSelectedItemEvent(tbg.SelectedToolBoxItem));
+
+
+
 
         }
 
@@ -314,6 +345,62 @@ namespace Cockpit.GUI.Views.Profile
             }
         }
 
+        public void KeyTest(object sender, KeyEventArgs e)
+        {
+            if (e == null) return;
+            var key = e.Key;
+
+            //ModifierKeys.Alt 1
+            //ModifierKeys.Control 2
+            //ModifierKeys.Shift 4
+            //ModifierKeys.Windows 8
+
+            var step = (Keyboard.Modifiers & ModifierKeys.Control) != 0 ? 200 : 1;
+            switch (key)
+            {
+                case Key.Left:
+                    {
+                        var list = DictContentcontrol.Where(item => item.Value).Select(item => item.Key.DataContext as PluginModel);
+                        foreach (var k in list)
+                        {
+                            k.Left = k.Left - step;
+                            e.Handled = true;
+                        }
+                    }
+                    break;
+                case Key.Right:
+                    {
+                        var list = DictContentcontrol.Where(item => item.Value).Select(item => item.Key.DataContext as PluginModel);
+                        foreach (var k in list)
+                        {
+                            k.Left = k.Left + step;
+                            e.Handled = true;
+                        }
+                    }
+
+                    break;
+                case Key.Up:
+                    {
+                        var list = DictContentcontrol.Where(item => item.Value).Select(item => item.Key.DataContext as PluginModel);
+                        foreach (var k in list)
+                        {
+                            k.Top = k.Top - step;
+                            e.Handled = true;
+                        }
+                    }
+                    break;
+                case Key.Down:
+                    {
+                        var list = DictContentcontrol.Where(item => item.Value).Select(item => item.Key.DataContext as PluginModel);
+                        foreach (var k in list)
+                        {
+                            k.Top = k.Top + step;
+                            e.Handled = true;
+                        }
+                    }
+                    break;
+            }
+        }
 
         public void MouseWheelOnContentControl(object sender, MouseWheelEventArgs e)
         {
@@ -352,117 +439,132 @@ namespace Cockpit.GUI.Views.Profile
             }
         }
 
-        public void MouseLeftButtonDownOnContentControl(object sender, MouseEventArgs e)
+        public void PreviewMouseLeftButtonDownOnContentControl(ContentControl cc, MouseEventArgs e)
         {
+        }
 
-            var s = sender as ContentControl;
-            if (s.DataContext.ToString().Contains("Panel_ViewModel"))
-
-                System.Diagnostics.Debug.WriteLine($"nbr click = {e.RightButton} s = {s.DataContext}");
+        public void MouseLeftButtonDownOnContentControl(ContentControl cc, PluginModel pm, MouseEventArgs e)
+        {
+            e.Handled = true;
 
             var CtrlDown = (Keyboard.Modifiers & ModifierKeys.Control) != 0;
-
-            if (!IsAlreadySelected(s) || CtrlDown)
-                e.Handled = true;
-
-            if (CtrlDown)
+            if (!CtrlDown || hash_name_general.Count == 0)
             {
-                if (DictContentcontrol[s])
+                RemoveAdorners();
+                AddNewAdorner(cc, pm);
+            }
+            else
+            {
+                if (hash_name_general.Contains(pm.NameUC))
                 {
-                    if (FirstSelected != null && s == FirstSelected)
-                    {
-                        RemoveAdorners();
-                        FirstSelected = null;
-                        NbrSelected = 0;
-                    }
-                    else
-                    {
-                        if (NbrSelected > 0)
-                        {
-                            RemoveAdorner(s);
-                            NbrSelected = DictContentcontrol.Where(item => item.Value).Count();
-                        }
-                    }
+                    RemoveAdorner(cc, pm);
+                    UpdateFirstAdorner();
                 }
                 else
                 {
-                    if (NbrSelected == 0)
-                        FirstSelected = s;
-                    AddNewAdorner(s, NbrSelected++ == 0);
-                }
-            }
-            else
-            {
-                if (!DictContentcontrol[s])
-                {
-                    RemoveAdorners();
-                    AddNewAdorner(s, true);
-                    FirstSelected = s;
-                    NbrSelected = 1;
+                    if (MyCockpitViewModels.Any(t => t.NameUC.Equals(hash_name_general.ElementAt(0))))
+                    {
+                        AddNewAdorner(cc, pm, 2);
+                        e.Handled = true;
+                    }
+                    else
+                    {
+                        RemoveAdorners();
+                        AddNewAdorner(cc, pm);
+                        e.Handled = true;
+                    }
+                        
                 }
             }
 
 
-            if (NbrSelected == 0)
+            if (hash_name_general.Count() == 0)
                 eventAggregator.Publish(new DisplayPropertiesEvent(new[] { LayoutMonitor }));
             else
-                eventAggregator.Publish(new DisplayPropertiesEvent((FirstSelected.DataContext as PluginModel).GetProperties()));
+                eventAggregator.Publish(new DisplayPropertiesEvent(SortedDico[hash_name_general.ElementAt(0)].pm.GetProperties()));
         }
 
 
-        public void ContentControlLoaded(object sender)
+        public void ContentControlLoaded(ContentControl cc, PluginModel pm)
         {
-            var s = sender as ContentControl;
-            s.Focus();
+            if (SortedDico.ContainsKey(pm.NameUC))
+                return;
+            SortedDico[pm.NameUC] = new Elements(cc, pm);
             RemoveAdorners();
-            AddNewAdorner(s, true);
-            FirstSelected = s;
-            NbrSelected = 1;
+            AddNewAdorner(cc, pm);
+            eventAggregator.Publish(new DisplayPropertiesEvent(SortedDico[hash_name_general.ElementAt(0)].pm.GetProperties()));
+            cc.Focus();
+            return;
+            //cc.Focus();
+            //RemoveAdorners();
+            //AddNewAdorner(cc, 0);
+            //FirstSelected = cc;
+            //NbrSelected = 1;
 
-            eventAggregator.Publish(new DisplayPropertiesEvent((s.DataContext as PluginModel).GetProperties()));
+            keepAdorner = true;
+            eventAggregator.Publish(new RemoveAdornerEvent());
+            eventAggregator.Publish(new DisplayPropertiesEvent((cc.DataContext as PluginModel).GetProperties()));
         }
 
-        private void RemoveAdorner(ContentControl s)
+        public void RemoveAdorner(ContentControl cc, PluginModel pm)
         {
-            var adornerLayer = AdornerLayer.GetAdornerLayer(s);
+            var adornerLayer = AdornerLayer.GetAdornerLayer(cc);
             if (adornerLayer != null)
             {
-                Adorner[] adorners = adornerLayer.GetAdorners(s);
+                Adorner[] adorners = adornerLayer.GetAdorners(cc);
                 if (adorners != null)
                     foreach (var adorner in adorners)
                         if (typeof(MyAdorner).IsAssignableFrom(adorner.GetType()))
                             adornerLayer.Remove(adorner);
             }
-            DictContentcontrol[s] = false;
+            hash_name_general.Remove(pm.NameUC);
         }
 
-        private void RemoveAdorners(ContentControl s = null)
+        public void RemoveAdorners()
         {
-            foreach (var item in DictContentcontrol.Keys.ToList())
+            foreach(var name in hash_name_general)
             {
-                if (!(DictContentcontrol[item]) || (s != null && s == item)) continue;
-
-                DictContentcontrol[item] = false;
-                var adornerLayer = AdornerLayer.GetAdornerLayer(item);
+                var cc = SortedDico[name].cc;
+                var adornerLayer = AdornerLayer.GetAdornerLayer(cc);
                 if (adornerLayer != null)
                 {
-                    Adorner[] adorners = adornerLayer.GetAdorners(item);
+                    Adorner[] adorners = adornerLayer.GetAdorners(cc);
                     if (adorners != null)
                         foreach (var adorner in adorners)
                             if (typeof(MyAdorner).IsAssignableFrom(adorner.GetType()))
                                 adornerLayer.Remove(adorner);
                 }
             }
+            hash_name_general.Clear();
         }
 
-        public void AddNewAdorner(ContentControl s, bool first = false)
+        public void AddNewAdorner(ContentControl cc, PluginModel pm, int color = 0)
         {
-            var adornerLayer = AdornerLayer.GetAdornerLayer(s);
+            var adornerLayer = AdornerLayer.GetAdornerLayer(cc);
             if (adornerLayer != null)
             {
-                MyAdorner myAdorner = new MyAdorner(s, first);
+                MyAdorner myAdorner = new MyAdorner(cc, color);
                 adornerLayer.Add(myAdorner);
-                DictContentcontrol[s] = true;
+                hash_name_general.Add(pm.NameUC);
+            }
+        }
+
+        public void UpdateFirstAdorner()
+        {
+            if (hash_name_general.Count == 0) return;
+            var cc = SortedDico[hash_name_general.ElementAt(0)].cc;
+
+            var adornerLayer = AdornerLayer.GetAdornerLayer(cc);
+            if (adornerLayer != null)
+            {
+                Adorner[] adorners = adornerLayer.GetAdorners(cc);
+                if (adorners != null)
+                    foreach (var adorner in adorners)
+                        if (typeof(MyAdorner).IsAssignableFrom(adorner.GetType()))
+                            adornerLayer.Remove(adorner);
+
+                MyAdorner myAdorner = new MyAdorner(cc, 0);
+                adornerLayer.Add(myAdorner);
             }
         }
 
@@ -471,5 +573,15 @@ namespace Cockpit.GUI.Views.Profile
             return DictContentcontrol[s];
         }
 
+        public void Handle(RemoveAdornerEvent message)
+        {
+            if (keepAdorner)
+            {
+                keepAdorner = false;
+                return;
+            }
+            else
+                RemoveAdorners();
+        }
     }
 }
