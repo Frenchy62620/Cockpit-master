@@ -49,6 +49,7 @@ namespace Cockpit.GUI.Views.Profile
         public MonitorPropertyViewModel LayoutMonitor { get; set; }
         public ContentControl FirstSelected { get; set; } = null;
 
+        public List<Key> MoveKeys = new List<Key> { Key.Left, Key.Right , Key.Down, Key.Up};
         public bool keepAdorner = false;
 
         public MonitorViewModel(IEventAggregator eventAggregator, IResolutionRoot resolutionRoot, FileSystem fileSystem, DisplayManager displayManager)
@@ -349,53 +350,52 @@ namespace Cockpit.GUI.Views.Profile
         {
             if (e == null) return;
             var key = e.Key;
-
+            e.Handled = true;
             //ModifierKeys.Alt 1
             //ModifierKeys.Control 2
             //ModifierKeys.Shift 4
             //ModifierKeys.Windows 8
 
             var step = (Keyboard.Modifiers & ModifierKeys.Control) != 0 ? 200 : 1;
+            if (MoveKeys.Contains(key))
+                MoveContenControlByKeys(e.Key, step);
+        }
+
+        public void MoveContenControlByKeys(Key key, int step)
+        {
+            var list = SortedDico.Where(item => hash_name_general.Contains(item.Key)).Select(item => item.Value.pm);
             switch (key)
             {
                 case Key.Left:
                     {
-                        var list = DictContentcontrol.Where(item => item.Value).Select(item => item.Key.DataContext as PluginModel);
                         foreach (var k in list)
                         {
                             k.Left = k.Left - step;
-                            e.Handled = true;
                         }
                     }
                     break;
                 case Key.Right:
                     {
-                        var list = DictContentcontrol.Where(item => item.Value).Select(item => item.Key.DataContext as PluginModel);
                         foreach (var k in list)
                         {
                             k.Left = k.Left + step;
-                            e.Handled = true;
                         }
                     }
 
                     break;
                 case Key.Up:
                     {
-                        var list = DictContentcontrol.Where(item => item.Value).Select(item => item.Key.DataContext as PluginModel);
                         foreach (var k in list)
                         {
                             k.Top = k.Top - step;
-                            e.Handled = true;
                         }
                     }
                     break;
                 case Key.Down:
                     {
-                        var list = DictContentcontrol.Where(item => item.Value).Select(item => item.Key.DataContext as PluginModel);
                         foreach (var k in list)
                         {
                             k.Top = k.Top + step;
-                            e.Handled = true;
                         }
                     }
                     break;

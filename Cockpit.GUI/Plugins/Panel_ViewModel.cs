@@ -130,55 +130,8 @@ namespace Cockpit.GUI.Plugins
 
         public void KeyTest(object sender, KeyEventArgs e)
         {
-            if (e == null) return;
-            var key = e.Key;
-            e.Handled = true;
-            //ModifierKeys.Alt 1
-            //ModifierKeys.Control 2
-            //ModifierKeys.Shift 4
-            //ModifierKeys.Windows 8
-
-            var step = (Keyboard.Modifiers & ModifierKeys.Control) != 0 ? 200 : 1;
-            switch (key)
-            {
-                case Key.Left:
-                    {
-                        var list = DictContentcontrol.Where(item => item.Value).Select(item => item.Key.DataContext as PluginModel);
-                        foreach (var k in list)
-                        {
-                            k.Left = k.Left - step;
-                        }
-                    }
-                    break;
-                case Key.Right:
-                    {
-                        var list = DictContentcontrol.Where(item => item.Value).Select(item => item.Key.DataContext as PluginModel);
-                        foreach (var k in list)
-                        {
-                            k.Left = k.Left + step;
-                        }
-                    }
-
-                    break;
-                case Key.Up:
-                    {
-                        var list = DictContentcontrol.Where(item => item.Value).Select(item => item.Key.DataContext as PluginModel);
-                        foreach (var k in list)
-                        {
-                            k.Top = k.Top - step;
-                        }
-                    }
-                    break;
-                case Key.Down:
-                    {
-                        var list = DictContentcontrol.Where(item => item.Value).Select(item => item.Key.DataContext as PluginModel);
-                        foreach (var k in list)
-                        {
-                            k.Top = k.Top + step;
-                        }
-                    }
-                    break;
-            }
+            mv.KeyTest(sender, e);
+            return;
         }
 
         #region Mouse Events
