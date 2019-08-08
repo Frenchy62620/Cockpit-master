@@ -196,14 +196,13 @@ namespace Cockpit.GUI.Plugins
         //}
         public void MouseLeftButtonDownOnContentControl(ContentControl cc, PluginModel pm, MouseEventArgs e)
         {
-
+            e.Handled = true;
 
             var CtrlDown = (Keyboard.Modifiers & ModifierKeys.Control) != 0;
-            if (!CtrlDown || mv.hash_name_general.Count == 0)
+            if (!CtrlDown || mv.hash_name_general.Count == 0 || !MyCockpitViewModels.Any(t => t.NameUC.Equals(mv.hash_name_general.ElementAt(0))))
             {
                 mv.RemoveAdorners();
                 mv.AddNewAdorner(cc, pm);
-                e.Handled = true;
             }
             else
             {
@@ -211,32 +210,42 @@ namespace Cockpit.GUI.Plugins
                 {
                     mv.RemoveAdorner(cc, pm);
                     mv.UpdateFirstAdorner();
-                    e.Handled = true;
                 }
                 else
                 {
-                    //if (MyCockpitViewModels.Any(t => t.NameUC.Equals(pm.NameUC)))
-                    //{
-                    //    mv.AddNewAdorner(cc, pm, 2);
-                    //    e.Handled = true;
-                    //}
-                    if (MyCockpitViewModels.Any(t => t.NameUC.Equals(mv.hash_name_general.ElementAt(0))))
-                    {
-                        mv.AddNewAdorner(cc, pm, 2);
-                        e.Handled = true;
-                    }
-                    else
-                    {
-                        mv.RemoveAdorners();
-                        mv.AddNewAdorner(cc, pm);
-                        e.Handled = true;
-                    }
+                    mv.AddNewAdorner(cc, pm, 2);
                 }
             }
 
+            //if (!CtrlDown || mv.hash_name_general.Count == 0)
+            //{
+            //    mv.RemoveAdorners();
+            //    mv.AddNewAdorner(cc, pm);
+            //}
+            //else
+            //{
+            //    if (mv.hash_name_general.Contains(pm.NameUC))
+            //    {
+            //        mv.RemoveAdorner(cc, pm);
+            //        mv.UpdateFirstAdorner();
+            //    }
+            //    else
+            //    {
+            //        if (MyCockpitViewModels.Any(t => t.NameUC.Equals(mv.hash_name_general.ElementAt(0))))
+            //        {
+            //            mv.AddNewAdorner(cc, pm, 2);
+            //        }
+            //        else
+            //        {
+            //            mv.RemoveAdorners();
+            //            mv.AddNewAdorner(cc, pm);
+            //        }
+            //    }
+            //}
+
 
             if (mv.hash_name_general.Count() == 0)
-                eventAggregator.Publish(new DisplayPropertiesEvent(new[] { (PluginProperties)Layout, Appearance }));
+                eventAggregator.Publish(new DisplayPropertiesEvent(new[] { (PluginProperties)mv.LayoutMonitor }));
             else
                 eventAggregator.Publish(new DisplayPropertiesEvent(mv.SortedDico[mv.hash_name_general.ElementAt(0)].pm.GetProperties()));
 
@@ -312,13 +321,11 @@ namespace Cockpit.GUI.Plugins
         {
             if (mv.SortedDico.ContainsKey(pm.NameUC))
                 return;
+
             mv.SortedDico[pm.NameUC] = new Elements(cc, pm);
 
-            //mv.RemoveAdorners();
-            //mv.AddNewAdorner(cc, pm);
-
-            RemoveAdorners();
-            AddNewAdorner(cc, pm);
+            mv.RemoveAdorners();
+            mv.AddNewAdorner(cc, pm);
 
             eventAggregator.Publish(new DisplayPropertiesEvent(mv.SortedDico[mv.hash_name_general.ElementAt(0)].pm.GetProperties()));
             cc.Focus();

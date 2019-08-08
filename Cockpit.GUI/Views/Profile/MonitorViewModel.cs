@@ -448,7 +448,33 @@ namespace Cockpit.GUI.Views.Profile
             e.Handled = true;
 
             var CtrlDown = (Keyboard.Modifiers & ModifierKeys.Control) != 0;
-            if (!CtrlDown || hash_name_general.Count == 0)
+            //if (!CtrlDown || hash_name_general.Count == 0)
+            //{
+            //    RemoveAdorners();
+            //    AddNewAdorner(cc, pm);
+            //}
+            //else
+            //{
+            //    if (hash_name_general.Contains(pm.NameUC))
+            //    {
+            //        RemoveAdorner(cc, pm);
+            //        UpdateFirstAdorner();
+            //    }
+            //    else
+            //    {
+            //        if (MyCockpitViewModels.Any(t => t.NameUC.Equals(hash_name_general.ElementAt(0))))
+            //        {
+            //            AddNewAdorner(cc, pm, 2);
+            //        }
+            //        else
+            //        {
+            //            RemoveAdorners();
+            //            AddNewAdorner(cc, pm);
+            //        }                      
+            //    }
+            //}
+
+            if (!CtrlDown || hash_name_general.Count == 0 || !MyCockpitViewModels.Any(t => t.NameUC.Equals(hash_name_general.ElementAt(0))))
             {
                 RemoveAdorners();
                 AddNewAdorner(cc, pm);
@@ -462,21 +488,9 @@ namespace Cockpit.GUI.Views.Profile
                 }
                 else
                 {
-                    if (MyCockpitViewModels.Any(t => t.NameUC.Equals(hash_name_general.ElementAt(0))))
-                    {
-                        AddNewAdorner(cc, pm, 2);
-                        e.Handled = true;
-                    }
-                    else
-                    {
-                        RemoveAdorners();
-                        AddNewAdorner(cc, pm);
-                        e.Handled = true;
-                    }
-                        
+                    AddNewAdorner(cc, pm, 2);
                 }
             }
-
 
             if (hash_name_general.Count() == 0)
                 eventAggregator.Publish(new DisplayPropertiesEvent(new[] { LayoutMonitor }));

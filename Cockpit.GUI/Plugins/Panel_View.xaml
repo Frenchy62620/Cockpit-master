@@ -59,9 +59,9 @@
         <ItemsControl ItemsSource="{Binding MyCockpitViewModels}" >
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <!--<Border BorderThickness="4" BorderBrush="Red" Visibility="{Binding }" >-->
+                    <!--<Border BorderThickness="4" BorderBrush="Red" Visibility="Visible" Margin="0,0,0,0">-->
                     <AdornerDecorator >
-                        <ContentControl cal:View.Model="{Binding}" 
+                        <ContentControl cal:View.Model="{Binding}" UseLayoutRounding="True"
                             cal:Message.Attach="[Event MouseLeftButtonDown] = [Action MouseLeftButtonDownOnContentControl($source, $dataContext, $eventArgs)];
                                                 [Event Loaded] = [Action ContentControlLoaded($source, $dataContext)]">
                             <ContentControl.RenderTransform>
