@@ -6,7 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:cal="http://www.caliburnproject.org"
     xmlns:gg="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
-    mc:Ignorable="d" d:DesignHeight="150" d:DesignWidth="70" ToolTip="{Binding ToolTip}"    
+    mc:Ignorable="d" d:DesignHeight="150" d:DesignWidth="70" ToolTip="{Binding ToolTip}"    Style="{StaticResource PanelAnimation}"
     VerticalAlignment = "Top" HorizontalAlignment = "Left" ClipToBounds="True" Background="Transparent"
     cal:Message.Attach="[Event MouseDown] = [Action MouseLeftButtonDownOnPanelView($source, $mousepoint, $eventArgs)]"  >
     <!--cal:Message.Attach="[Event MouseEnter] = [Action MouseEnter($eventArgs)];

@@ -464,6 +464,7 @@ namespace Cockpit.GUI.Views.Profile
         {
             RemoveAdorners();
             eventAggregator.Publish(new DisplayPropertiesEvent(new[] { LayoutMonitor }));
+            eventAggregator.Publish(new VisibilityPanelEvent("A10-CDU-Panel"));
         }
 
         public void MouseDoubleClickOnContentControl(ContentControl s, MouseEventArgs e)

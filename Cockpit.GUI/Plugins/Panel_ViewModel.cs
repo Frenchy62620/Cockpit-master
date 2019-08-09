@@ -19,7 +19,8 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.GUI.Plugins
 {
-    public class Panel_ViewModel : PluginModel, IDropTarget, Core.Common.Events.IHandle<RemovePanelEvent>
+    public class Panel_ViewModel : PluginModel, IDropTarget, Core.Common.Events.IHandle<RemovePanelEvent>,
+                                                             Core.Common.Events.IHandle<VisibilityPanelEvent>
     {
         private readonly IEventAggregator eventAggregator;
         private readonly IResolutionRoot resolutionRoot;
@@ -44,7 +45,9 @@ namespace Cockpit.GUI.Plugins
             Appearance = new PanelAppearanceViewModel(eventAggregator, this, settings);
 
             MyCockpitViewModels = new BindableCollection<PluginModel>();
-
+            RenderO = "1.0, 1.0";
+            ScaleXX = true;
+            //Apparition Side
             //RenderO = "1.0,0.0";//To Left
             //RenderO = "0.0,1.0";//To Top
             //RenderO = "0.0,0.0";//To Right
@@ -53,6 +56,8 @@ namespace Cockpit.GUI.Plugins
 
             //RenderO = settings.Side < 2 ? "1.0, 1.0" : "0.0, 0.0";//ToLeft/ToTop or ToRight/ToBottom
             //ScaleXX = settings.Side % 2 == 0; //ToLeft or ToRight? or ToUp or ToBottom?
+            IsVisible = true;
+            Initialized = true;
 
             NameUC = (string)settings[2];
         }
@@ -61,32 +66,40 @@ namespace Cockpit.GUI.Plugins
 
         }
         public BindableCollection<PluginModel> MyCockpitViewModels { get; set; }
-        public object Container { get; set; }
 
-        private int nbrSelected;
-        public int NbrSelected
+        private bool _initialized;
+        public bool Initialized
         {
-            get => nbrSelected;
+            get { return _initialized; }
             set
             {
-                if (NbrSelected != value)
-                {
-                    nbrSelected = value;
-                    //EnableIcons = value > 1;
-                }
+                _initialized = value;
+                NotifyOfPropertyChange(() => Initialized);
             }
         }
 
-        private bool _scaleXX;
-        public bool ScaleXX
+        private bool isvisible;
+        public bool IsVisible
         {
-            get { return _scaleXX; }
+            get => isvisible;
             set
             {
-                _scaleXX = value;
-                NotifyOfPropertyChange(() => ScaleXX);
+                    isvisible = value;
+                NotifyOfPropertyChange(() => IsVisible);
             }
         }
+
+        public bool ScaleXX { get; set; }
+        //private bool _scaleXX;
+        //public bool ScaleXX
+        //{
+        //    get { return _scaleXX; }
+        //    set
+        //    {
+        //        _scaleXX = value;
+        //        NotifyOfPropertyChange(() => ScaleXX);
+        //    }
+        //}
 
 
         private string _renderO;
@@ -497,6 +510,12 @@ namespace Cockpit.GUI.Plugins
         }
 
         #endregion
+        public void Handle(VisibilityPanelEvent message)
+        {
+            if (!NameUC.Equals(message.PanelName)) return;
+
+            IsVisible = !IsVisible;
+        }
 
         public void Handle(RemovePanelEvent message)
         {

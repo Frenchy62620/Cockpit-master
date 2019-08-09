@@ -184,6 +184,7 @@
     <Compile Include="Events\MonitorViewStartedEvent.cs" />
     <Compile Include="Events\RemovePanelEvent.cs" />
     <Compile Include="Events\PropertyMonitorEvent.cs" />
+    <Compile Include="Events\VisibilityPanelEvent.cs" />
     <Compile Include="Events\WindowStateChangedEvent.cs" />
     <Compile Include="Events\ProfileStateChangedEvent.cs" />
     <Compile Include="Events\ProfileUpdatedEvent.cs" />

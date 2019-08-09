@@ -35,8 +35,8 @@
                         <Style.Triggers>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding Path=Initialized}" Value="True"/>
-                                    <Condition Binding="{Binding Path=WindowVisible}" Value="False"/>
+                                    <!--<Condition Binding="{Binding Path=Initialized}" Value="True"/>-->
+                                    <Condition Binding="{Binding Path=IsVisible}" Value="False"/>
                                     <Condition Binding="{Binding Path=ScaleXX}" Value="True"/>
                                 </MultiDataTrigger.Conditions>
                                 <Setter Property="RenderTransformOrigin" Value="{Binding Path=RenderO, Converter={StaticResource MyConverterRender}}"/>
@@ -58,8 +58,8 @@
 
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding Path=Initialized}" Value="True"/>
-                                    <Condition Binding="{Binding Path=WindowVisible}" Value="True"/>
+                                    <!--<Condition Binding="{Binding Path=Initialized}" Value="True"/>-->
+                                    <Condition Binding="{Binding Path=IsVisible}" Value="True"/>
                                     <Condition Binding="{Binding Path=ScaleXX}" Value="True"/>
                                 </MultiDataTrigger.Conditions>
                                 <Setter Property="RenderTransformOrigin" Value="{Binding Path=RenderO, Converter={StaticResource MyConverterRender}}"/>
@@ -79,8 +79,8 @@
 
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding Path=Initialized}" Value="True"/>
-                                    <Condition Binding="{Binding Path=WindowVisible}" Value="False"/>
+                                    <!--<Condition Binding="{Binding Path=Initialized}" Value="True"/>-->
+                                    <Condition Binding="{Binding Path=IsVisible}" Value="False"/>
                                     <Condition Binding="{Binding Path=ScaleXX}" Value="False"/>
                                 </MultiDataTrigger.Conditions>
                                 <Setter Property="RenderTransformOrigin" Value="{Binding Path=RenderO, Converter={StaticResource MyConverterRender}}"/>
@@ -100,8 +100,8 @@
 
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding Path=Initialized}" Value="True"/>
-                                    <Condition Binding="{Binding Path=WindowVisible}" Value="True"/>
+                                    <!--<Condition Binding="{Binding Path=Initialized}" Value="True"/>-->
+                                    <Condition Binding="{Binding Path=IsVisible}" Value="True"/>
                                     <Condition Binding="{Binding Path=ScaleXX}" Value="False"/>
                                 </MultiDataTrigger.Conditions>
                                 <Setter Property="RenderTransformOrigin" Value="{Binding Path=RenderO, Converter={StaticResource MyConverterRender}}"/>
