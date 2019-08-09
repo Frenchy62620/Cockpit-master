@@ -33,7 +33,7 @@ namespace Cockpit.GUI.Views.Profile
         }
     }
 
-    public class MonitorViewModel : PanelViewModel, IDropTarget, Core.Common.Events.IHandle<RemoveAdornerEvent>
+    public class MonitorViewModel : PanelViewModel, IDropTarget, Core.Common.Events.IHandle<RemovePanelEvent>
     {
         public double ZoomFactorFromMonitorViewModel;
         public Dictionary<ContentControl, bool> DictContentcontrol = new Dictionary<ContentControl, bool>();
@@ -56,7 +56,7 @@ namespace Cockpit.GUI.Views.Profile
         {
             this.resolutionRoot = resolutionRoot;
             this.eventAggregator = eventAggregator;
-            this.eventAggregator.Subscribe(this);
+            //this.eventAggregator.Subscribe(this);
 
             Title = "Monitor1";
             IconName = "console-16.png";
@@ -348,7 +348,7 @@ namespace Cockpit.GUI.Views.Profile
 
         public void KeyTest(object sender, KeyEventArgs e)
         {
-            if (e == null) return;
+            if (e == null || hash_name_general.Count() == 0) return;
             var key = e.Key;
             e.Handled = true;
             //ModifierKeys.Alt 1
@@ -356,9 +356,45 @@ namespace Cockpit.GUI.Views.Profile
             //ModifierKeys.Shift 4
             //ModifierKeys.Windows 8
 
-            var step = (Keyboard.Modifiers & ModifierKeys.Control) != 0 ? 200 : 1;
+
             if (MoveKeys.Contains(key))
+            {
+                var step = (Keyboard.Modifiers & ModifierKeys.Control) != 0 ? 200 : 1;
                 MoveContenControlByKeys(e.Key, step);
+                return;
+            }
+            if (key == Key.Delete)
+            {
+                foreach(var name in hash_name_general.ToList())
+                {
+                    RemoveAdorner(SortedDico[name].cc, SortedDico[name].pm);
+
+                    if (SortedDico[name].pm.ToString().Equals("Cockpit.GUI.Plugins.Panel_ViewModel"))
+                    {
+                        eventAggregator.Publish(new RemovePanelEvent(NameUC: name, IsPanel: true));
+                        if (MyCockpitViewModels.Any(t => t.NameUC.Equals(name)))
+                        {
+                            MyCockpitViewModels.Remove(SortedDico[name].pm);
+                            SortedDico.Remove(name);
+                        }
+                    }
+                    else
+                    {
+                        if (MyCockpitViewModels.Any(t => t.NameUC.Equals(name)))
+                        {
+                            MyCockpitViewModels.Remove(SortedDico[name].pm);
+                            SortedDico.Remove(name);
+                        }
+                        else
+                        {
+                            eventAggregator.Publish(new RemovePanelEvent(NameUC: name));
+                        }
+                    }
+                }
+
+                hash_name_general.Clear();
+                eventAggregator.Publish(new DisplayPropertiesEvent(new[] { LayoutMonitor }));
+            }
         }
 
         public void MoveContenControlByKeys(Key key, int step)
@@ -448,31 +484,6 @@ namespace Cockpit.GUI.Views.Profile
             e.Handled = true;
 
             var CtrlDown = (Keyboard.Modifiers & ModifierKeys.Control) != 0;
-            //if (!CtrlDown || hash_name_general.Count == 0)
-            //{
-            //    RemoveAdorners();
-            //    AddNewAdorner(cc, pm);
-            //}
-            //else
-            //{
-            //    if (hash_name_general.Contains(pm.NameUC))
-            //    {
-            //        RemoveAdorner(cc, pm);
-            //        UpdateFirstAdorner();
-            //    }
-            //    else
-            //    {
-            //        if (MyCockpitViewModels.Any(t => t.NameUC.Equals(hash_name_general.ElementAt(0))))
-            //        {
-            //            AddNewAdorner(cc, pm, 2);
-            //        }
-            //        else
-            //        {
-            //            RemoveAdorners();
-            //            AddNewAdorner(cc, pm);
-            //        }                      
-            //    }
-            //}
 
             if (!CtrlDown || hash_name_general.Count == 0 || !MyCockpitViewModels.Any(t => t.NameUC.Equals(hash_name_general.ElementAt(0))))
             {
@@ -508,16 +519,6 @@ namespace Cockpit.GUI.Views.Profile
             AddNewAdorner(cc, pm);
             eventAggregator.Publish(new DisplayPropertiesEvent(SortedDico[hash_name_general.ElementAt(0)].pm.GetProperties()));
             cc.Focus();
-            return;
-            //cc.Focus();
-            //RemoveAdorners();
-            //AddNewAdorner(cc, 0);
-            //FirstSelected = cc;
-            //NbrSelected = 1;
-
-            keepAdorner = true;
-            eventAggregator.Publish(new RemoveAdornerEvent());
-            eventAggregator.Publish(new DisplayPropertiesEvent((cc.DataContext as PluginModel).GetProperties()));
         }
 
         public void RemoveAdorner(ContentControl cc, PluginModel pm)
@@ -560,6 +561,7 @@ namespace Cockpit.GUI.Views.Profile
                 MyAdorner myAdorner = new MyAdorner(cc, color);
                 adornerLayer.Add(myAdorner);
                 hash_name_general.Add(pm.NameUC);
+                cc.Focus();
             }
         }
 
@@ -579,6 +581,7 @@ namespace Cockpit.GUI.Views.Profile
 
                 MyAdorner myAdorner = new MyAdorner(cc, 0);
                 adornerLayer.Add(myAdorner);
+                cc.Focus();
             }
         }
 
@@ -587,15 +590,9 @@ namespace Cockpit.GUI.Views.Profile
             return DictContentcontrol[s];
         }
 
-        public void Handle(RemoveAdornerEvent message)
+        public void Handle(RemovePanelEvent message)
         {
-            if (keepAdorner)
-            {
-                keepAdorner = false;
-                return;
-            }
-            else
-                RemoveAdorners();
+            //MyCockpitViewModels.Remove(SortedDico[message.NameUC].pm);
         }
     }
 }

@@ -12,6 +12,11 @@ namespace Cockpit.Core.Common.Events
             subscribers.Add(subsriber);
         }
 
+        public void Unsubscribe(object subsriber)
+        {
+            subscribers.Remove(subsriber);
+        }
+
         public void Publish<T>(T message) where T : class
         {
             subscribers

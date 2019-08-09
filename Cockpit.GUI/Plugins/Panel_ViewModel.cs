@@ -19,7 +19,7 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.GUI.Plugins
 {
-    public class Panel_ViewModel : PluginModel, IDropTarget, Core.Common.Events.IHandle<RemoveAdornerEvent>
+    public class Panel_ViewModel : PluginModel, IDropTarget, Core.Common.Events.IHandle<RemovePanelEvent>
     {
         private readonly IEventAggregator eventAggregator;
         private readonly IResolutionRoot resolutionRoot;
@@ -128,11 +128,28 @@ namespace Cockpit.GUI.Plugins
         }
 
 
-        public void KeyTest(object sender, KeyEventArgs e)
-        {
-            mv.KeyTest(sender, e);
-            return;
-        }
+        //public void KeyTest(object sender, KeyEventArgs e)
+        //{
+        //    if (e == null || mv.hash_name_general.Count() == 0) return;
+
+        //    mv.KeyTest(sender, e);
+
+        //    if (e.Key == Key.Delete)
+        //    {
+        //        foreach (var name in mv.hash_name_general)
+        //        {
+        //            if (mv.SortedDico[name].pm.ToString().Equals("Cockpit.GUI.Plugins.Panel_ViewModel"))
+        //            {
+        //                eventAggregator.Publish(new RemovePanelEvent(name));
+        //            }
+        //            MyCockpitViewModels.Remove(mv.SortedDico[name].pm);
+        //            mv.SortedDico.Remove(name);
+
+        //        }
+        //        mv.hash_name_general.Clear();
+        //    }
+
+        //}
 
         #region Mouse Events
         //public void MouseLeftButtonDown(IInputElement elem, MouseButtonEventArgs e)
@@ -169,33 +186,6 @@ namespace Cockpit.GUI.Plugins
                     mv.AddNewAdorner(cc, pm, 2);
                 }
             }
-
-            //if (!CtrlDown || mv.hash_name_general.Count == 0)
-            //{
-            //    mv.RemoveAdorners();
-            //    mv.AddNewAdorner(cc, pm);
-            //}
-            //else
-            //{
-            //    if (mv.hash_name_general.Contains(pm.NameUC))
-            //    {
-            //        mv.RemoveAdorner(cc, pm);
-            //        mv.UpdateFirstAdorner();
-            //    }
-            //    else
-            //    {
-            //        if (MyCockpitViewModels.Any(t => t.NameUC.Equals(mv.hash_name_general.ElementAt(0))))
-            //        {
-            //            mv.AddNewAdorner(cc, pm, 2);
-            //        }
-            //        else
-            //        {
-            //            mv.RemoveAdorners();
-            //            mv.AddNewAdorner(cc, pm);
-            //        }
-            //    }
-            //}
-
 
             if (mv.hash_name_general.Count() == 0)
                 eventAggregator.Publish(new DisplayPropertiesEvent(new[] { (PluginProperties)mv.LayoutMonitor }));
@@ -508,15 +498,38 @@ namespace Cockpit.GUI.Plugins
 
         #endregion
 
-        public void Handle(RemoveAdornerEvent message)
+        public void Handle(RemovePanelEvent message)
         {
-            //if (keepAdorner)
-            //{
-            //    keepAdorner = false;
-            //    return;
-            //}
-            //else
-            //    RemoveAdorners();
+            if (MyCockpitViewModels == null) return;
+
+            if (message.IsPanel)
+            {
+                if (message.NameUC.Equals(NameUC))
+                {
+                    foreach (var item in MyCockpitViewModels.ToList())
+                    {
+                        if (item.ToString().Equals("Cockpit.GUI.Plugins.Panel_ViewModel"))
+                        {
+                            eventAggregator.Publish(new RemovePanelEvent(NameUC: item.NameUC, IsPanel: true));
+                            continue;
+                        }
+                        if (MyCockpitViewModels.Count() > 0)
+                        {
+                            MyCockpitViewModels.Remove(MyCockpitViewModels.Where(t => t.NameUC.Equals(item.NameUC)).First());
+                            mv.SortedDico.Remove(item.NameUC);
+                        }
+                    }
+                    MyCockpitViewModels = null;
+                    eventAggregator.Unsubscribe(this);
+                    return;
+                }
+            }
+
+            if (MyCockpitViewModels.Any(t => t.NameUC.Equals(message.NameUC)))
+            {
+                MyCockpitViewModels.Remove(mv.SortedDico[message.NameUC].pm);
+                mv.SortedDico.Remove(message.NameUC);
+            }
         }
     }
 }
