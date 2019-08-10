@@ -24,22 +24,31 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Label Grid.Column="0" Grid.Row="0" FontSize="10" HorizontalAlignment="Right" Content="Type"
+        <Label Grid.Column="0" Grid.Row="0" FontSize="10" HorizontalAlignment="Right" Content="SwitchButton Type"
                ToolTip="Selects what kind of toggle switch to emulate." />
         <ComboBox x:Name="SwitchTypes" Grid.Column="1" Grid.Row="0" FontSize="10" Margin="0,2,0,2" HorizontalAlignment="Left" 
                   ItemsSource="{Binding Source={pe:EnumBindingSource {x:Type pe:SwitchType}}}" 
                   SelectedIndex ="{Binding SelectedSwitchTypeIndex}"  />
 
-        <Label Grid.Column="0" Grid.Row="1" FontSize="10" HorizontalAlignment="Right" Content="Default Position"
+        <Label Grid.Column="0" Grid.Row="1" FontSize="10" HorizontalAlignment="Right" Content="Panel Name Up" ToolTip="Name of Panel controlled by the Button Up."
+               Visibility="{Binding Path=IsPanelButtonUp}" />
+        <TextBox x:Name="NameOfPanelUp" Grid.Column="1" Grid.Row="1" Margin="2" Visibility="{Binding Path=IsPanelButtonUp}"  />
+        <Label Grid.Column="0" Grid.Row="2" FontSize="10" HorizontalAlignment="Right" Content="Panel Name Down" ToolTip="Name of Panel controlled by the Button Down."
+               Visibility="{Binding Path=IsPanelButtonDn}" />
+        <TextBox x:Name="NameOfPanelDn" Grid.Column="1" Grid.Row="2" Margin="2" Visibility="{Binding Path=IsPanelButtonDn}"  />
+        
+        <Label Grid.Column="0" Grid.Row="3" FontSize="10" HorizontalAlignment="Right" Content="Default Position"
             ToolTip="Position which this switch will default to on profile load or reset." />
-        <ComboBox x:Name="DefaultPositions" Grid.Column="1" Grid.Row="1" FontSize="10" Margin="0,2,0,2" HorizontalAlignment="Left" />
+        <ComboBox x:Name="DefaultPositions" Grid.Column="1" Grid.Row="3" FontSize="10" Margin="0,2,0,2" HorizontalAlignment="Left" />
         
-        <Label Grid.Column="0" Grid.Row="2" FontSize="10" HorizontalAlignment="Right" Content="Indicator Light"
+        <Label Grid.Column="0" Grid.Row="4" FontSize="10" HorizontalAlignment="Right" Content="Indicator Light"
                ToolTip="When checked this switch has an indicator light." />
-        <CheckBox x:Name="HasIndicator" Grid.Column="1" Grid.Row="2" FontSize="10" Margin="2" VerticalAlignment="Center" HorizontalAlignment="Left"  />
+        <CheckBox x:Name="HasIndicator" Grid.Column="1" Grid.Row="4" FontSize="10" Margin="2" VerticalAlignment="Center" HorizontalAlignment="Left"  />
         
-        <Label Grid.Column="0" Grid.Row="3" FontSize="10" HorizontalAlignment="Right" Content="Click Type"
+        <Label Grid.Column="0" Grid.Row="5" FontSize="10" HorizontalAlignment="Right" Content="Click Type"
                ToolTip="When set to touch this switch will respond to control regions (upper/lower, left/right) and switch the switch appropriatly. Swipe will switch the switch in the direction you swipe your finger or mouse." />
         <!--<ComboBox Grid.Column="1" Grid.Row="3" FontSize="10" Margin="0,2,0,2" HorizontalAlignment="Left" ItemsSource="{Binding Source={StaticResource ClickTypes}, Path=DisplayNames}" SelectedItem="{Binding Path=Control.ClickType, Converter={StaticResource ClickTypes}}" />-->
     </Grid>

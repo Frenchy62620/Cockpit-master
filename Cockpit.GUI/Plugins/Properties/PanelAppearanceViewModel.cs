@@ -1,32 +1,37 @@
 ﻿using Caliburn.Micro;
 using Cockpit.GUI.Events;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Media;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.GUI.Plugins.Properties
 {
-    public class PanelAppearanceViewModel:PluginProperties, Core.Common.Events.IHandle<PropertyMonitorEvent>
+    public class PanelAppearanceViewModel:PluginProperties /*, Core.Common.Events.IHandle<PropertyMonitorEvent>*/
     {
 
-        private readonly PluginModel Plugin;
+        private readonly Panel_ViewModel PanelViewModel;
         private readonly IEventAggregator eventAggregator;
         public string NameUC { get; private set; }
-        public PanelAppearanceViewModel(IEventAggregator eventAggregator, PluginModel plugin, params object[] settings)
+        public PanelAppearanceViewModel(IEventAggregator eventAggregator, Panel_ViewModel panel, params object[] settings)
         {
-            Plugin = plugin;
+            PanelViewModel = panel;
 
             bool IsModeEditor = (bool)settings[0];
             if (IsModeEditor)
             {
-                var view = ViewLocator.LocateForModel(this, null, null);
-                ViewModelBinder.Bind(this, view, null);
+                //var view = ViewLocator.LocateForModel(this, null, null);
+                //ViewModelBinder.Bind(this, view, null);
             }
 
             NameUC = (string)settings[2];
 
+            Apparitions = Enum.GetValues(typeof(PanelSideApparition)).Cast<PanelSideApparition>().ToList();
 
+            SelectedApparition = PanelSideApparition.FromLeft;
 
             var index = 4;
             BackgroundImage = (string)settings[index];
@@ -43,14 +48,28 @@ namespace Cockpit.GUI.Plugins.Properties
 
         public string Name { get; set; }
 
-        private bool drawBorder;
-        public bool DrawBorder
+        public IReadOnlyList<PanelSideApparition> Apparitions { get; }
+
+        //private bool drawBorder;
+        //public bool DrawBorder
+        //{
+        //    get { return drawBorder; }
+        //    set
+        //    {
+        //        drawBorder = value;
+        //        NotifyOfPropertyChange(() => DrawBorder);
+        //    }
+        //}
+
+        private PanelSideApparition _SelectedApparition;
+        public PanelSideApparition SelectedApparition
         {
-            get { return drawBorder; }
+            get { return _SelectedApparition; }
             set
             {
-                drawBorder = value;
-                NotifyOfPropertyChange(() => DrawBorder);
+                _SelectedApparition = value;
+                SelectSideApparition();
+                NotifyOfPropertyChange(() => SelectedApparition);
             }
         }
 
@@ -63,10 +82,10 @@ namespace Cockpit.GUI.Plugins.Properties
                 backgroundImage = value;
                 int h, w;
                 getSizeOfImage(value, out w, out h);
-                if (Plugin.Width != w || Plugin.Height != h)
+                if (PanelViewModel.Width != w || PanelViewModel.Height != h)
                 {
-                    Plugin.Width = w;
-                    Plugin.Height = h;
+                    PanelViewModel.Width = w;
+                    PanelViewModel.Height = h;
                 }
                 NotifyOfPropertyChange(() => BackgroundImage);
             }
@@ -110,13 +129,13 @@ namespace Cockpit.GUI.Plugins.Properties
         }
 
 
-        public void Handle(PropertyMonitorEvent message)
-        {
-            BackgroundImage = message.ImageBackground;
-            BackgroundColor = message.ColorBackground;
-            FillBackground = message.Fill;
-            DrawBorder = message.AlwaysOnTop;
-        }
+        //public void Handle(PropertyMonitorEvent message)
+        //{
+        //    BackgroundImage = message.ImageBackground;
+        //    BackgroundColor = message.ColorBackground;
+        //    FillBackground = message.Fill;
+        //    //SelectedApparition = message.AlwaysOnTop;
+        //}
 
         private void getSizeOfImage(string filename, out int w, out int h)
         {
@@ -138,5 +157,18 @@ namespace Cockpit.GUI.Plugins.Properties
             }
 
         }
+
+        private void SelectSideApparition()
+        {
+            //Apparition Side
+            //RenderO = "1.0,0.0";//From Right
+            //RenderO = "0.0,1.0";//From Bottom
+            //RenderO = "0.0,0.0";//From Left
+            //RenderO = "0.0,0.0";//From Top
+            //ScaleXX = true = X, false=Y
+            PanelViewModel.RenderO = (int)SelectedApparition < 2 ? "1.0, 1.0" : "0.0, 0.0";//FromRight/FromBottom or FromLeft/FromTop
+            PanelViewModel.ScaleXX = (int)SelectedApparition % 2 == 0; //FromLeft or FromRight? or FromTop or FromBottom?
+        }
+
     }
 }

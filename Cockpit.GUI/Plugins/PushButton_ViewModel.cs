@@ -1,11 +1,12 @@
-﻿using Cockpit.GUI.Plugins.Properties;
+﻿using Cockpit.GUI.Events;
+using Cockpit.GUI.Plugins.Properties;
 using System.Windows;
 using System.Windows.Input;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.GUI.Plugins
 {
-    public class PushButton_ViewModel : PluginModel  /*Core.Common.Events.IHandle<EditEvent>,*/
+    public class PushButton_ViewModel : PluginModel  /*Core.Common.Events.IHandle<VisibilityPanelEvent>*/
                                                      //Core.Common.Events.IHandle<TransformEvent>,
                                                      //Core.Common.Events.IHandle<SelectedEvent>,
                                                      //Core.Common.Events.IHandle<NewLayoutEvent>,
@@ -27,11 +28,8 @@ namespace Cockpit.GUI.Plugins
 
             NameUC = (string)settings[2];
 
-
-            //Frame = false;
-
             this.eventAggregator = eventAggregator;
-            this.eventAggregator.Subscribe(this);
+            //this.eventAggregator.Subscribe(this);
         }
 
         #region PluginModel
@@ -81,11 +79,13 @@ namespace Cockpit.GUI.Plugins
         {
             Mouse.Capture((UIElement)elem);
             Appearance.IndexImage = 1 - Appearance.IndexImage;
+            if (!string.IsNullOrEmpty(Behavior.NameOfPanel))
+                eventAggregator.Publish(new VisibilityPanelEvent(Behavior.NameOfPanel));
         }
         public void MouseLeftButtonUp()
         {
             Mouse.Capture(null);
-            if ((int)Behavior.SelectedPushButtonType == 0)
+            if (Behavior.SelectedPushButtonType != PushButtonType.Toggle)
                 Appearance.IndexImage = 0;
         }
         public void MouseEnterInUC(MouseEventArgs e)
@@ -149,22 +149,22 @@ namespace Cockpit.GUI.Plugins
         #region HandleEvents
 
 
-        //public void Handle(TransformEvent translate)
+        //public void Handle(VisibilityPanelEvent message)
         //{
-        //    //if (translate.fromProperty)
-        //    //{
-        //    //    UCLeft = translate.DeltaLeft;
-        //    //    CenterCircle = translate.DeltaTop;
-        //    //    return;
-        //    //}
-        //    //if (!IsSelected) return;
-        //    //if (translate.Size == 0)
-        //    //{
-        //    //    UCLeft += translate.DeltaLeft;
-        //    //    CenterCircle += translate.DeltaTop;
-        //    //    return;
-        //    //}
-        //    //ScaleX = ScaleX * (translate.Size + GlyphThickness) / GlyphThickness;
+            //if (translate.fromProperty)
+            //{
+            //    UCLeft = translate.DeltaLeft;
+            //    CenterCircle = translate.DeltaTop;
+            //    return;
+            //}
+            //if (!IsSelected) return;
+            //if (translate.Size == 0)
+            //{
+            //    UCLeft += translate.DeltaLeft;
+            //    CenterCircle += translate.DeltaTop;
+            //    return;
+            //}
+            //ScaleX = ScaleX * (translate.Size + GlyphThickness) / GlyphThickness;
         //}
 
 

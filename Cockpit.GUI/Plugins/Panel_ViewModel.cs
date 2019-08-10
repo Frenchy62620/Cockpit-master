@@ -44,19 +44,17 @@ namespace Cockpit.GUI.Plugins
             Appearance = new PanelAppearanceViewModel(eventAggregator, this, settings);
 
             MyCockpitViewModels = new BindableCollection<PluginModel>();
-            RenderO = "1.0, 1.0";
-            ScaleXX = true;
-            //Apparition Side
-            //RenderO = "1.0,0.0";//To Left
-            //RenderO = "0.0,1.0";//To Top
-            //RenderO = "0.0,0.0";//To Right
-            //RenderO = "0.0,0.0";//To Bottom
-            //ScaleXX = false;//true = X, false=Y
+
+            //RenderO = (int)Appearance.SelectedApparition < 2 ? "1.0, 1.0" : "0.0, 0.0";//ToLeft/ToTop or ToRight/ToBottom
+            //ScaleXX = (int)Appearance.SelectedApparition % 2 == 0; //ToLeft or ToRight? or ToUp or ToBottom?
+
+            //RenderO = "1.0, 1.0";
+            //ScaleXX = true;
+
 
             //RenderO = settings.Side < 2 ? "1.0, 1.0" : "0.0, 0.0";//ToLeft/ToTop or ToRight/ToBottom
             //ScaleXX = settings.Side % 2 == 0; //ToLeft or ToRight? or ToUp or ToBottom?
             IsVisible = true;
-            Initialized = true;
 
             NameUC = (string)settings[2];
         }
@@ -66,39 +64,28 @@ namespace Cockpit.GUI.Plugins
         }
         public BindableCollection<PluginModel> MyCockpitViewModels { get; set; }
 
-        private bool _initialized;
-        public bool Initialized
-        {
-            get { return _initialized; }
-            set
-            {
-                _initialized = value;
-                NotifyOfPropertyChange(() => Initialized);
-            }
-        }
-
         private bool isvisible;
         public bool IsVisible
         {
             get => isvisible;
             set
             {
-                    isvisible = value;
+                isvisible = value;
                 NotifyOfPropertyChange(() => IsVisible);
             }
         }
 
-        public bool ScaleXX { get; set; }
-        //private bool _scaleXX;
-        //public bool ScaleXX
-        //{
-        //    get { return _scaleXX; }
-        //    set
-        //    {
-        //        _scaleXX = value;
-        //        NotifyOfPropertyChange(() => ScaleXX);
-        //    }
-        //}
+        //public bool ScaleXX { get; set; }
+        private bool _scaleXX;
+        public bool ScaleXX
+        {
+            get { return _scaleXX; }
+            set
+            {
+                _scaleXX = value;
+                NotifyOfPropertyChange(() => ScaleXX);
+            }
+        }
 
 
         private string _renderO;

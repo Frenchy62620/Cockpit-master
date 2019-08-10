@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.GUI.Plugins.Properties
@@ -28,6 +29,7 @@ namespace Cockpit.GUI.Plugins.Properties
             //Has3Images = true;
             HasIndicator = false;
             SelectedSwitchTypeIndex = (int) SwitchType.OnOnOn;
+            SelectedDefaultPosition = SwitchPosition.One;
             Name = "Behavior";
         }
 
@@ -39,9 +41,21 @@ namespace Cockpit.GUI.Plugins.Properties
             get => selectedSwitchTypeIndex;
             set
             {
+                if (value == 3 || value == 8)
+                {
+                    IsPanelButtonUp = Visibility.Visible;
+                    if (value == 8)
+                        IsPanelButtonDn = Visibility.Visible;
+                }
+                else
+                {
+                    IsPanelButtonUp = Visibility.Collapsed;
+                    IsPanelButtonDn = Visibility.Collapsed;
+                }
+
                 selectedSwitchTypeIndex = value;
-                SetNumberOfPosition(value >= 3);
-                Has3Images = value >= 3;
+                SetNumberOfPosition(value >= 4);
+                Has3Images = value >= 4;
                 NotifyOfPropertyChange(() => SelectedSwitchTypeIndex);
             }
         }
@@ -107,6 +121,50 @@ namespace Cockpit.GUI.Plugins.Properties
                 SelectedDefaultPosition = DefaultPositions[1];
         }
 
+        private Visibility _IsPanelButtonUp;
+        public Visibility IsPanelButtonUp
+        {
+            get => _IsPanelButtonUp;
+
+            set
+            {
+                _IsPanelButtonUp = value;
+                NotifyOfPropertyChange(() => IsPanelButtonUp);
+            }
+        }
+        private Visibility _IsPanelButtonDn;
+        public Visibility IsPanelButtonDn
+        {
+            get => _IsPanelButtonDn;
+
+            set
+            {
+                _IsPanelButtonUp = value;
+                NotifyOfPropertyChange(() => IsPanelButtonDn);
+            }
+        }
+        private string _NameOfPanelUp;
+        public string NameOfPanelUp
+        {
+            get => _NameOfPanelUp;
+
+            set
+            {
+                _NameOfPanelUp = value;
+                NotifyOfPropertyChange(() => _NameOfPanelUp);
+            }
+        }
+        private string _NameOfPanelDn;
+        public string NameOfPanelDn
+        {
+            get => _NameOfPanelDn;
+
+            set
+            {
+                _NameOfPanelDn = value;
+                NotifyOfPropertyChange(() => _NameOfPanelDn);
+            }
+        }
         private bool hasIndicator;
         public bool HasIndicator
         {

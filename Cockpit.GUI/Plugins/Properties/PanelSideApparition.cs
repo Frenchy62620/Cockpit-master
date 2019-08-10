@@ -1,13 +1,10 @@
 ﻿namespace Cockpit.GUI.Plugins.Properties
 {
-    public class SideApparition
+    public enum PanelSideApparition
     {
-        public enum Side
-        {
-            FromLeft,
-            FromTop,
-            FromRight,
-            FromBottom,
-        }
+        FromRight,
+        FromBottom,
+        FromLeft,
+        FromTop,
     }
 }
