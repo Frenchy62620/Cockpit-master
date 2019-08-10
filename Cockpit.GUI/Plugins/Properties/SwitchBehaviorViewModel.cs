@@ -16,8 +16,8 @@ namespace Cockpit.GUI.Plugins.Properties
             bool IsModeEditor = (bool)settings[index++];
             if (IsModeEditor)
             {
-                var view = ViewLocator.LocateForModel(this, null, null);
-                ViewModelBinder.Bind(this, view, null);
+                //var view = ViewLocator.LocateForModel(this, null, null);
+                //ViewModelBinder.Bind(this, view, null);
             }
 
             this.eventAggregator = eventAggregator;

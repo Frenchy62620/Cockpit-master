@@ -23,8 +23,8 @@ namespace Cockpit.GUI.Plugins.Properties
             bool IsModeEditor = (bool)settings[0];
             if (IsModeEditor)
             {
-                var view = ViewLocator.LocateForModel(this, null, null);
-                ViewModelBinder.Bind(this, view, null);
+                //var view = ViewLocator.LocateForModel(this, null, null);
+                //ViewModelBinder.Bind(this, view, null);
             }
 
             NameUC = (string)settings[2];
@@ -53,6 +53,7 @@ namespace Cockpit.GUI.Plugins.Properties
                                         padding: (double[])settings[index++],           //Padding L,T,R,B
                                         Alignment: (int[])settings[index]               //Left, Center, Right and Top, center, Bottom
                                        );
+
             SelectedHAlignType = (HorizontalAlignment)((int[])settings[index])[0];
             SelectedVAlignType = (VerticalAlignment)((int[])settings[index])[1];
 
@@ -73,10 +74,9 @@ namespace Cockpit.GUI.Plugins.Properties
 
         public string Name { get; set; }
 
-        //private double LayoutWidth, LayoutHeight;
-
-        public IReadOnlyList<VerticalAlignment> VAlignTypes { get; }
         public IReadOnlyList<HorizontalAlignment> HAlignTypes { get; }
+        public IReadOnlyList<VerticalAlignment> VAlignTypes { get; }
+
 
         private TextFormat textformat;
         public TextFormat TextFormat

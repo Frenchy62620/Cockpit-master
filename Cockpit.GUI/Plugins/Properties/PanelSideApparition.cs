@@ -4,10 +4,10 @@
     {
         public enum Side
         {
-            ToLeft,
-            ToTop,
-            ToRight,
-            ToBottom
+            FromLeft,
+            FromTop,
+            FromRight,
+            FromBottom,
         }
     }
 }

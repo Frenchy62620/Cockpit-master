@@ -20,8 +20,8 @@ namespace Cockpit.GUI.Plugins.Properties
         {
             AlignmentTypes = Enum.GetValues(typeof(ImageAlignment)).Cast<ImageAlignment>().ToList();
 
-            var view = ViewLocator.LocateForModel(this, null, null);
-            ViewModelBinder.Bind(this, view, null);
+            //var view = ViewLocator.LocateForModel(this, null, null);
+            //ViewModelBinder.Bind(this, view, null);
 
             this.eventAggregator = eventAggregator;
             eventAggregator.Subscribe(this);

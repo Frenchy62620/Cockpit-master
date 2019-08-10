@@ -18,6 +18,8 @@ namespace Cockpit.GUI.Plugins.Properties
         [Description("Mom - On - On")]
         MomOnOn,
         [Description("Mom - On - Mom")]
-        MomOnMom
+        MomOnMom,
+        [Description("Panel Button")]
+        PanelButton
     }
 }

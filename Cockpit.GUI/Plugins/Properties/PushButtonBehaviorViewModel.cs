@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 
 namespace Cockpit.GUI.Plugins.Properties
 {
@@ -12,6 +13,9 @@ namespace Cockpit.GUI.Plugins.Properties
         {
             PushButtonTypes = Enum.GetValues(typeof(PushButtonType)).Cast<PushButtonType>().ToList();
             SelectedPushButtonType = (PushButtonType)(int)settings[19];
+
+            NameOfPanel = "Bonour";
+
             Name = "Behavior";
         }
 
@@ -22,6 +26,18 @@ namespace Cockpit.GUI.Plugins.Properties
 
         public string Name { get; set; }
 
+        private Visibility _IsPanelButton;
+        public Visibility IsPanelButton
+        {
+            get => _IsPanelButton;
+
+            set
+            {
+                _IsPanelButton = value;
+                NotifyOfPropertyChange(() => IsPanelButton);
+            }
+        }
+
         public IReadOnlyList<PushButtonType> PushButtonTypes { get; }
 
         private PushButtonType selectedPushButtonType;
@@ -31,21 +47,26 @@ namespace Cockpit.GUI.Plugins.Properties
 
             set
             {
+                if (value == PushButtonType.PanelButton)
+                    IsPanelButton = Visibility.Visible;
+                else
+                    IsPanelButton = Visibility.Collapsed;
+
                 selectedPushButtonType = value;
                 NotifyOfPropertyChange(() => SelectedPushButtonType);
             }
         }
 
-        //private int pushButtonTypeIndex;
-        //public int PushButtonTypeIndex
-        //{
-        //    get => pushButtonTypeIndex;
+        private string _NameOfPanel;
+        public string NameOfPanel
+        {
+            get => _NameOfPanel;
 
-        //    set
-        //    {
-        //        pushButtonTypeIndex = value;
-        //        SelectedPushButtonType = (PushButtonType)value;
-        //    }
-        //}
+            set
+            {
+               _NameOfPanel = value;
+                NotifyOfPropertyChange(() => _NameOfPanel);
+            }
+        }
     }
 }

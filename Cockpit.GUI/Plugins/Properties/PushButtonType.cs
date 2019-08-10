@@ -9,6 +9,7 @@ namespace Cockpit.GUI.Plugins.Properties
     public enum PushButtonType
     {
         Momentary,
-        Toggle
+        Toggle,
+        PanelButton
     }
 }
