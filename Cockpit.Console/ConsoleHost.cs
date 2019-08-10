@@ -11,14 +11,14 @@ namespace Cockpit.Console
 {
     public class ConsoleHost : IHandle<WatchEvent>, IHandle<ScriptErrorEvent>
     {
-        private readonly IScriptEngine scriptEngine;
+        //private readonly IScriptEngine scriptEngine;
         private readonly IPersistanceManager persistanceManager;
         private readonly IFileSystem fileSystem;
         private readonly AutoResetEvent waitUntilStopped;
 
-        public ConsoleHost(IScriptEngine scriptEngine, IPersistanceManager persistanceManager, IFileSystem fileSystem, IEventAggregator eventAggregator)
+        public ConsoleHost(/*IScriptEngine scriptEngine,*/ IPersistanceManager persistanceManager, IFileSystem fileSystem, IEventAggregator eventAggregator)
         {
-            this.scriptEngine = scriptEngine;
+            //this.scriptEngine = scriptEngine;
             this.persistanceManager = persistanceManager;
             this.fileSystem = fileSystem;
             waitUntilStopped = new AutoResetEvent(false);
@@ -55,7 +55,7 @@ namespace Cockpit.Console
                 persistanceManager.Load();
 
                 System.Console.WriteLine("Starting script parser");
-                scriptEngine.Start(script);
+                //scriptEngine.Start(script);
                 waitUntilStopped.WaitOne();
             }
             catch (Exception e)
@@ -67,7 +67,7 @@ namespace Cockpit.Console
         private void Stop()
         {
             System.Console.WriteLine("Stopping script parser");
-            scriptEngine.Stop();
+            //scriptEngine.Stop();
 
             persistanceManager.Save();
             waitUntilStopped.Set();

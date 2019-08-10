@@ -227,11 +227,11 @@ namespace Cockpit.GUI.Views.Profile
             {
                 var FullImage1 = FullImage.Replace("_0.png", "_1.png");
                 var FullImage2 = FullImage.Replace("_0.png", "_2.png");
-
+                AngleSwitch = 0;
                 param = new Ninject.Parameters.Parameter[]
                 {
                         new ConstructorArgument("settings", new object[]{                                                   //Switch Button
-                            true,                                                                                               //0 is in Mode Editor?
+                            true, this,                                                                                         //0 is in Mode Editor?
                             $"{nameUC}",                                                                                        //2 name of UC
                             new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, AngleSwitch },//3 [Left, Top, Width, Height, Angle]
 
@@ -515,6 +515,7 @@ namespace Cockpit.GUI.Views.Profile
         {
             if (SortedDico.ContainsKey(pm.NameUC))
                 return;
+            cc.Tag = "0";
             SortedDico[pm.NameUC] = new Elements(cc, pm);
             RemoveAdorners();
             AddNewAdorner(cc, pm);

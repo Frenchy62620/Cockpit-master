@@ -30,7 +30,6 @@ namespace Cockpit.GUI.Plugins
 
         public Dictionary<ContentControl, bool> DictContentcontrol = new Dictionary<ContentControl, bool>();
 
-        public bool keepAdorner = false;
         public string lastNameUC = "";
 
         MonitorViewModel mv { get; set; }
@@ -180,6 +179,7 @@ namespace Cockpit.GUI.Plugins
         public void MouseLeftButtonDownOnContentControl(ContentControl cc, PluginModel pm, MouseEventArgs e)
         {
             e.Handled = true;
+            if (cc.Tag == null) return;
 
             var CtrlDown = (Keyboard.Modifiers & ModifierKeys.Control) != 0;
             if (!CtrlDown || mv.hash_name_general.Count == 0 || !MyCockpitViewModels.Any(t => t.NameUC.Equals(mv.hash_name_general.ElementAt(0))))
@@ -277,7 +277,7 @@ namespace Cockpit.GUI.Plugins
         {
             if (mv.SortedDico.ContainsKey(pm.NameUC))
                 return;
-
+            cc.Tag = "0";
             mv.SortedDico[pm.NameUC] = new Elements(cc, pm);
 
             mv.RemoveAdorners();
@@ -481,7 +481,7 @@ namespace Cockpit.GUI.Plugins
             {
                 var FullImage1 = FullImage.Replace("_0.png", "_1.png");
                 var FullImage2 = FullImage.Replace("_0.png", "_2.png");
-
+                AngleSwitch = 0;
                 param = new Ninject.Parameters.Parameter[]
                 {
                         new ConstructorArgument("settings", new object[]{                                                   //Switch Button
