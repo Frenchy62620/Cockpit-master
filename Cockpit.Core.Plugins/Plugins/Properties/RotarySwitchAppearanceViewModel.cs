@@ -1,18 +1,18 @@
 ﻿using Caliburn.Micro;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
-namespace Cockpit.GUI.Plugins.Properties
+namespace Cockpit.Core.Plugins.Plugins.Properties
 {
     //,
     //                                Core.Common.Events.IHandle<ThreeWayToggleSwitchAppearanceEvent>,
     //                                Core.Common.Events.IHandle<PropertyHasIndicatorEvent>,
     //                                Core.Common.Events.IHandle<PropertyHas3ImagesEvent>
-    public class SwitchAppearanceViewModel : PluginProperties
+    public class RotarySwitchAppearanceViewModel : PluginProperties
     {
         private readonly IEventAggregator eventAggregator;
         public SwitchBehaviorViewModel Behavior { get; }
         public string NameUC { get; set; }
-        public SwitchAppearanceViewModel(IEventAggregator eventAggregator, SwitchBehaviorViewModel behavior, params object[] settings)
+        public RotarySwitchAppearanceViewModel(IEventAggregator eventAggregator, SwitchBehaviorViewModel behavior, params object[] settings)
         {
             Behavior = behavior;
 

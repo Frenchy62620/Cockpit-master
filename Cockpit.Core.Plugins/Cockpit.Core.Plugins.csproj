@@ -111,10 +111,18 @@
     <Compile Include="Plugins\Properties\PushButtonBehaviorViewModel.cs" />
     <Compile Include="Plugins\Properties\PushButtonGlyph.cs" />
     <Compile Include="Plugins\Properties\PushButtonType.cs" />
+    <Compile Include="Plugins\Properties\RotarySwitchAppearanceViewModel.cs" />
+    <Compile Include="Plugins\Properties\RotarySwitchAppearanceViewX.xaml.cs">
+      <DependentUpon>RotarySwitchAppearanceViewX.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Plugins\Properties\SwitchAppearanceViewX.xaml.cs">
       <DependentUpon>SwitchAppearanceViewX.xaml</DependentUpon>
     </Compile>
     <Compile Include="Plugins\Properties\SwitchAppearanceViewModel.cs" />
+    <Compile Include="Plugins\Properties\RotarySwitchBehaviorViewModel.cs" />
+    <Compile Include="Plugins\Properties\RotarySwitchBehaviorViewX.xaml.cs">
+      <DependentUpon>RotarySwitchBehaviorViewX.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Plugins\Properties\SwitchBehaviorViewX.xaml.cs">
       <DependentUpon>SwitchBehaviorViewX.xaml</DependentUpon>
     </Compile>
@@ -125,9 +133,13 @@
       <DependentUpon>PushButton_View.xaml</DependentUpon>
     </Compile>
     <Compile Include="Plugins\PushButton_ViewModel.cs" />
+    <Compile Include="Plugins\RotarySwitch_View.xaml.cs">
+      <DependentUpon>RotarySwitch_View.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Plugins\Switch_View.xaml.cs">
       <DependentUpon>Switch_View.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Plugins\RotarySwitch_ViewModel.cs" />
     <Compile Include="Plugins\Switch_ViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -174,7 +186,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Plugins\Properties\RotarySwitchAppearanceViewX.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Plugins\Properties\SwitchAppearanceViewX.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Plugins\Properties\RotarySwitchBehaviorViewX.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -183,6 +203,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Plugins\PushButton_View.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Plugins\RotarySwitch_View.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

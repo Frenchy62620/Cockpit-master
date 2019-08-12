@@ -5,13 +5,13 @@ using System.Linq;
 using System.Windows;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
-namespace Cockpit.GUI.Plugins.Properties
+namespace Cockpit.Core.Plugins.Plugins.Properties
 {
-    public class SwitchBehaviorViewModel : PluginProperties
+    public class RotarySwitchBehaviorViewModel : PluginProperties
     {
         private readonly IEventAggregator eventAggregator;
 
-        public SwitchBehaviorViewModel(IEventAggregator eventAggregator, params object[] settings)
+        public RotarySwitchBehaviorViewModel(IEventAggregator eventAggregator, params object[] settings)
         {
             var index = 0;
             bool IsModeEditor = (bool)settings[index++];

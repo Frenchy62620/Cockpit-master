@@ -1,13 +1,11 @@
-﻿using Cockpit.GUI.Plugins.Properties;
+﻿using Cockpit.Core.Plugins.Plugins.Properties;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Shapes;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
-namespace Cockpit.GUI.Plugins
+namespace Cockpit.Core.Plugins.Plugins
 {
-    public class Switch_ViewModel : PluginModel
+    public class RotarySwitch_ViewModel : PluginModel
     {
         private readonly IEventAggregator eventAggregator;
 
@@ -16,7 +14,7 @@ namespace Cockpit.GUI.Plugins
         public SwitchBehaviorViewModel Behavior { get; }
 
 
-        public Switch_ViewModel(IEventAggregator eventAggregator, params object[] settings)
+        public RotarySwitch_ViewModel(IEventAggregator eventAggregator, params object[] settings)
         {
             Layout = new LayoutPropertyViewModel(eventAggregator, settings);
             Behavior = new SwitchBehaviorViewModel(eventAggregator, settings);
@@ -59,9 +57,9 @@ namespace Cockpit.GUI.Plugins
         }
         #endregion
 
-        ~Switch_ViewModel()
+        ~RotarySwitch_ViewModel()
         {
-            System.Diagnostics.Debug.WriteLine("sortie switch");
+            System.Diagnostics.Debug.WriteLine("sortie Rotaryswitch");
         }
 
 

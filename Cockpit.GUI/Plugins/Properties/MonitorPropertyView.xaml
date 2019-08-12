@@ -60,7 +60,7 @@
         <Label Grid.Column="0" Grid.Row="4" FontSize="10" HorizontalAlignment="Right" VerticalAlignment="Top" Content="Fill"/>      
         
         <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal">
-            <CheckBox x:Name="Fill" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,6,6,6" IsChecked="{Binding FillBackground}" />        
+            <CheckBox x:Name="FillBackground" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,6,6,6"  />        
             <ip:ColorWellView Color="{Binding BackgroundColor, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="0,2" 
                               Style="{StaticResource FillStyle}" />
         </StackPanel>

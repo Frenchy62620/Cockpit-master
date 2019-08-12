@@ -405,10 +405,10 @@ namespace Cockpit.GUI.Plugins
                                                                         }, true)
                 };
 
-                model = "Cockpit.GUI.Plugins.PushButton_ViewModel";
-                properties = new string[] { "Cockpit.GUI.Plugins.Properties.LayoutPropertyViewModel",
-                                            "Cockpit.GUI.Plugins.Properties.PushButtonAppearanceViewModel",
-                                            "Cockpit.GUI.Plugins.Properties.PushButtonBehaviorViewModel"};
+                model = "Cockpit.Core.Plugins.Plugins.PushButton_ViewModel, Cockpit.Core.Plugins";
+                //properties = new string[] { "Cockpit.GUI.Plugins.Properties.LayoutPropertyViewModel",
+                //                            "Cockpit.GUI.Plugins.Properties.PushButtonAppearanceViewModel",
+                //                            "Cockpit.GUI.Plugins.Properties.PushButtonBehaviorViewModel"};
 
 
                 paramproperties = new Ninject.Parameters.Parameter[][]
@@ -463,8 +463,8 @@ namespace Cockpit.GUI.Plugins
                 };
 
                 model = "Cockpit.GUI.Plugins.Panel_ViewModel";
-                properties = new string[] { "Cockpit.GUI.Plugins.Properties.LayoutPropertyViewModel",
-                                            "Cockpit.GUI.Plugins.Properties.PanelAppearanceViewModel"};
+                //properties = new string[] { "Cockpit.GUI.Plugins.Properties.LayoutPropertyViewModel",
+                //                            "Cockpit.GUI.Plugins.Properties.PanelAppearanceViewModel"};
             }
             else
             {
@@ -483,8 +483,8 @@ namespace Cockpit.GUI.Plugins
                             2, 1d, 2, 3 }, true)
                 };
 
-                model = "Cockpit.GUI.Plugins.Switch_ViewModel";
-                properties = new string[] { "", "", "" };
+                model = "Cockpit.Core.Plugins.Plugins.Switch_ViewModel, Cockpit.Core.Plugins";
+                //properties = new string[] { "", "", "" };
             }
 
             var typeClass = Type.GetType(model);
@@ -493,7 +493,7 @@ namespace Cockpit.GUI.Plugins
             //var view = ViewLocator.LocateForModel(viewmodel, null, null);
             
             //ViewModelBinder.Bind(viewmodel, view, null);
-            var v = viewmodel as PluginModel;
+            //var v = viewmodel as PluginModel;
             //v.ZoomFactorFromPluginModel = ZoomFactorFromMonitorViewModel;
             MyCockpitViewModels.Add((PluginModel)viewmodel);
         }
