@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using Caliburn.Micro;
@@ -59,6 +62,7 @@ namespace Cockpit.GUI.Bootstrap
 
         private void OnSettingsLoaded()
         {
+            ViewLocator.NameTransformer.AddRule(@"ViewModel", @"ViewX");
             DisplayRootViewFor<TrayIconViewModel>();
             DisplayRootViewFor<MainShellViewModel>();
         }
@@ -71,6 +75,25 @@ namespace Cockpit.GUI.Bootstrap
         protected override IEnumerable<object> GetAllInstances(Type service)
         {
             return kernel.GetAll(service);
+        }
+
+        protected override IEnumerable<Assembly> SelectAssemblies()
+        {
+
+            var assemblies = new List<Assembly>();
+            assemblies.AddRange(base.SelectAssemblies());
+            //Load new ViewModels here
+            string[] fileEntries = Directory.GetFiles(Directory.GetCurrentDirectory());
+
+            assemblies.AddRange(from fileName in fileEntries
+                                where fileName.EndsWith("Cockpit.Core.Plugins.dll")
+                                select Assembly.LoadFile(fileName));
+            //assemblies.AddRange(from fileName in fileEntries
+            //                    where fileName.Contains("ViewsX.dll")
+            //                    select Assembly.LoadFile(fileName));
+            return assemblies;
+
+
         }
 
         private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)

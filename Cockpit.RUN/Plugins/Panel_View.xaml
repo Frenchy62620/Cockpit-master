@@ -1,0 +1,81 @@
+﻿<UserControl 
+    x:Class="Cockpit.RUN.Plugins.Panel_View"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:cal="http://www.caliburnproject.org"
+
+    mc:Ignorable="d" d:DesignHeight="150" d:DesignWidth="70" ToolTip="{Binding ToolTip}"    Style="{StaticResource PanelAnimation}"
+    VerticalAlignment = "Top" HorizontalAlignment = "Left" ClipToBounds="True" Background="Transparent"
+    cal:Message.Attach="[Event MouseDown] = [Action MouseLeftButtonDownOnPanelView($source, $mousepoint, $eventArgs)]"  >
+    <!--cal:Message.Attach="[Event MouseEnter] = [Action MouseEnter($eventArgs)];
+                        [Event MouseDoubleClick] = [Action MouseDoubleClickOnPanel($dataContext, $eventArgs)]"-->
+    <UserControl.Resources>
+        <DataTemplate x:Key="BoxDragAdorner">
+            <Grid x:Name="Over">
+
+                <Rectangle Width="{Binding SelectedToolBoxItem.ImageWidth}" 
+                       Height="{Binding SelectedToolBoxItem.ImageHeight}" 
+                       StrokeThickness="4" Stroke="Green" />
+                <Image  Source="{Binding SelectedToolBoxItem.FullImageName}" 
+                            Width="{Binding SelectedToolBoxItem.ImageWidth}" 
+                            Height="{Binding SelectedToolBoxItem.ImageHeight}" HorizontalAlignment="Center"
+                            />
+                <!--, diag:PresentationTraceSources.TraceLevel=High-->
+                <!--<TextBlock Text="{Binding FullName}" HorizontalAlignment="Center"/>-->
+
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid  Width="{Binding Path=Layout.Width}" Height="{Binding Path=Layout.Height}" >
+
+        <Rectangle Width="{Binding Layout.Width}" Height="{Binding Layout.Height}" StrokeThickness="4" Stroke="Black" 
+                           HorizontalAlignment="Left" VerticalAlignment="Top" Fill="{Binding Appearance.FillColor}" />
+
+        <Rectangle Width="{Binding Layout.Width}" Height="{Binding Layout.Height}" StrokeThickness="4" Stroke="Black" 
+                           HorizontalAlignment="Left" VerticalAlignment="Top" >
+            <Rectangle.Fill>
+                <ImageBrush ImageSource="{Binding Appearance.BackgroundImage}" 
+                                    Viewport="0,0,1,1" Stretch="Fill"
+                                    ViewportUnits="RelativeToBoundingBox" 
+                                    TileMode="None" />
+            </Rectangle.Fill>
+        </Rectangle>
+        <ItemsControl ItemsSource="{Binding MyCockpitViewModels}" >
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <!--<Border BorderThickness="4" BorderBrush="Red" Visibility="Visible" Margin="0,0,0,0">-->
+                    <AdornerDecorator >
+                        <ContentControl cal:View.Model="{Binding}" UseLayoutRounding="True"
+                            cal:Message.Attach="[Event MouseLeftButtonDown] = [Action MouseLeftButtonDownOnContentControl($source, $dataContext, $eventArgs)];
+                                                [Event Loaded] = [Action ContentControlLoaded($source, $dataContext)]">
+                            <ContentControl.RenderTransform>
+                                <TransformGroup>
+                                    <RotateTransform Angle="{Binding Layout.AngleRotation}" />
+                                </TransformGroup>
+                            </ContentControl.RenderTransform>
+                        </ContentControl>
+                    </AdornerDecorator>
+                    <!--</Border>-->
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <!-- Replace panel with a canvas -->
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
+            <!-- Set position of each element in the canvas -->
+            <ItemsControl.ItemContainerStyle>
+                <Style TargetType="{x:Type ContentPresenter}">
+                    <Setter Property="Canvas.Left" Value="{Binding Layout.UCLeft}" />
+                    <Setter Property="Canvas.Top" Value="{Binding Layout.UCTop}" />
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+
+        </ItemsControl>
+    </Grid>
+</UserControl>

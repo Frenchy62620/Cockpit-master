@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
-using Cockpit.Core.Common.Events;
+using Cockpit.Core.Plugins.Plugins;
+using Cockpit.Core.Plugins.Plugins.Properties;
 using Cockpit.GUI.Events;
 using Cockpit.GUI.Plugins.Properties;
 using Cockpit.GUI.Views.Profile;
@@ -15,12 +16,13 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using Cockpit.Core.Plugins.Events;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.GUI.Plugins
 {
     public class Panel_ViewModel : PluginModel, IDropTarget, Core.Common.Events.IHandle<RemovePanelEvent>,
-                                                             Core.Common.Events.IHandle<VisibilityPanelEvent>
+                                                             Core.Common.Events.IHandle<Core.Plugins.Events.VisibilityPanelEvent>
     {
         private readonly IEventAggregator eventAggregator;
         private readonly IResolutionRoot resolutionRoot;
@@ -123,7 +125,7 @@ namespace Cockpit.GUI.Plugins
 
         public override PluginProperties[] GetProperties()
         {
-            return new PluginProperties[] { Layout, Appearance};
+            return new PluginProperties[] { Layout, Appearance };
         }
 
 
@@ -497,7 +499,7 @@ namespace Cockpit.GUI.Plugins
         }
 
         #endregion
-        public void Handle(VisibilityPanelEvent message)
+        public void Handle(Core.Plugins.Events.VisibilityPanelEvent message)
         {
             if (!NameUC.Equals(message.PanelName)) return;
 

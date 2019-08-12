@@ -193,14 +193,6 @@
       <DependentUpon>Panel_View.xaml</DependentUpon>
     </Compile>
     <Compile Include="Plugins\Panel_ViewModel.cs" />
-    <Compile Include="Plugins\PluginModel.cs" />
-    <Compile Include="Plugins\PluginProperties.cs" />
-    <Compile Include="Plugins\Properties\EnumBindingSourceExtension.cs" />
-    <Compile Include="Plugins\Properties\EnumDescriptionTypeConverter.cs" />
-    <Compile Include="Plugins\Properties\LayoutPropertyView.xaml.cs">
-      <DependentUpon>LayoutPropertyView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Plugins\Properties\LayoutPropertyViewModel.cs" />
     <Compile Include="Plugins\Properties\MonitorImageAlignment.cs" />
     <Compile Include="Plugins\Properties\MonitorPropertyView.xaml.cs">
       <DependentUpon>MonitorPropertyView.xaml</DependentUpon>
@@ -211,35 +203,6 @@
     </Compile>
     <Compile Include="Plugins\Properties\PanelAppearanceViewModel.cs" />
     <Compile Include="Plugins\Properties\PanelSideApparition.cs" />
-    <Compile Include="Plugins\Properties\PushButtonAppearanceView.xaml.cs">
-      <DependentUpon>PushButtonAppearanceView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Plugins\Properties\PushButtonAppearanceViewModel.cs" />
-    <Compile Include="Plugins\Properties\PushButtonBehaviorView.xaml.cs">
-      <DependentUpon>PushButtonBehaviorView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Plugins\Properties\PushButtonBehaviorViewModel.cs" />
-    <Compile Include="Plugins\Properties\PushButtonGlyph.cs" />
-    <Compile Include="Plugins\Properties\PushButtonType.cs" />
-    <Compile Include="Plugins\Properties\LayoutRotation.cs" />
-    <Compile Include="Plugins\Properties\SwitchAppearanceView.xaml.cs">
-      <DependentUpon>SwitchAppearanceView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Plugins\Properties\SwitchAppearanceViewModel.cs" />
-    <Compile Include="Plugins\Properties\SwitchBehaviorView.xaml.cs">
-      <DependentUpon>SwitchBehaviorView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Plugins\Properties\SwitchBehaviorViewModel.cs" />
-    <Compile Include="Plugins\Properties\SwitchPosition.cs" />
-    <Compile Include="Plugins\Properties\SwitchType.cs" />
-    <Compile Include="Plugins\PushButton_View.xaml.cs">
-      <DependentUpon>PushButton_View.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Plugins\PushButton_ViewModel.cs" />
-    <Compile Include="Plugins\Switch_View.xaml.cs">
-      <DependentUpon>Switch_View.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Plugins\Switch_ViewModel.cs" />
     <Compile Include="Result\CancelResult.cs" />
     <Compile Include="Result\CloseAppResult.cs" />
     <Compile Include="Result\CloseResult.cs" />
@@ -336,39 +299,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Plugins\Properties\LayoutPropertyView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Plugins\Properties\MonitorPropertyView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Plugins\Properties\PanelAppearanceView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Plugins\Properties\PushButtonAppearanceView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Plugins\Properties\PushButtonBehaviorView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Plugins\Properties\SwitchAppearanceView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Plugins\Properties\SwitchBehaviorView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Plugins\PushButton_View.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Plugins\Switch_View.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -474,6 +409,10 @@
     <ProjectReference Include="..\Cockpit.Core.Contracts\Cockpit.Core.Contracts.csproj">
       <Project>{58285BD6-810D-4BBD-8249-230C3B0AC76F}</Project>
       <Name>Cockpit.Core.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cockpit.Core.Plugins\Cockpit.Core.Plugins.csproj">
+      <Project>{10b49d6c-3de3-49b2-8107-2c963e472ff7}</Project>
+      <Name>Cockpit.Core.Plugins</Name>
     </ProjectReference>
     <ProjectReference Include="..\Cockpit.Core\Cockpit.Core.csproj">
       <Project>{BCF7160F-9CB9-46E5-91CA-EE15E1D5ED54}</Project>

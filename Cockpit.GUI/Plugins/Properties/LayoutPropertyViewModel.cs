@@ -17,8 +17,10 @@ namespace Cockpit.GUI.Plugins.Properties
             if (IsModeEditor)
             {
                 //var view = ViewLocator.LocateForModel(this, null, null);
-                //ViewModelBinder.Bind(this, view, null);
-                
+                //ViewModelBinder.Bind(this, new LayoutPropertyView1(), null);
+                //ViewLocator.NameTransformer.AddRule(@"ViewModel", @"View1");
+                var view = ViewLocator.LocateForModel(this, null, null);
+                //var names = ViewLocator.TransformName(this.ToString(), null);
             }
 
             NameUC = (string)settings[2];
@@ -36,8 +38,8 @@ namespace Cockpit.GUI.Plugins.Properties
             Width = width;
             Height = height;
 
-            this.eventAggregator = eventAggregator;
-            eventAggregator.Subscribe(this);
+            //this.eventAggregator = eventAggregator;
+            //eventAggregator.Subscribe(this);
 
             Name = "Layout";
         }

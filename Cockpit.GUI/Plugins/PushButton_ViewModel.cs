@@ -1,5 +1,6 @@
 ﻿using Cockpit.GUI.Events;
 using Cockpit.GUI.Plugins.Properties;
+using System;
 using System.Windows;
 using System.Windows.Input;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
@@ -21,6 +22,7 @@ namespace Cockpit.GUI.Plugins
 
         public PushButton_ViewModel(IEventAggregator eventAggregator, params object[] settings)
         {
+            //Layout = (LayoutPropertyViewModel)Activator.CreateInstance(Type.GetType("Cockpit.GUI.Plugins.Properties.LayoutPropertyViewModel"), settings);
             Layout = new LayoutPropertyViewModel(eventAggregator, settings);
             Appearance = new PushButtonAppearanceViewModel(eventAggregator, settings);
             Behavior = new PushButtonBehaviorViewModel(eventAggregator, settings);

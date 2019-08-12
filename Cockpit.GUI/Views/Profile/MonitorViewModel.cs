@@ -1,5 +1,7 @@
 ﻿using Caliburn.Micro;
 using Cockpit.Core.Common;
+using Cockpit.Core.Plugins.Plugins;
+using Cockpit.Core.Plugins.Plugins.Properties;
 using Cockpit.GUI.Events;
 using Cockpit.GUI.Plugins;
 using Cockpit.GUI.Plugins.Properties;
@@ -136,7 +138,7 @@ namespace Cockpit.GUI.Views.Profile
             Ninject.Parameters.Parameter[] param;
 
             Ninject.Parameters.Parameter[][] paramproperties = null;
-            string[] properties;
+            //string[] properties;
             string model;
             var AngleSwitch = 90;
             if (groupname.StartsWith("PushButton"))
@@ -160,10 +162,10 @@ namespace Cockpit.GUI.Views.Profile
                                                                         }, true)
                 };
 
-                model = "Cockpit.GUI.Plugins.PushButton_ViewModel";
-                properties = new string[] { "Cockpit.GUI.Plugins.Properties.LayoutPropertyViewModel",
-                                            "Cockpit.GUI.Plugins.Properties.PushButtonAppearanceViewModel",
-                                            "Cockpit.GUI.Plugins.Properties.PushButtonBehaviorViewModel"};
+                model = "Cockpit.Core.Plugins.Plugins.PushButton_ViewModel, Cockpit.Core.Plugins";
+                //properties = new string[] { "Cockpit.Core.Plugins.Plugins.Properties.LayoutPropertyViewModel",
+                //                            "Cockpit.Core.Plugins.Plugins.Properties.PushButtonAppearanceViewModel",
+                //                            "Cockpit.Core.Plugins.Plugins.Properties.PushButtonBehaviorViewModel"};
 
 
 
@@ -220,8 +222,8 @@ namespace Cockpit.GUI.Views.Profile
                 };
 
                 model = "Cockpit.GUI.Plugins.Panel_ViewModel";
-                properties = new string[] { "Cockpit.GUI.Plugins.Properties.LayoutPropertyViewModel",
-                                            "Cockpit.GUI.Plugins.Properties.PanelAppearanceViewModel"};
+                //properties = new string[] { "Cockpit.Core.Plugins.Plugins.Properties.LayoutPropertyViewModel",
+                //                            "Cockpit.GUI.Plugins.Properties.PanelAppearanceViewModel"};
             }
             else
             {
@@ -240,8 +242,8 @@ namespace Cockpit.GUI.Views.Profile
                             2, 1d, 2, 3 }, true)
                 };
 
-                model = "Cockpit.GUI.Plugins.Switch_ViewModel";
-                properties = new string[] { "", "", "" };
+                model = "Cockpit.Core.Plugins.Plugins.Switch_ViewModel, Cockpit.Core.Plugins";
+                //properties = new string[] { "", "", "" };
             }
 
             var typeClass = Type.GetType(model);

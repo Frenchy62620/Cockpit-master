@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using Cockpit.Core.Plugins.Plugins;
 using Cockpit.GUI.Events;
 using System;
 using System.Collections.Generic;

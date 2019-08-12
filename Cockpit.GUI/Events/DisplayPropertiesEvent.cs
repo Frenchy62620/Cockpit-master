@@ -1,9 +1,4 @@
-﻿using Cockpit.GUI.Plugins;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Cockpit.Core.Plugins.Plugins;
 
 namespace Cockpit.GUI.Events
 {

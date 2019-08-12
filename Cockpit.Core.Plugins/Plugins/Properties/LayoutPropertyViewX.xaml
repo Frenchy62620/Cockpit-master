@@ -1,0 +1,134 @@
+<UserControl x:Class="Cockpit.Core.Plugins.Plugins.Properties.LayoutPropertyViewX"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:pe="clr-namespace:Cockpit.Core.Plugins.Plugins.Properties"
+    xmlns:cal="http://www.caliburnproject.org"             
+    mc:Ignorable="d" 
+    Height="Auto" d:DesignWidth="180">
+    <UserControl.Resources>
+        <Style TargetType="{x:Type TextBox}">
+            <Setter Property="Validation.ErrorTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <DockPanel LastChildFill="True">
+                            <TextBlock DockPanel.Dock="Right" 
+                        Foreground="Red"
+                        FontSize="12pt">
+                        *
+                            </TextBlock>
+                            <Border BorderBrush="Red" BorderThickness="1">
+                                <AdornedElementPlaceholder />
+                            </Border>
+                        </DockPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="ToolTip"
+                Value="{Binding RelativeSource={RelativeSource Self}, 
+                       Path=(Validation.Errors)[0].ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <Grid Background="Transparent" Margin="4">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0" Grid.Row="0" FontSize="10" HorizontalAlignment="Right" Content="Name"/>
+        <TextBox Grid.Column="1" Grid.Row="0" FontSize="10" Margin="2" Text="{Binding NameUC, ValidatesOnDataErrors=True}" 
+                 cal:Message.Attach="[Event GotFocus]=[Action GotFocus($source, $eventArgs)];[Event LostFocus]=[Action LostFocus($source, $eventArgs)]"/>
+        <Label Grid.Column="0" Grid.Row="1" FontSize="10" HorizontalAlignment="Right" Content="Left"/>
+        <TextBox Grid.Column="1" Grid.Row="1" FontSize="10" Text="{Binding Path=UCLeft, Mode=TwoWay}" Margin="2" />
+        <Label Grid.Column="0" Grid.Row="2" FontSize="10" HorizontalAlignment="Right" Content="Top"/>
+        <TextBox Grid.Column="1" Grid.Row="2" FontSize="10" Text="{Binding Path=UCTop, Mode=TwoWay}" Margin="2" />
+        <DockPanel Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" >
+            <Grid DockPanel.Dock="Left" Width="25" Height="30" cal:Message.Attach="[Event MouseLeftButtonDown] = [Action ChangeLockUnlock()]"> 
+                <Image x:Name="SwitchUp" Source="{StaticResource Unlocker}" Stretch="Uniform" >
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Setter Property="Visibility" Value="Hidden" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Linked}" Value="False">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                    <Setter Property="ToolTip" Value="Width and Height are not linked - Click to link"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+
+                <Image x:Name="SwitchMiddle" Source="{StaticResource Locker}" Stretch="Uniform">
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Setter Property="Visibility" Value="Hidden" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Linked}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                    <Setter Property="ToolTip" Value="Width and Height are linked - Click to cut"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+            </Grid>
+            <!--<Rectangle Width="25" Height="35" DockPanel.Dock="Left">
+                
+            </Rectangle>-->
+            <!--<ToggleButton x:Name="Link" DockPanel.Dock="Left" FontSize="10" HorizontalAlignment="Left" VerticalAlignment="Center" Height="35" Width="25"  BorderBrush="Transparent" 
+                IsChecked="{Binding IsLocked}" >
+                <Image Stretch="Uniform" >
+                    <Image.Style>
+                        <Style TargetType="Image">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=Link, Path=IsChecked}" Value="False">
+                                    <Setter Property="Source"  Value="{StaticResource Unlocker}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ElementName=Link,Path=IsChecked}" Value="True">
+                                    <Setter Property="Source" Value="{StaticResource Locker}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+            </ToggleButton>-->
+            <StackPanel>
+                <Label  FontSize="10"  Content="Width"/>
+                <Label FontSize="10" Content="Height"/>
+            </StackPanel >
+
+            <StackPanel >
+                <TextBox DockPanel.Dock="Right"   FontSize="10" Text="{Binding Path=Width,Mode=TwoWay}" Margin="2" 
+                         cal:Message.Attach = "[Event LostFocus] = [Action WHHaveFocus($source)]"/>
+                <TextBox DockPanel.Dock="Right"   FontSize="10" Text="{Binding Path=Height,Mode=TwoWay}" Margin="2" 
+                         cal:Message.Attach = "[Event LostFocus] = [Action WHHaveFocus($source)]"/>
+            </StackPanel >
+
+        </DockPanel>
+        <Label Grid.Column="0" Grid.Row="6" FontSize="10" HorizontalAlignment="Right" Content="Rotation">
+            <Label.ToolTip>Rotates display of this control.</Label.ToolTip>
+        </Label>
+        <ComboBox Grid.Column="1" Grid.Row="6" Margin="2" FontSize="10" HorizontalAlignment="Left" 
+                  ItemsSource="{Binding Source={pe:EnumBindingSource {x:Type pe:LayoutRotation}}}"  
+                  SelectedItem="{Binding SelectedSwitchRotation}" />
+        <!--ItemsSource="{Binding Source={StaticResource Rotations}, Path=DisplayNames}" SelectedItem="{Binding Path=Control.Rotation, Converter={StaticResource Rotations}}"-->
+        <Label Grid.Column="0" Grid.Row="7" FontSize="10" HorizontalAlignment="Right" Content="Hidden">
+            <Label.ToolTip>When checked this control will default to being hidden when the profile is loaded or reset.</Label.ToolTip>
+        </Label>
+        <CheckBox Grid.Column="1" Grid.Row="7" VerticalAlignment="Center" HorizontalAlignment="Left" IsChecked="{Binding Path=IsDefaultHidden}" />
+    </Grid>
+</UserControl>
