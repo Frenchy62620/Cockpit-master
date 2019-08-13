@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Cockpit.Core.Common.CustomControls
+namespace Cockpit.Core.Plugins.Common.CustomControls
 {
     public interface IPropertyNotification : INotifyPropertyChanged
     {

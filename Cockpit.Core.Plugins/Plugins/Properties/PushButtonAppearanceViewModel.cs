@@ -1,4 +1,4 @@
-﻿using Cockpit.Core.Common.CustomControls;
+﻿using Cockpit.Core.Plugins.Common.CustomControls;
 using System;
 using System.Collections.Generic;
 using System.Linq;

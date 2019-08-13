@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:ip="clr-namespace:Cockpit.Core.Common.CustomControls" 
+             xmlns:ip="clr-namespace:Cockpit.Core.Plugins.Common.CustomControls" 
              mc:Ignorable="d"  Height="Auto"              d:DesignWidth="180">
 
     <UserControl.Resources>
@@ -32,7 +32,7 @@
         <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Margin="4,10,2,2" FontSize="12" FontWeight="Bold" Text="Knob" />
         <Label Grid.Column="0" Grid.Row="1" FontSize="10" HorizontalAlignment="Right" Content="Image"
                ToolTip="Image displayed when the switch is in position zero (down)." />
-        <ip:ImagePickerView Grid.Column="1" Grid.Row="1" ImageFilename="{Binding PositionImage0, Mode=TwoWay}" Grid.ColumnSpan="2" />
+        <ip:ImagePickerView Grid.Column="1" Grid.Row="1" ImageFilename="{Binding Image, Mode=TwoWay}" Grid.ColumnSpan="2" />
 
         <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Orientation="Horizontal">
             <CheckBox x:Name="IsLinesVisible" Margin="4,11,2,2" IsChecked="True" 
@@ -51,10 +51,10 @@
             </Grid.RowDefinitions>
             
             <Label Grid.Column="0" Grid.Row="0" FontSize="10" HorizontalAlignment="Right" Content="Color" ToolTip="Color used to draw the lines." />
-            <ip:ColorWellView  Grid.Column="1"  Grid.Row="0" Color="{Binding BackgroundColor, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="0,2" />
+            <ip:ColorWellView  Grid.Column="1"  Grid.Row="0" Color="{Binding LineColor, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="0,2" />
 
             <Label  Grid.Column="0" Grid.Row="1" FontSize="10" HorizontalAlignment="Right" Content="Thickness" ToolTip="How thick the lines will be rendered." />
-            <TextBox  Grid.Column="1" Grid.Row="1" FontSize="10" Text="{Binding Path=Control.LineThickness}" Margin="2" />
+            <TextBox  Grid.Column="1" Grid.Row="1" FontSize="10" Text="{Binding Path=LineThickness}" Margin="2" />
 
             <Label Grid.Column="0" Grid.Row="2" FontSize="10" HorizontalAlignment="Right" Content="Length" ToolTip="How far the lines will extend from the knob center." />
             <Slider Grid.Row="2" Grid.Column="1" Minimum="0.1" Maximum="1" Value="{Binding Control.LineLength}" Margin="4,4,4,15" TickPlacement="TopLeft" TickFrequency="0.1" />
@@ -80,17 +80,17 @@
                 ToolTip="How thick the lines will be rendered." />
             <ip:FontPickerView Grid.Column="1" Grid.Row="0" TextFormat="{Binding TextFormat}" HorizontalAlignment="Left" Margin="2" />
 
-            <Label Grid.Column="0" Grid.Row="1" FontSize="10" HorizontalAlignment="Right" Content="Color" ToolTip="Color used to draw the lines." />
-            <ip:ColorWellView  Grid.Column="1"  Grid.Row="1" Color="{Binding BackgroundColor, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="0,2"  />
+            <Label Grid.Column="0" Grid.Row="1" FontSize="10" HorizontalAlignment="Right" Content="Color" ToolTip="Color used to draw the labels." />
+            <ip:ColorWellView  Grid.Column="1"  Grid.Row="1" Color="{Binding LabelColor, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="0,2"  />
 
             <Label  Grid.Column="0" Grid.Row="2" FontSize="10" HorizontalAlignment="Right" Content="Height" ToolTip="The maximum height allowed for an individual label. (0 = unlimited)" />
-            <TextBox  Grid.Column="1" Grid.Row="2" FontSize="10" Text="{Binding Path=Control.LineThickness}" Margin="2" />
+            <TextBox  Grid.Column="1" Grid.Row="2" FontSize="10" Text="{Binding Path=LabelHeight}" Margin="2" />
 
             <Label  Grid.Column="0" Grid.Row="3" FontSize="10" HorizontalAlignment="Right" Content="Width" ToolTip="The maximum width allowed for an individual label. (0 = unlimited)" />
-            <TextBox  Grid.Column="1" Grid.Row="3" FontSize="10" Text="{Binding Path=Control.LineThickness}" Margin="2" />
+            <TextBox  Grid.Column="1" Grid.Row="3" FontSize="10" Text="{Binding Path=LabelWidth}" Margin="2" />
 
             <Label Grid.Column="0" Grid.Row="4" FontSize="10" HorizontalAlignment="Right" Content="Distance" ToolTip="Distance from the knob center the labels will be rendered." />
-            <Slider Grid.Row="4" Grid.Column="1" Minimum="0.1" Maximum="1" Value="{Binding Control.LineLength}" Margin="4" TickPlacement="TopLeft" TickFrequency="0.1" />
+            <Slider Grid.Row="4" Grid.Column="1" Minimum="0.1" Maximum="1" Value="{Binding LineLength}" Margin="4" TickPlacement="TopLeft" TickFrequency="0.1" />
         </Grid>
         <!--<Label Grid.Column="0" Grid.Row="2" FontSize="10" HorizontalAlignment="Right" Content="One"
                ToolTip="Image displayed when the switch is in position one (center)." />

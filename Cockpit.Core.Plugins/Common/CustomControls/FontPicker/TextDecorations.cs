@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Cockpit.Core.Common.CustomControls
+namespace Cockpit.Core.Plugins.Common.CustomControls
 {
 
 

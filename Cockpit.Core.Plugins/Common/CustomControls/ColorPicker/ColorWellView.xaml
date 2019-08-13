@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Cockpit.Core.Common.CustomControls.ColorWellView"
+﻿<UserControl x:Class="Cockpit.Core.Plugins.Common.CustomControls.ColorWellView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Width="50" Height="30"
     x:Name="myColorWell">

@@ -1,4 +1,4 @@
-namespace Cockpit.Core.Common.CustomControls
+namespace Cockpit.Core.Plugins.Common.CustomControls
 {
     using System;
     using System.Collections.Generic;

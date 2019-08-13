@@ -5,7 +5,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace Cockpit.Core.Common.CustomControls
+namespace Cockpit.Core.Plugins.Common.CustomControls
 {
     public class ColorPicker : Control
     {

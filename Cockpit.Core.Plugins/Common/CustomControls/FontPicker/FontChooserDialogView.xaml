@@ -1,7 +1,7 @@
-<Window x:Class="Cockpit.Core.Common.CustomControls.FontChooserDialogView"
+<Window x:Class="Cockpit.Core.Plugins.Common.CustomControls.FontChooserDialogView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:Cockpit.Core.Common.CustomControls"
+        xmlns:local="clr-namespace:Cockpit.Core.Plugins.Common.CustomControls"
         Title="Choose Font" Height="483" Width="544" WindowStyle="ToolWindow" WindowStartupLocation="CenterOwner"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>

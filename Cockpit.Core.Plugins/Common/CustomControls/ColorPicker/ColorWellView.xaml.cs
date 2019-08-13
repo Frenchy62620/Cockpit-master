@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace Cockpit.Core.Common.CustomControls
+namespace Cockpit.Core.Plugins.Common.CustomControls
 {
     public partial class ColorWellView : UserControl, INotifyPropertyChanged
     {

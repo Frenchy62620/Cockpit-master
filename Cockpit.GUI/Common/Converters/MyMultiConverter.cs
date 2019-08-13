@@ -57,22 +57,43 @@ namespace Cockpit.GUI.Common.Converters
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
+            double width;
+            double height;
+
+            if (values.Length == 3)
+            {
+                width = (double)values[0];
+                height = (double)values[1];
+                double LineThickness = (double)values[2];
+                Point Center = new Point(width / 2d, height / 2d);
+
+                RotateTransform tr = new RotateTransform(225, Center.X, Center.Y);
+
+
+                LineGeometry line = new LineGeometry(Center, new Point(Center.X, 0), tr);
+                return line;
+            }
+
+
+
+
+
             int glyph = (int)values[0];
 
             if (glyph == 0)
                 return null;
 
-            if (values.Length == 2 ) // Fill Binding
+            if (values.Length == 2 ) // Path.Fill Binding
             {
                 if (glyph == 2 || glyph == 3)
                     return new SolidColorBrush((Color)values[1]);
                 else
                     return null;
             }
-
+            // Path.Data binding
             double glyphScale = (double)values[1];
-            double width = (double)values[2];
-            double height = (double)values[3];
+            width = (double)values[2];
+            height = (double)values[3];
             switch(glyph)
             {
                 case 1:
@@ -142,6 +163,7 @@ namespace Cockpit.GUI.Common.Converters
                     PathGeometry geometry2 = new PathGeometry();
                     geometry2.Figures.Add(figure);
                     return geometry2;
+
 
                 default:
                     return null;

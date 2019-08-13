@@ -51,12 +51,20 @@ namespace Cockpit.GUI.Views.Profile.Panels
 
                 foreach (string file in Directory.GetFiles(subdir))
                 {
-                    var End = "_0.png";
-                    if (groupname.Contains("Panel"))
-                        End = ".png";
-                    else if (!file.EndsWith(End)) continue;
+                    string shortImageName;
+                    if (groupname.Equals("RotarySwitch"))
+                    {
+                        shortImageName = file.Split('\\').Last();
+                    }
+                    else
+                    {
+                        var End = "_0.png";
+                        if (groupname.Contains("Panel"))
+                            End = ".png";
+                        else if (!file.EndsWith(End)) continue;
 
-                    var shortImageName = file.Split('\\').Last().Replace(End, "");
+                        shortImageName = file.Split('\\').Last().Replace(End, "");
+                    }
                     //System.Drawing.Image img = System.Drawing.Image.FromStream;
 
                     getSizeOfImage(file, out int width, out int height);

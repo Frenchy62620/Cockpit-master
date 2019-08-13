@@ -10,15 +10,15 @@ namespace Cockpit.Core.Plugins.Plugins
         private readonly IEventAggregator eventAggregator;
 
         public LayoutPropertyViewModel Layout { get; }
-        public SwitchAppearanceViewModel Appearance { get; }
-        public SwitchBehaviorViewModel Behavior { get; }
+        public RotarySwitchAppearanceViewModel Appearance { get; }
+        public RotarySwitchBehaviorViewModel Behavior { get; }
 
 
         public RotarySwitch_ViewModel(IEventAggregator eventAggregator, params object[] settings)
         {
             Layout = new LayoutPropertyViewModel(eventAggregator, settings);
-            Behavior = new SwitchBehaviorViewModel(eventAggregator, settings);
-            Appearance = new SwitchAppearanceViewModel(eventAggregator, Behavior, settings);
+            Behavior = new RotarySwitchBehaviorViewModel(eventAggregator, settings);
+            Appearance = new RotarySwitchAppearanceViewModel(eventAggregator, Behavior, settings);
 
             NameUC = (string)settings[2];
 
@@ -67,73 +67,11 @@ namespace Cockpit.Core.Plugins.Plugins
         public void MouseLeftButtonDownOnUC(IInputElement elem, Point pos, MouseEventArgs e)
         {
 
-
-            //e.Handled = true;
-            //var r = elem as Rectangle;
-        //[Description("On - On")]
-        //OnOn,
-        //[Description("On - Mom")]
-        //OnMom,
-        //[Description("Mom - On")]
-        //MomOn,
-        //[Description("On - On - On")]
-        //OnOnOn,
-        //[Description("On - On - Mom")]
-        //OnOnMom,
-        //[Description("Mom - On - On")]
-        //MomOnOn,
-        //[Description("Mom - On - Mom")]
-        //MomOnMom
-            switch (Behavior.SelectedSwitchTypeIndex)
-            {
-                case 0:
-                case 1:
-                case 2:
-                    Appearance.IndexImage = 1 - Appearance.IndexImage;
-                    break;
-                default:
-                    switch(Layout.AngleRotation)
-                    {
-                        case 0:
-                        case 180:
-                            if (pos.Y < Layout.Height / 2)
-                                Appearance.IndexImage = Appearance.IndexImage == 1 ? 2 : 1;
-                            else
-                                Appearance.IndexImage = Appearance.IndexImage == 1 ? 0 : 1;
-                            break;
-                        case 90:
-                        case 270:
-                            if (pos.Y < Layout.Height / 2)
-                                Appearance.IndexImage = Appearance.IndexImage == 1 ? 2 : 1;
-                            else
-                                Appearance.IndexImage = Appearance.IndexImage == 1 ? 0 : 1;
-                            break;
-                    }
-                    break;
-            }
-             //((UIElement)elem).CaptureMouse();
-            Mouse.Capture((UIElement)elem);
         }
 
         public void MouseLeftButtonUp()
         {
-            switch (Behavior.SelectedSwitchTypeIndex)
-            {
-                case 1:
-                case 2:
-                    Appearance.IndexImage = 1 - Appearance.IndexImage;
-                    break;
-                case 4:
-                    if (Appearance.IndexImage == 2) Appearance.IndexImage = 1;
-                    break;
-                case 5:
-                    if (Appearance.IndexImage == 0) Appearance.IndexImage = 1;
-                    break;
-                case 6:
-                    Appearance.IndexImage = 1;
-                    break;
-            }
-            Mouse.Capture(null);
+
         }
 
         public void MouseEnterInUC(MouseEventArgs e)

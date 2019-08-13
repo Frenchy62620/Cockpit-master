@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:ip="clr-namespace:Cockpit.Core.Common.CustomControls" 
+             xmlns:ip="clr-namespace:Cockpit.Core.Plugins.Common.CustomControls" 
              xmlns:pe="clr-namespace:Cockpit.Core.Plugins.Plugins.Properties"
              xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d"        Height="Auto" d:DesignWidth="180">

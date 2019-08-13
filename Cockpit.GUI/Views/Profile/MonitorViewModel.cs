@@ -135,11 +135,11 @@ namespace Cockpit.GUI.Views.Profile
                 nameUC = $"{nameUC}_{nbr}";
             }
 
-            Ninject.Parameters.Parameter[] param;
+            Ninject.Parameters.Parameter[] param = null;
 
             Ninject.Parameters.Parameter[][] paramproperties = null;
             //string[] properties;
-            string model;
+            string model="";
             var AngleSwitch = 90;
             if (groupname.StartsWith("PushButton"))
             {
@@ -225,7 +225,7 @@ namespace Cockpit.GUI.Views.Profile
                 //properties = new string[] { "Cockpit.Core.Plugins.Plugins.Properties.LayoutPropertyViewModel",
                 //                            "Cockpit.GUI.Plugins.Properties.PanelAppearanceViewModel"};
             }
-            else
+            else if (groupname.StartsWith("Switch"))
             {
                 var FullImage1 = FullImage.Replace("_0.png", "_1.png");
                 var FullImage2 = FullImage.Replace("_0.png", "_2.png");
@@ -245,7 +245,26 @@ namespace Cockpit.GUI.Views.Profile
                 model = "Cockpit.Core.Plugins.Plugins.Switch_ViewModel, Cockpit.Core.Plugins";
                 //properties = new string[] { "", "", "" };
             }
+            else if (groupname.StartsWith("RotarySwitch"))
+            {
+                var FullImage1 = FullImage.Replace("_0.png", "_1.png");
+                var FullImage2 = FullImage.Replace("_0.png", "_2.png");
+                AngleSwitch = 0;
+                param = new Ninject.Parameters.Parameter[]
+                {
+                        new ConstructorArgument("settings", new object[]{                                                   //Switch Button
+                            true, this,                                                                                         //0 is in Mode Editor?
+                            $"{nameUC}",                                                                                        //2 name of UC
+                            new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, AngleSwitch },//3 [Left, Top, Width, Height, Angle]
 
+                            FullImage,                                                                                           //4 [images] & startimageposition
+
+                            2, 1d, 2, 3 }, true)
+                };
+
+                model = "Cockpit.Core.Plugins.Plugins.RotarySwitch_ViewModel, Cockpit.Core.Plugins";
+                //properties = new string[] { "", "", "" };
+            }
             var typeClass = Type.GetType(model);
             //var viewmodel = Activator.CreateInstance(typeClass);
             var viewmodel = resolutionRoot.TryGet(typeClass, param);

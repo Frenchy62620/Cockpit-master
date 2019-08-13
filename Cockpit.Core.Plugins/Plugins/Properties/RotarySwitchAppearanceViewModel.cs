@@ -1,4 +1,6 @@
 ﻿using Caliburn.Micro;
+using Cockpit.Core.Plugins.Common.CustomControls;
+using System.Windows.Media;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Core.Plugins.Plugins.Properties
@@ -10,9 +12,9 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
     public class RotarySwitchAppearanceViewModel : PluginProperties
     {
         private readonly IEventAggregator eventAggregator;
-        public SwitchBehaviorViewModel Behavior { get; }
+        public RotarySwitchBehaviorViewModel Behavior { get; }
         public string NameUC { get; set; }
-        public RotarySwitchAppearanceViewModel(IEventAggregator eventAggregator, SwitchBehaviorViewModel behavior, params object[] settings)
+        public RotarySwitchAppearanceViewModel(IEventAggregator eventAggregator, RotarySwitchBehaviorViewModel behavior, params object[] settings)
         {
             Behavior = behavior;
 
@@ -25,20 +27,26 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             NameUC = (string)settings[2];
 
             var index = 4;
-            PositionImage0 = ((string[])settings[index])[0];
-            PositionImage1 = ((string[])settings[index])[1];
-            PositionImage2 = ((string[])settings[index])[2];
 
-            PositionIndicatorImage0 = ((string[])settings[index])[3];
-            PositionIndicatorImage1 = ((string[])settings[index])[4];
-            PositionIndicatorImage2 = ((string[])settings[index++])[5];
-            IndexImage = (int)settings[index++];
+            Image = (string)settings[index];
+            /*
+                        TextFormat = new TextFormat(fontFamily: (string)settings[index++],
+                                        fontStyle: (string)settings[index++],           //Normal, Oblique or Italic  see FontStyles
+                                        fontWeight: (string)settings[index++],          //Thin.... see FontWeight
+                                        fontSize: (double)settings[index++],
+                                        padding: (double[])settings[index++],           //Padding L,T,R,B
+                                        Alignment: (int[])settings[index]               //Left, Center, Right and Top, center, Bottom
+                                       );
 
-            //Has3Images = !string.IsNullOrEmpty(PositionImage2);
-            //hasIndicator = !string.IsNullOrEmpty(PositionIndicatorImage0);
+                        LineThickness = (double)settings[index++];
+                        LabelColor = (Color)settings[++index];
+                        LineColor = (Color)settings[++index];
+            */
 
-            Has3Images = true;
-            HasIndicator = false;
+            LineThickness = 4;
+            LabelColor = Colors.Black;
+            LineColor = Colors.Black;
+
             this.eventAggregator = eventAggregator;
             eventAggregator.Subscribe(this);
 
@@ -49,104 +57,160 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
 
         public string Name { get; set; }
 
-        #region Selection Images
-        private string positionImage0;
-        public string PositionImage0
+        #region Selection Image
+        private string image;
+        public string Image
         {
-            get => positionImage0;
+            get => image;
             set
             {
-                positionImage0 = value;
-                NotifyOfPropertyChange(() => PositionImage0);
+                image = value;
+                NotifyOfPropertyChange(() => Image);
             }
         }
 
-        private string positionImage1;
-        public string PositionImage1
+        private Color _lineColor;
+        public Color LineColor
         {
-            get => positionImage1;
+            get => _lineColor;
             set
             {
-                positionImage1 = value;
-                NotifyOfPropertyChange(() => PositionImage1);
+                _lineColor = value;
+                NotifyOfPropertyChange(() => LineColor);
             }
         }
 
-        private string positionImage2;
-        public string PositionImage2
+        private double _lineThickness;
+        public double LineThickness
         {
-            get => positionImage2;
+            get => _lineThickness;
             set
             {
-                positionImage2 = value;
-                NotifyOfPropertyChange(() => PositionImage2);
+                _lineThickness = value;
+                NotifyOfPropertyChange(() => LineThickness);
             }
         }
 
-        private string positionIndicatorImage0;
-        public string PositionIndicatorImage0
+        private Color _labelColor;
+        public Color LabelColor
         {
-            get => positionIndicatorImage0;
+            get => _labelColor;
             set
             {
-                positionIndicatorImage0 = value;
-                NotifyOfPropertyChange(() => PositionIndicatorImage0);
+                _labelColor = value;
+                NotifyOfPropertyChange(() => LabelColor);
             }
         }
 
-        private string positionIndicatorImage1;
-        public string PositionIndicatorImage1
+        private string _labelHeight;
+        public string LabelHeight
         {
-            get => positionIndicatorImage1;
+            get => _labelHeight;
             set
             {
-                positionIndicatorImage1 = value;
-                NotifyOfPropertyChange(() => PositionIndicatorImage1);
+                _labelHeight = value;
+                NotifyOfPropertyChange(() => LabelHeight);
             }
         }
 
-        private string positionIndicatorImage2;
-        public string PositionIndicatorImage2
+        private string _labelWidth;
+        public string LabelWidth
         {
-            get => positionIndicatorImage2;
+            get => _labelWidth;
             set
             {
-                positionIndicatorImage2 = value;
-                NotifyOfPropertyChange(() => PositionIndicatorImage2);
+                _labelWidth = value;
+                NotifyOfPropertyChange(() => LabelWidth);
             }
         }
 
-        private int indexImage;
-        public int IndexImage
+        private TextFormat textformat;
+        public TextFormat TextFormat
         {
-            get { return indexImage; }
+            get => textformat;
+
             set
             {
-                indexImage = value;
-                NotifyOfPropertyChange(() => IndexImage);
+                textformat = value;
+                NotifyOfPropertyChange(() => TextFormat);
             }
         }
 
-        private bool hasIndicator;
-        public bool HasIndicator
-        {
-            get => hasIndicator;
-            set
-            {
-                hasIndicator = value;
-                NotifyOfPropertyChange(() => HasIndicator);
-            }
-        }
-        private bool has3Images;
-        public bool Has3Images
-        {
-            get => has3Images;
-            set
-            {
-                has3Images = value;
-                NotifyOfPropertyChange(() => Has3Images);
-            }
-        }
+        //private string positionIndicatorImage0;
+        //public string PositionIndicatorImage0
+        //{
+        //    get => positionIndicatorImage0;
+        //    set
+        //    {
+        //        positionIndicatorImage0 = value;
+        //        NotifyOfPropertyChange(() => PositionIndicatorImage0);
+        //    }
+        //}
+
+        //private string positionIndicatorImage0;
+        //public string PositionIndicatorImage0
+        //{
+        //    get => positionIndicatorImage0;
+        //    set
+        //    {
+        //        positionIndicatorImage0 = value;
+        //        NotifyOfPropertyChange(() => PositionIndicatorImage0);
+        //    }
+        //}
+
+        //private string positionIndicatorImage1;
+        //public string PositionIndicatorImage1
+        //{
+        //    get => positionIndicatorImage1;
+        //    set
+        //    {
+        //        positionIndicatorImage1 = value;
+        //        NotifyOfPropertyChange(() => PositionIndicatorImage1);
+        //    }
+        //}
+
+        //private string positionIndicatorImage2;
+        //public string PositionIndicatorImage2
+        //{
+        //    get => positionIndicatorImage2;
+        //    set
+        //    {
+        //        positionIndicatorImage2 = value;
+        //        NotifyOfPropertyChange(() => PositionIndicatorImage2);
+        //    }
+        //}
+
+        //private int indexImage;
+        //public int IndexImage
+        //{
+        //    get { return indexImage; }
+        //    set
+        //    {
+        //        indexImage = value;
+        //        NotifyOfPropertyChange(() => IndexImage);
+        //    }
+        //}
+
+        //private bool hasIndicator;
+        //public bool HasIndicator
+        //{
+        //    get => hasIndicator;
+        //    set
+        //    {
+        //        hasIndicator = value;
+        //        NotifyOfPropertyChange(() => HasIndicator);
+        //    }
+        //}
+        //private bool has3Images;
+        //public bool Has3Images
+        //{
+        //    get => has3Images;
+        //    set
+        //    {
+        //        has3Images = value;
+        //        NotifyOfPropertyChange(() => Has3Images);
+        //    }
+        //}
         #endregion
 
 

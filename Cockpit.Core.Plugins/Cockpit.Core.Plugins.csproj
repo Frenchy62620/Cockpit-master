@@ -62,6 +62,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Converters\MyConverter.cs" />
     <Compile Include="Common\CustomControls\ColorPicker\ColorPicker.cs" />
     <Compile Include="Common\CustomControls\ColorPicker\ColorPickerDialogView.xaml.cs">
       <DependentUpon>ColorPickerDialogView.xaml</DependentUpon>
@@ -115,10 +116,7 @@
     <Compile Include="Plugins\Properties\RotarySwitchAppearanceViewX.xaml.cs">
       <DependentUpon>RotarySwitchAppearanceViewX.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Plugins\Properties\RotarySwitchPositionView.xaml.cs">
-      <DependentUpon>RotarySwitchPositionView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Plugins\Properties\RotarySwitchPositionsViewModel.cs" />
+    <Compile Include="Plugins\Properties\RotarySwitchPosition.cs" />
     <Compile Include="Plugins\Properties\SwitchAppearanceViewX.xaml.cs">
       <DependentUpon>SwitchAppearanceViewX.xaml</DependentUpon>
     </Compile>
@@ -194,10 +192,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Plugins\Properties\RotarySwitchPositionView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Plugins\Properties\SwitchAppearanceViewX.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -222,12 +216,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Common\Converters\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

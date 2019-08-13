@@ -21,72 +21,40 @@
     </UserControl.RenderTransform>
 
     <Grid x:Name="Switch"  Width="{Binding Path=Layout.Width}" Height="{Binding Path=Layout.Height}" >
+        
+        <Path StrokeThickness="4" Stroke="Black" >
+            <Path.Data>
+                <MultiBinding Converter="{StaticResource DrawGlyphes}">
+                    <Binding Path="Width" RelativeSource="{RelativeSource AncestorType={x:Type Grid}}"/>
+                    <Binding Path="Height" RelativeSource="{RelativeSource AncestorType={x:Type Grid}}"/>
+                    <Binding Path="Appearance.LineThickness"/>
+                </MultiBinding>
+            </Path.Data>
 
-        <Image x:Name="SwitchUp" Source="{Binding Appearance.PositionImage2, Mode=TwoWay, TargetNullValue={x:Null}}"
-               HorizontalAlignment="Center" VerticalAlignment="Center" >
-            <Image.Style>
-                <Style TargetType="{x:Type Image}">
-                    <Setter Property="Visibility" Value="Hidden" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Appearance.IndexImage}" Value="2">
-                            <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Image.Style>
-        </Image>
+        </Path>
 
-        <Image x:Name="SwitchMiddle" Source="{Binding Appearance.PositionImage1, Mode=TwoWay}"
-               HorizontalAlignment="Center" VerticalAlignment="Center" >
-            <Image.Style>
-                <Style TargetType="{x:Type Image}">
-                    <Setter Property="Visibility" Value="Hidden" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Appearance.IndexImage}" Value="1">
-                            <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Image.Style>
-        </Image>
+        <Image x:Name="Image" Source="{Binding Appearance.Image, Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
-        <Image x:Name="SwitchDown" Source="{Binding Appearance.PositionImage0, Mode=TwoWay}"
-               HorizontalAlignment="Center" VerticalAlignment="Center" >
-            <Image.Style>
-                <Style TargetType="{x:Type Image}">
-                    <Setter Property="Visibility" Value="Hidden" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Appearance.IndexImage}" Value="0">
-                            <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Image.Style>
-        </Image>
 
-        <!--<Rectangle>
+        
+        <!--<Path StrokeThickness="{Binding Appearance.GlyphThickness}" Stroke="{Binding Appearance.GlyphColor, Converter={StaticResource MyconverterColorToSolidColorBrush}}" >
+            <Path.Fill>
+                <MultiBinding Converter="{StaticResource DrawGlyphes}">
+                    <Binding Path="Appearance.GlyphSelected"/>
+                    <Binding Path="Appearance.GlyphColor"/>
+                </MultiBinding>
+            </Path.Fill>
 
-        </Rectangle>-->
-        <!--<Rectangle x:Name="UpperRec" Visibility="Visible" Margin="5,5,0,0"
-                   cal:Message.Attach="[Event MouseLeftButtonDown] = [Action MouseLeftButtonDown($source, $mousepoint, 'true')]; [Event MouseLeftButtonUp] = [Action MouseLeftButtonUp()]"                                      
-                   Width="{Binding ElementName=Switch, Path=Width, Converter={StaticResource MyConverterSize}, ConverterParameter=1 10}"
-                   Height="{Binding ElementName=Switch, Path=Height, Converter={StaticResource MyConverterSize}, ConverterParameter=2 10}"
-                   HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource IsModeEdit}" >
-        </Rectangle>-->
+            <Path.Data>
+                <MultiBinding Converter="{StaticResource DrawGlyphes}">
+                    <Binding Path="Appearance.GlyphSelected"/>
+                    <Binding Path="Appearance.GlyphScale"/>
+                    <Binding Path="Width" RelativeSource="{RelativeSource AncestorType={x:Type Grid}}"/>
+                    <Binding Path="Height" RelativeSource="{RelativeSource AncestorType={x:Type Grid}}"/>
+                    <Binding Path="Appearance.GlyphThickness"/>
+                </MultiBinding>
+            </Path.Data>
+        </Path>-->
 
-        <!--<Rectangle x:Name="LowerRec" Visibility="Visible" Margin="0 0 5 5"
-                   cal:Message.Attach="[Event MouseLeftButtonDown] = [Action MouseLeftButtonDown($source, $mousepoint, 'false')]; [Event MouseLeftButtonUp] = [Action MouseLeftButtonUp()]"                 
-                   Width="{Binding ElementName=UpperRec, Path=Width}"
-                   Height="{Binding ElementName=UpperRec, Path=Height}"
-                   HorizontalAlignment="Right" VerticalAlignment="Bottom" Style="{StaticResource IsModeEdit}" >
-        </Rectangle>-->
-
-        <!--<Rectangle x:Name="DesignFrame"
-                   Width="{Binding ElementName=Switch, Path=Width, UpdateSourceTrigger=PropertyChanged}"
-                   Height="{Binding ElementName=Switch, Path=Height, UpdateSourceTrigger=PropertyChanged}"
-                   Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource IsModeSelected}"
-                   cal:Message.Attach="[Event MouseLeftButtonDown] = [Action MouseLeftButtonDown($source, $mousepoint, $eventArgs)];[Event MouseLeftButtonUp] = [Action MouseLeftButtonUp]" >
-        </Rectangle>-->
-        <!--Visibility="{Binding Frame, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToVisConverter}}"-->
     </Grid>
 </UserControl>

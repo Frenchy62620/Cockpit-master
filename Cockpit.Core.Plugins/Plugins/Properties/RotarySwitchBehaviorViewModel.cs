@@ -1,6 +1,7 @@
 ﻿using Caliburn.Micro;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
@@ -20,6 +21,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
                 //var view = ViewLocator.LocateForModel(this, null, null);
                 //ViewModelBinder.Bind(this, view, null);
             }
+            Idx = 0;
 
             this.eventAggregator = eventAggregator;
 
@@ -31,9 +33,43 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             SelectedSwitchTypeIndex = (int) SwitchType.OnOnOn;
             SelectedDefaultPosition = SwitchPosition.One;
             Name = "Behavior";
+
+            RotarySwitchPositions = new ObservableCollection<RotarySwitchPosition>();
+
+            RotarySwitchPositions.Add(new RotarySwitchPosition(Idx++));
+
         }
+        private int Idx;
 
         public string Name { get; set; }
+
+        public void AddPosition()
+        {
+            RotarySwitchPositions.Add(new RotarySwitchPosition(Idx++));
+        }
+
+        public void RemovePosition(RotarySwitchPosition r)
+        {
+            int index = RotarySwitchPositions.ToList().FindIndex(item => item.Tag == r.Tag);
+            RotarySwitchPositions.RemoveAt(index);
+        }
+
+        public ObservableCollection<RotarySwitchPosition> RotarySwitchPositions { get; private set; }
+
+        private RotarySwitchPosition selected;
+        public RotarySwitchPosition SelectedRotarySwitchPosition
+        {
+            get { return selected; }
+            set
+            {
+                if (selected != value)
+                {
+                    selected = value;
+                    NotifyOfPropertyChange(() => SelectedRotarySwitchPosition);
+                }
+            }
+
+        }
 
         private int selectedSwitchTypeIndex;
         public int SelectedSwitchTypeIndex
