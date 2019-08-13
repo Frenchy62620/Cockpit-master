@@ -1,18 +1,10 @@
-﻿using System;
+﻿using Caliburn.Micro;
+using Cockpit.RUN.Views;
+using Ninject;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
-using Caliburn.Micro;
-//using Cockpit.Core.Services;
-//using Cockpit.RUN.Common.AvalonDock;
-//using Cockpit.RUN.Common.CommandLine;
-//using Cockpit.RUN.Result;
-//using Cockpit.RUN.Shells;
-//using Cockpit.RUN.Views.Main;
-//using Cockpit.RUN.Views.Profile.Panels;
-using Ninject;
-//using ILog = Cockpit.Core.Common.ILog;
-//using Parser = Cockpit.GUI.Common.CommandLine.Parser;
 
 namespace Cockpit.RUN.Bootstrap
 {
@@ -32,7 +24,7 @@ namespace Cockpit.RUN.Bootstrap
             //kernel.Bind<IWindowManager>().To<WindowManager>().InSingletonScope();
             //kernel.Bind<IResultFactory>().To<ResultFactory>();
             //kernel.Bind<IParser>().To<Parser>();
-            //kernel.Bind<MainShellViewModel>().ToSelf().InSingletonScope();
+            kernel.Bind<CockpitViewModel>().ToSelf().InSingletonScope();
             //kernel.Bind<TrayIconViewModel>().ToSelf().InSingletonScope();
             ConfigurePanels();
 
@@ -60,7 +52,7 @@ namespace Cockpit.RUN.Bootstrap
         private void OnSettingsLoaded()
         {
             //DisplayRootViewFor<TrayIconViewModel>();
-            //DisplayRootViewFor<MainShellViewModel>();
+            DisplayRootViewFor<StartupViewModel>();
         }
 
         protected override object GetInstance(Type service, string key)

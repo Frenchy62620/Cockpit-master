@@ -10,8 +10,8 @@
             <ResourceDictionary>
                 <bootstrap:Bootstrapper x:Key="Bootstrapper" />
 
-                <!--<BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
-                <converters:MyConverterRender x:Key="MyConverterRender" />
+                <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+                <!--<converters:MyConverterRender x:Key="MyConverterRender" />
                 <converters:MyConverterAdorner x:Key="MyConverterAdorner" />
                 <converters:MyConverterSize x:Key="MyConverterSize" />
                 <converters:MyConverterMargin x:Key="MyConverterMargin" />

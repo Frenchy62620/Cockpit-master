@@ -28,7 +28,6 @@ namespace Cockpit.Core.Plugins.Plugins
             NameUC = (string)settings[2];
 
             this.eventAggregator = eventAggregator;
-            //this.eventAggregator.Subscribe(this);
         }
 
         #region PluginModel
