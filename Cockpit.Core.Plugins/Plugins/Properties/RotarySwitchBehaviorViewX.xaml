@@ -8,12 +8,32 @@
              mc:Ignorable="d"          
              d:DesignWidth="180">
     <UserControl.Resources>
-        <!--<cv:EnumConverter Type="{x:Type pe:SwitchType}" x:Key="ToggleSwitchTypes" />
-        <cv:EnumConverter Type="{x:Type pe:SwitchOrientation}" x:Key="ToggleSwitchOrientation" />
-        <cv:EnumConverter Type="{x:Type pe:SwitchPosition}"  x:Key="ToggleSwitchPosition" />-->
-        <!--<Helios:EnumConverter Type="{x:Type HeliosTouch:ClickType}" x:Key="ClickTypes" />-->
+        <DataTemplate x:Key="PositionLayout" DataType="{x:Type UserControl}">
+            <Border BorderBrush="LightGray" BorderThickness="0,0,0,1" Margin="2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Label Grid.Column="0" Grid.Row="0" FontSize="10" HorizontalAlignment="Right" Content="Name"
+                           ToolTip="Name used for this position in rendering labels and help text." />
+
+                    <TextBox x:Name="NamePosition" Grid.Column="1" Grid.Row="0" FontSize="10" Margin="2"  Tag="{Binding}"  /> <!--GotFocus="Position_GotFocus"-->
+                    <Button x:Name="RemovePosition" Grid.Column="2" Grid.Row="0" Margin="4" VerticalAlignment="Center" HorizontalAlignment="Center" Tag="{Binding}"
+                             Template="{StaticResource DeleteButton}" ToolTip="Remove this position." />
+
+                    <Label Grid.Column="0" Grid.Row="1" FontSize="10" HorizontalAlignment="Right" Content="Rotation" ToolTip="Sets the rotation of the switch when it is in this position." />
+                    <Slider Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" Minimum="0" Maximum="360" Value="{Binding Rotation}" Margin="2" Tag="{Binding}" /> <!--GotFocus="Position_GotFocus"-->
+                </Grid>
+            </Border>
+        </DataTemplate>
     </UserControl.Resources>
-    <Grid>
+    <Grid Margin="4">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
@@ -25,8 +45,38 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Label Grid.Column="0" Grid.Row="0" FontSize="10" HorizontalAlignment="Right" Content="SwitchButton Type"
+        <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Orientation="Horizontal">
+            <TextBlock Margin="4,10,2,2" FontSize="12" FontWeight="Bold" Text="Positions" />
+            <Button x:Name="AddPosition" VerticalAlignment="Bottom" Margin="4,2,2,2" Padding="2,0,2,2" FontSize="10" Content="Add" />
+        </StackPanel>
+
+        <ListBox x:Name="RotationSwitchPositions" Grid.Column="0" Grid.Row="1" Background="Transparent" Grid.ColumnSpan="2"  Margin="10,2,2,2" BorderThickness="0" 
+                 HorizontalContentAlignment="Stretch"  ItemTemplate="{StaticResource PositionLayout}" >
+            <ListBox.CommandBindings>
+                <CommandBinding Command="ApplicationCommands.Delete" CanExecute="DeletePosition_CanExecute" Executed="DeletePosition_Executed" />
+            </ListBox.CommandBindings>
+        </ListBox>
+
+        <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2"  Margin="4,10,2,2" FontSize="12" FontWeight="Bold">Defaults</TextBlock>
+        <Label Grid.Column="0" Grid.Row="3" FontSize="10" HorizontalAlignment="Right" Content="Position">
+            <Label.ToolTip>Default position which will be set on profile start up or reset.</Label.ToolTip>
+        </Label>
+        <ComboBox Name="DefaultPositionCombo" Grid.Column="1" Grid.Row="3" FontSize="10" Margin="0,2,0,2" HorizontalAlignment="Left" ItemsSource="{Binding Control.Positions}" DisplayMemberPath="Name" SelectionChanged="ComboBox_SelectionChanged" />
+
+        <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="4"  Margin="4,10,2,2" FontSize="12" FontWeight="Bold">Touch</TextBlock>
+        <Label Grid.Column="0" Grid.Row="5" FontSize="10" HorizontalAlignment="Right" Content="Click Type"
+               ToolTip="When set to touch this switch will respond to control regions (left/right) and switch the switch appropriatly. Swipe will switch the switch in the direction you swipe your finger or mouse using a circular motion." />
+
+        <ComboBox Grid.Column="1" Grid.Row="5" FontSize="10" Margin="0,2,0,2" HorizontalAlignment="Left" ItemsSource="{Binding Source={StaticResource ClickTypes}, Path=DisplayNames}" SelectedItem="{Binding Path=Control.ClickType, Converter={StaticResource ClickTypes}}" />
+        <Label Grid.Column="0" Grid.Row="6" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource SwipeLabelStyle}" Content="Sensitivity"
+               ToolTip="When set left it will take more rotation to switch a position to the right postions will move rapidly." />
+
+        <Slider Grid.Column="1" Grid.Row="6" Margin="0,6,0,0" Minimum="-1" Maximum="1" TickFrequency="0.1" TickPlacement="BottomRight" Value="{Binding Control.SwipeSensitivity}" Style="{StaticResource SwipeSliderStyle}" />
+
+
+        <!--<Label Grid.Column="0" Grid.Row="0" FontSize="10" HorizontalAlignment="Right" Content="SwitchButton Type"
                ToolTip="Selects what kind of toggle switch to emulate." />
         <ComboBox x:Name="SwitchTypes" Grid.Column="1" Grid.Row="0" FontSize="10" Margin="0,2,0,2" HorizontalAlignment="Left" 
                   ItemsSource="{Binding Source={pe:EnumBindingSource {x:Type pe:SwitchType}}}" 
@@ -48,7 +98,7 @@
         <CheckBox x:Name="HasIndicator" Grid.Column="1" Grid.Row="4" FontSize="10" Margin="2" VerticalAlignment="Center" HorizontalAlignment="Left"  />
         
         <Label Grid.Column="0" Grid.Row="5" FontSize="10" HorizontalAlignment="Right" Content="Click Type"
-               ToolTip="When set to touch this switch will respond to control regions (upper/lower, left/right) and switch the switch appropriatly. Swipe will switch the switch in the direction you swipe your finger or mouse." />
+               ToolTip="When set to touch this switch will respond to control regions (upper/lower, left/right) and switch the switch appropriatly. Swipe will switch the switch in the direction you swipe your finger or mouse." />-->
         <!--<ComboBox Grid.Column="1" Grid.Row="3" FontSize="10" Margin="0,2,0,2" HorizontalAlignment="Left" ItemsSource="{Binding Source={StaticResource ClickTypes}, Path=DisplayNames}" SelectedItem="{Binding Path=Control.ClickType, Converter={StaticResource ClickTypes}}" />-->
     </Grid>
 </UserControl>

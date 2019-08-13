@@ -115,6 +115,10 @@
     <Compile Include="Plugins\Properties\RotarySwitchAppearanceViewX.xaml.cs">
       <DependentUpon>RotarySwitchAppearanceViewX.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Plugins\Properties\RotarySwitchPositionView.xaml.cs">
+      <DependentUpon>RotarySwitchPositionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Plugins\Properties\RotarySwitchPositionsViewModel.cs" />
     <Compile Include="Plugins\Properties\SwitchAppearanceViewX.xaml.cs">
       <DependentUpon>SwitchAppearanceViewX.xaml</DependentUpon>
     </Compile>
@@ -189,6 +193,10 @@
     <Page Include="Plugins\Properties\RotarySwitchAppearanceViewX.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Plugins\Properties\RotarySwitchPositionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Plugins\Properties\SwitchAppearanceViewX.xaml">
       <Generator>MSBuild:Compile</Generator>
