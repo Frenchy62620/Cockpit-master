@@ -21,13 +21,13 @@
     </UserControl.RenderTransform>
 
     <Grid x:Name="Switch"  Width="{Binding Path=Layout.Width}" Height="{Binding Path=Layout.Height}" >
-        
+
         <Path StrokeThickness="4" Stroke="Black" >
             <Path.Data>
                 <MultiBinding Converter="{StaticResource DrawGlyphes}">
                     <Binding Path="Width" RelativeSource="{RelativeSource AncestorType={x:Type Grid}}"/>
                     <Binding Path="Height" RelativeSource="{RelativeSource AncestorType={x:Type Grid}}"/>
-                    <Binding Path="Appearance.LineThickness"/>
+                    <Binding Path="Behavior.LineAngles"/>
                 </MultiBinding>
             </Path.Data>
 

@@ -39,10 +39,10 @@
         </LinearGradientBrush.GradientStops>
     </LinearGradientBrush>
 
-    <GeometryGroup x:Key="FancyColorMarkerGeometry">
+    <!--<GeometryGroup x:Key="FancyColorMarkerGeometry">
         <EllipseGeometry RadiusX="8" RadiusY="8"  />
         <EllipseGeometry RadiusX="4" RadiusY="4"  />
-    </GeometryGroup>
+    </GeometryGroup>-->
 
 
     <!-- Spectrum Slider Styles -->

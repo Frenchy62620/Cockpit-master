@@ -12,8 +12,9 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
     {
         private readonly IEventAggregator eventAggregator;
 
-        public RotarySwitchBehaviorViewModel(IEventAggregator eventAggregator, params object[] settings)
+        public RotarySwitchBehaviorViewModel(IEventAggregator eventAggregator, RotarySwitch_ViewModel pm, params object[] settings)
         {
+            
             var index = 0;
             bool IsModeEditor = (bool)settings[index++];
             if (IsModeEditor)
@@ -33,43 +34,58 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             SelectedSwitchTypeIndex = (int) SwitchType.OnOnOn;
             SelectedDefaultPosition = SwitchPosition.One;
             Name = "Behavior";
-
+            LineAngles = "";
             RotarySwitchPositions = new ObservableCollection<RotarySwitchPosition>();
 
-            RotarySwitchPositions.Add(new RotarySwitchPosition(Idx++));
+            AddPosition();
 
         }
         private int Idx;
+
+        private string lineAngles;
+        public string LineAngles
+        {
+            get => lineAngles;
+            set
+            {
+                lineAngles = value;
+                NotifyOfPropertyChange(() => LineAngles);
+            }
+        }
 
         public string Name { get; set; }
 
         public void AddPosition()
         {
-            RotarySwitchPositions.Add(new RotarySwitchPosition(Idx++));
+            var rotary = new RotarySwitchPosition(Idx++, RebuildListOfAngles);
+            RotarySwitchPositions.Add(rotary);
+            RebuildListOfAngles();
         }
 
         public void RemovePosition(RotarySwitchPosition r)
         {
             int index = RotarySwitchPositions.ToList().FindIndex(item => item.Tag == r.Tag);
             RotarySwitchPositions.RemoveAt(index);
+            RebuildListOfAngles();
         }
 
         public ObservableCollection<RotarySwitchPosition> RotarySwitchPositions { get; private set; }
 
-        private RotarySwitchPosition selected;
-        public RotarySwitchPosition SelectedRotarySwitchPosition
-        {
-            get { return selected; }
-            set
-            {
-                if (selected != value)
-                {
-                    selected = value;
-                    NotifyOfPropertyChange(() => SelectedRotarySwitchPosition);
-                }
-            }
+        public void RebuildListOfAngles() => LineAngles = string.Join(",", RotarySwitchPositions.Select(t => t.Angle));
 
-        }
+        //private RotarySwitchPosition selected;
+        //public RotarySwitchPosition SelectedRotarySwitchPosition
+        //{
+        //    get { return selected; }
+        //    set
+        //    {
+        //        if (selected != value)
+        //        {
+        //            selected = value;
+        //            NotifyOfPropertyChange(() => SelectedRotarySwitchPosition);
+        //        }
+        //    }
+        //}
 
         private int selectedSwitchTypeIndex;
         public int SelectedSwitchTypeIndex
@@ -208,8 +224,6 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             set
             {
                 hasIndicator = value;
-                //AppearancewModel.HasIndicator = value;
-
                 NotifyOfPropertyChange(() => HasIndicator);
             }
         }
@@ -220,8 +234,6 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             set
             {
                 has3images = value;
-                //AppearancewModel.HasIndicator = value;
-
                 NotifyOfPropertyChange(() => Has3Images);
             }
         }

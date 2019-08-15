@@ -136,16 +136,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             }
         }
 
-        //private string positionIndicatorImage0;
-        //public string PositionIndicatorImage0
-        //{
-        //    get => positionIndicatorImage0;
-        //    set
-        //    {
-        //        positionIndicatorImage0 = value;
-        //        NotifyOfPropertyChange(() => PositionIndicatorImage0);
-        //    }
-        //}
+
 
         //private string positionIndicatorImage0;
         //public string PositionIndicatorImage0

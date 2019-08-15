@@ -62,16 +62,25 @@ namespace Cockpit.GUI.Common.Converters
 
             if (values.Length == 3)
             {
+                if (values[2].ToString() == "")
+                    return null;
                 width = (double)values[0];
                 height = (double)values[1];
-                double LineThickness = (double)values[2];
+                //double LineThickness = (double)values[2];
+
+                var valueAngle = values[2].ToString().Split(',');
+
                 Point Center = new Point(width / 2d, height / 2d);
+                Point Origine = new Point(Center.X, 0);
+                PathGeometry geometry = new PathGeometry();
+                foreach (var angle in valueAngle)
+                {
+                    RotateTransform tr = new RotateTransform(int.Parse(angle), Center.X, Center.Y);
+                    LineGeometry line = new LineGeometry(Center, Origine, tr);
+                    geometry.AddGeometry(line);
+                }
 
-                RotateTransform tr = new RotateTransform(225, Center.X, Center.Y);
-
-
-                LineGeometry line = new LineGeometry(Center, new Point(Center.X, 0), tr);
-                return line;
+                return geometry;
             }
 
 

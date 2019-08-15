@@ -17,7 +17,7 @@ namespace Cockpit.Core.Plugins.Plugins
         public RotarySwitch_ViewModel(IEventAggregator eventAggregator, params object[] settings)
         {
             Layout = new LayoutPropertyViewModel(eventAggregator, settings);
-            Behavior = new RotarySwitchBehaviorViewModel(eventAggregator, settings);
+            Behavior = new RotarySwitchBehaviorViewModel(eventAggregator, this, settings);
             Appearance = new RotarySwitchAppearanceViewModel(eventAggregator, Behavior, settings);
 
             NameUC = (string)settings[2];

@@ -79,15 +79,13 @@
                              Template="{StaticResource DeleteButton}" ToolTip="Remove this position." />
 
                             <Label Grid.Column="0" Grid.Row="1" FontSize="10" HorizontalAlignment="Right" Content="Rotation" ToolTip="Sets the rotation of the switch when it is in this position." />
-                            <Slider Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" Minimum="0" Maximum="360" Value="{Binding Rotation}" Margin="2" Tag="{Binding}" />
+                            <Slider Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" Minimum="0" Maximum="359"  Margin="2" Value="{Binding Angle}" 
+                                    IsSnapToTickEnabled="True" TickFrequency="1"  AutoToolTipPlacement="TopLeft" AutoToolTipPrecision="0" />
                             <!--GotFocus="Position_GotFocus"-->
                         </Grid>
                     </Border>
                 </DataTemplate>
             </ListBox.ItemTemplate>
-            <!--<ListBox.CommandBindings>
-                <CommandBinding Command="ApplicationCommands.Delete" CanExecute="DeletePosition_CanExecute" Executed="DeletePosition_Executed" />
-            </ListBox.CommandBindings>-->
         </ListBox>
 
         <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2"  Margin="4,10,2,2" FontSize="12" FontWeight="Bold">Defaults</TextBlock>
