@@ -1,9 +1,11 @@
 ﻿using Caliburn.Micro;
+using Cockpit.Core.Plugins.Common.CustomControls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Media;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Core.Plugins.Plugins.Properties
@@ -35,7 +37,8 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             SelectedDefaultPosition = SwitchPosition.One;
             Name = "Behavior";
             LineAngles = "";
-            RotarySwitchPositions = new ObservableCollection<RotarySwitchPosition>();
+
+            RotarySwitchViewModel = pm;
 
             AddPosition();
 
@@ -55,23 +58,30 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
 
         public string Name { get; set; }
 
+        public RotarySwitch_ViewModel RotarySwitchViewModel { get; }
         public void AddPosition()
         {
-            var rotary = new RotarySwitchPosition(Idx++, RebuildListOfAngles);
-            RotarySwitchPositions.Add(rotary);
+            var rotary = new RotarySwitchPosition(Idx++, RotarySwitchViewModel, RebuildListOfAngles);
+            RotarySwitchViewModel.RotarySwitchPositions.Add(rotary);
             RebuildListOfAngles();
         }
+
 
         public void RemovePosition(RotarySwitchPosition r)
         {
-            int index = RotarySwitchPositions.ToList().FindIndex(item => item.Tag == r.Tag);
-            RotarySwitchPositions.RemoveAt(index);
+            int index = RotarySwitchViewModel.RotarySwitchPositions.ToList().FindIndex(item => item.Tag == r.Tag);
+            RotarySwitchViewModel.RotarySwitchPositions.RemoveAt(index);
             RebuildListOfAngles();
         }
 
-        public ObservableCollection<RotarySwitchPosition> RotarySwitchPositions { get; private set; }
 
-        public void RebuildListOfAngles() => LineAngles = string.Join(",", RotarySwitchPositions.Select(t => t.Angle));
+        public void RebuildListOfAngles() => LineAngles = string.Join(",", RotarySwitchViewModel.RotarySwitchPositions.Select(t => t.Angle));
+
+
+        public RotarySwitchBehaviorViewModel getPointerToBehavior()
+        {
+            return this;
+        }
 
         //private RotarySwitchPosition selected;
         //public RotarySwitchPosition SelectedRotarySwitchPosition

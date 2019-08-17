@@ -4,7 +4,7 @@
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
         xmlns:avalonDock1="clr-namespace:Cockpit.GUI.Common.AvalonDock"
         xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
-        WindowState="{Binding WindowState, Mode = TwoWay}" 
+        WindowState="{Binding WindowState, Mode = TwoWay}" cal:Message.Attach="[Event DpiChanged] = [Action dpi($eventArgs)]"
         ShowInTaskbar="{Binding ShowInTaskBar, Mode=TwoWay}">
     <!--Title="CockpitBuilder" Background="{DynamicResource WindowBackgroundBrush}"-->
     <Window.Resources>

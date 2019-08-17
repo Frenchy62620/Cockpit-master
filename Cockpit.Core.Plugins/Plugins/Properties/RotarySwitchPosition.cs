@@ -1,25 +1,23 @@
-﻿
-using Caliburn.Micro;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Caliburn.Micro;
 using Action = System.Action;
 
 namespace Cockpit.Core.Plugins.Plugins.Properties
 {
     public class RotarySwitchPosition : PropertyChangedBase
     {
-        public RotarySwitchPosition(int tag, Action rebuild, string name = "")
+        public RotarySwitch_ViewModel RotarySwitchViewModel { get; } 
+        public RotarySwitchPosition(int tag, RotarySwitch_ViewModel rm, Action rebuild, string name = "")
         {
+            RotarySwitchViewModel = rm;
             if (string.IsNullOrEmpty(name))
                 NamePosition = tag.ToString();
             Rebuild = rebuild;
             Tag = tag;
             Angle = tag * 20;
+            
 
         }
+        public PluginProperties Appearance { get;}
         public Action Rebuild; 
         public int Tag;
         //public int Angle;
@@ -46,7 +44,29 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
                     rotation = value;
                     NotifyOfPropertyChange(() => Angle);
                     Rebuild();
+                    RotarySwitchViewModel.Appearance.CalculateLabelPosition();
                 }
+            }
+        }
+
+        private double top;
+        public double TextTop
+        {
+            get { return top; }
+            set
+            {
+                top = value;
+                NotifyOfPropertyChange(() => TextTop);
+            }
+        }
+        private double left;
+        public double TextLeft
+        {
+            get { return left; }
+            set
+            {
+                left = value;
+                NotifyOfPropertyChange(() => TextLeft);
             }
         }
 

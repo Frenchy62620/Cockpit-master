@@ -1,6 +1,11 @@
 ﻿using Caliburn.Micro;
 using Cockpit.Core.Plugins.Common.CustomControls;
+using System;
+using System.Globalization;
+using System.Linq;
+using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.TextFormatting;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Core.Plugins.Plugins.Properties
@@ -12,12 +17,12 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
     public class RotarySwitchAppearanceViewModel : PluginProperties
     {
         private readonly IEventAggregator eventAggregator;
-        public RotarySwitchBehaviorViewModel Behavior { get; }
+        public RotarySwitch_ViewModel RotarySwitchViewModel { get; }
         public string NameUC { get; set; }
-        public RotarySwitchAppearanceViewModel(IEventAggregator eventAggregator, RotarySwitchBehaviorViewModel behavior, params object[] settings)
+        public RotarySwitchAppearanceViewModel(IEventAggregator eventAggregator, RotarySwitch_ViewModel pm, params object[] settings)
         {
-            Behavior = behavior;
-
+            //Behavior = behavior;
+            RotarySwitchViewModel = pm;
             bool IsModeEditor = (bool)settings[0];
             if (IsModeEditor)
             {
@@ -28,24 +33,34 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
 
             var index = 4;
 
-            Image = (string)settings[index];
-            /*
-                        TextFormat = new TextFormat(fontFamily: (string)settings[index++],
-                                        fontStyle: (string)settings[index++],           //Normal, Oblique or Italic  see FontStyles
-                                        fontWeight: (string)settings[index++],          //Thin.... see FontWeight
-                                        fontSize: (double)settings[index++],
-                                        padding: (double[])settings[index++],           //Padding L,T,R,B
-                                        Alignment: (int[])settings[index]               //Left, Center, Right and Top, center, Bottom
-                                       );
+            Image = (string)settings[index++];
+            
+            var nbrpoints = (int)settings[index++];
 
-                        LineThickness = (double)settings[index++];
-                        LabelColor = (Color)settings[++index];
-                        LineColor = (Color)settings[++index];
-            */
+            var fontFamily = (string)settings[index++];
+            var fontStyle = (string)settings[index++];
+            var fontWeight = (string)settings[index++];
+            var fontSize = (double)settings[index++];
 
-            LineThickness = 4;
-            LabelColor = Colors.Black;
-            LineColor = Colors.Black;
+            TextFormat = new TextFormat(fontFamily: fontFamily,
+                            fontStyle: fontStyle,           //Normal, Oblique or Italic  see FontStyles
+                            fontWeight: fontWeight,          //Thin.... see FontWeight
+                            fontSize: fontSize,
+                            padding: (double[])settings[index++],           //Padding L,T,R,B
+                            Alignment: (int[])settings[index++]               //Left, Center, Right and Top, center, Bottom
+                           );
+
+            //LabelColor = (Color)settings[index++];
+            LabelColor = (Color)settings[index++];
+            LabelDistance = (double)settings[index++];
+            LineThickness = (double)settings[index++];
+            LineColor = (Color)settings[index++];
+            LineLength = (double)settings[index++];
+
+
+
+            //var text = (string)settings[index++];
+            //var textpushoffset = (string)settings[index++];
 
             this.eventAggregator = eventAggregator;
             eventAggregator.Subscribe(this);
@@ -53,8 +68,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             Name = "Appareance";
         }
 
-        public Switch_ViewModel DeviceModel;
-
+        public TextFormat TextFormat { get; set; }
         public string Name { get; set; }
 
         #region Selection Image
@@ -90,7 +104,16 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
                 NotifyOfPropertyChange(() => LineThickness);
             }
         }
-
+        private double lineLength;
+        public double LineLength
+        {
+            get => lineLength;
+            set
+            {
+                lineLength = value;
+                NotifyOfPropertyChange(() => LineLength);
+            }
+        }
         private Color _labelColor;
         public Color LabelColor
         {
@@ -124,30 +147,33 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             }
         }
 
-        private TextFormat textformat;
-        public TextFormat TextFormat
+        private double labeldistance;
+        public double LabelDistance
         {
-            get => textformat;
-
+            get => labeldistance;
             set
             {
-                textformat = value;
-                NotifyOfPropertyChange(() => TextFormat);
+                labeldistance = value;
+                NotifyOfPropertyChange(() => LabelDistance);
+                CalculateLabelPosition();
             }
         }
 
-
-
-        //private string positionIndicatorImage0;
-        //public string PositionIndicatorImage0
+        //private TextFormat textformat;
+        //public TextFormat TextFormat
         //{
-        //    get => positionIndicatorImage0;
+        //    get => textformat;
+
         //    set
         //    {
-        //        positionIndicatorImage0 = value;
-        //        NotifyOfPropertyChange(() => PositionIndicatorImage0);
+        //        textformat = value;
+        //        NotifyOfPropertyChange(() => TextFormat);
         //    }
         //}
+
+
+
+
 
         //private string positionIndicatorImage1;
         //public string PositionIndicatorImage1
@@ -203,6 +229,91 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         //    }
         //}
         #endregion
+
+        public void CalculateLabelPosition()
+        {
+            var _center = new Point(RotarySwitchViewModel.Layout.Width / 2d, RotarySwitchViewModel.Layout.Height / 2d);
+            Vector v1 = new Point(_center.X, 0) - _center;
+            double lineLength = v1.Length * LineLength;
+            double labelDistance = v1.Length * LabelDistance;
+            v1.Normalize();
+            foreach (var t in RotarySwitchViewModel.RotarySwitchPositions.ToList())
+            {
+                Matrix m1 = new Matrix();
+                m1.Rotate(t.Angle);
+                FormattedText labelText = TextFormat.GetFormattedText(LabelColor, t.NamePosition);
+
+                labelText.TextAlignment = TextAlignment.Center;
+                labelText.MaxTextWidth = RotarySwitchViewModel.Layout.Width;
+                labelText.MaxTextHeight = RotarySwitchViewModel.Layout.Height;
+
+                //if (rotarySwitch.MaxLabelHeight > 0d && rotarySwitch.MaxLabelHeight < RotarySwitchViewModel.Layout.Height)
+                //{
+                //    labelText.MaxTextHeight = rotarySwitch.MaxLabelHeight;
+                //}
+                //if (rotarySwitch.MaxLabelWidth > 0d && rotarySwitch.MaxLabelWidth < RotarySwitchViewModel.Layout.Width)
+                //{
+                //    labelText.MaxTextWidth = rotarySwitch.MaxLabelWidth;
+                //}
+
+
+                Point location = _center + (v1 * m1 * labelDistance);
+                //if (t.Angle <= 10d || t.Angle >= 350d)
+                //{
+                //    location.X -= labelText.Width / 2d;
+                //    location.Y -= labelText.Height;
+                //}
+                //else if (t.Angle > 10d && t.Angle < 80d)
+                //{
+                //    location.X += labelText.Height / 4d;
+                //    location.Y -= labelText.Height / 2d;
+                //}
+                //else if (t.Angle >= 80d && t.Angle <= 100d)
+                //{
+                //    location.X += labelText.Height / 4d;
+                //    location.Y -= labelText.Height / 2d;
+                //}
+                //else if (t.Angle > 100d && t.Angle < 170d)
+                //{
+                //    location.X += labelText.Height / 4d;
+                //    location.Y -= labelText.Height / 2d;
+                //}
+                //else if (t.Angle >= 170d && t.Angle <= 190d)
+                //{
+                //    location.X -= labelText.Width / 2d;
+                //}
+                //else 
+                //{
+                //    location.X -= (labelText.Width + labelText.Height / 4d );
+                //    location.Y -= labelText.Height / 2d;
+                //}
+
+                if (t.Angle <= 10d || t.Angle >= 350d)
+                {
+                    location.X -= labelText.Width / 2d;
+                    location.Y -= labelText.Height;
+                }
+                else if (t.Angle < 170d)
+                {
+                    location.X += labelText.Height / 4d;
+                    location.Y -= labelText.Height / 2d;
+                }
+                else if (t.Angle <= 190d)
+                {
+                    location.X -= labelText.Width / 2d;
+                }
+                else
+                {
+                    location.X -= (labelText.Width + labelText.Height / 4d);
+                    location.Y -= labelText.Height / 2d;
+                }
+
+                System.Diagnostics.Debug.WriteLine($"angle: {t.Angle}, label: {labelText.Text}, location: {location}");
+                t.TextLeft = Math.Round(location.X, 0, MidpointRounding.ToEven);
+                t.TextTop = Math.Round(location.Y, 0, MidpointRounding.ToEven);
+
+            }
+        }
 
 
     }

@@ -1,6 +1,9 @@
 ﻿using Cockpit.Core.Plugins.Plugins.Properties;
+using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Core.Plugins.Plugins
@@ -12,22 +15,33 @@ namespace Cockpit.Core.Plugins.Plugins
         public LayoutPropertyViewModel Layout { get; }
         public RotarySwitchAppearanceViewModel Appearance { get; }
         public RotarySwitchBehaviorViewModel Behavior { get; }
-
+        public ObservableCollection<RotarySwitchPosition> RotarySwitchPositions { get; private set; }
 
         public RotarySwitch_ViewModel(IEventAggregator eventAggregator, params object[] settings)
         {
+            RotarySwitchPositions = new ObservableCollection<RotarySwitchPosition>();
+
             Layout = new LayoutPropertyViewModel(eventAggregator, settings);
+            Appearance = new RotarySwitchAppearanceViewModel(eventAggregator, this, settings);
             Behavior = new RotarySwitchBehaviorViewModel(eventAggregator, this, settings);
-            Appearance = new RotarySwitchAppearanceViewModel(eventAggregator, Behavior, settings);
+
+
 
             NameUC = (string)settings[2];
 
-            ////ScaleX = (double)settings[10];
-            //ScaleX = 1;
+            var s = Appearance.TextFormat.MeasureString("ABC", Appearance.LabelColor);
+
 
             this.eventAggregator = eventAggregator;
             this.eventAggregator.Subscribe(this);
+
+
+
+
+
+
         }
+
 
         #region PluginModel
         public override double Left

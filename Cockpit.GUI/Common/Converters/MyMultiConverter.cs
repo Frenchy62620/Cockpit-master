@@ -60,6 +60,30 @@ namespace Cockpit.GUI.Common.Converters
             double width;
             double height;
 
+//            FormattedText formattedText = new System.Windows.Media.FormattedText("ABC",
+//CultureInfo.GetCultureInfo("en-us"),
+//FlowDirection.LeftToRight,
+//new Typeface(
+//new FontFamily("Franklin Gothic"),
+//FontStyles.Normal,
+//FontWeights.Normal,
+//FontStretches.Normal),
+//8, Brushes.Red);
+
+//            Geometry geometryx = formattedText.BuildGeometry(new Point(50, 80));
+
+//            return geometryx;
+//            System.Windows.Shapes.Path path = new System.Windows.Shapes.Path();
+//            path.Data = geometryx;
+
+//            string geometryAsString = geometryx.GetFlattenedPathGeometry().ToString().Replace(",", ".").Replace(";", ",");
+//            return geometryAsString;
+
+
+
+
+
+
             if (values.Length == 3)
             {
                 if (values[2].ToString() == "")
@@ -82,8 +106,6 @@ namespace Cockpit.GUI.Common.Converters
 
                 return geometry;
             }
-
-
 
 
 

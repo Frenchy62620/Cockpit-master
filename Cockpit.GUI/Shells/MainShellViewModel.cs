@@ -71,6 +71,11 @@ namespace Cockpit.GUI.Shells
             //Menu.NewScript();
         }
 
+
+        public void dpi(DpiChangedEventArgs e)
+        {
+            var NewPixelsPerDip = e.NewDpi.PixelsPerDip;
+        }
         protected override void OnViewReady(object view)
         {
             base.OnViewReady(view);

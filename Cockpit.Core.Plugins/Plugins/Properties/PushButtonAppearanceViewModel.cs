@@ -60,7 +60,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
 
             eventAggregator.Subscribe(this);
             this.eventAggregator = eventAggregator;
-
+            
             Name = "Appearance";
         }
 

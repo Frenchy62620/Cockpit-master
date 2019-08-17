@@ -4,10 +4,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
     xmlns:cal="http://www.caliburnproject.org"
     mc:Ignorable="d" d:DesignHeight="150" d:DesignWidth="70"
     x:Name="usercontrol"  ToolTip="{Binding ToolTip}"
-    VerticalAlignment = "Top" HorizontalAlignment = "Left" ClipToBounds="True"
+    VerticalAlignment = "Top" HorizontalAlignment = "Left" ClipToBounds="False"
     cal:Message.Attach="[Event MouseEnter] = [Action MouseEnterInUC($eventArgs)];
                         [Event MouseLeftButtonDown] = [Action MouseLeftButtonDownOnUC($source, $mousepoint, $eventArgs)];
                         [Event MouseLeftButtonUp] = [Action MouseLeftButtonUp()]">
@@ -21,8 +22,8 @@
     </UserControl.RenderTransform>
 
     <Grid x:Name="Switch"  Width="{Binding Path=Layout.Width}" Height="{Binding Path=Layout.Height}" >
-
-        <Path StrokeThickness="4" Stroke="Black" >
+        <!--<Canvas>-->
+        <Path StrokeThickness="{Binding Appearance.LineThickness}" Stroke="{Binding Appearance.LineColor, Converter={StaticResource MyconverterColorToSolidColorBrush}}" >
             <Path.Data>
                 <MultiBinding Converter="{StaticResource DrawGlyphes}">
                     <Binding Path="Width" RelativeSource="{RelativeSource AncestorType={x:Type Grid}}"/>
@@ -32,12 +33,50 @@
             </Path.Data>
 
         </Path>
+        <ItemsControl x:Name="RotarySwitchPositions"  Background="Transparent"  BorderThickness="0" 
+                 HorizontalContentAlignment="Stretch" ItemsSource="{Binding RotarySwitchPositions}" >
+                <!--ItemTemplate="{StaticResource PositionLayout}"-->
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate><!--{Binding NamePosition, diag:PresentationTraceSources.TraceLevel=High}-->
+                        <Canvas>
+                        <TextBlock x:Name="NamePosition"  Text="{Binding NamePosition}" 
+                                   Canvas.Left="{Binding TextLeft}" Canvas.Top="{Binding TextTop}" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Foreground="{Binding RotarySwitchViewModel.Appearance.LabelColor, Converter={StaticResource MyconverterColorToSolidColorBrush}}"
+                                   FontFamily="{Binding RotarySwitchViewModel.Appearance.TextFormat.FontFamily}" FontSize="{Binding RotarySwitchViewModel.Appearance.TextFormat.FontSize}"
+                                   FontStyle="{Binding RotarySwitchViewModel.Appearance.TextFormat.FontStyle}" FontWeight="{Binding RotarySwitchViewModel.Appearance.TextFormat.FontWeight}" 
+                                   TextDecorations="{Binding RotarySwitchViewModel.Appearance.TextFormat.TextDecorations}"/>
+                        </Canvas>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <!--<TextBlock Text="{Binding NamePosition}" Canvas.Top="{Binding TextTop}" Canvas.Left="{Binding TextLeft}"
+                       HorizontalAlignment="Center" VerticalAlignment="Center" 
+                       Foreground="{Binding Appearance.LabelColor, Converter={StaticResource MyconverterColorToSolidColorBrush}}"
+                       FontFamily="{Binding Appearance.TextFormat.FontFamily}" FontSize="{Binding Appearance.TextFormat.FontSize}" 
+                       FontStyle="{Binding Appearance.TextFormat.FontStyle}"
+                       FontWeight="{Binding Appearance.TextFormat.FontWeight}" TextDecorations="{Binding Appearance.TextFormat.TextDecorations}" /> -->
+                       
+                       
 
-        <Image x:Name="Image" Source="{Binding Appearance.Image, Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <!--<Path Stroke="Red" Data="{Binding PathData}" StrokeThickness="1">
+            </Canvas>
+        </Path>-->
+
+            <Image x:Name="Image" Source="{Binding Appearance.Image, Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+            <!--<Image>
+            <Image.Source>
+                <DrawingImage>
+                    <DrawingImage.Drawing>
+                        <GeometryDrawing  Geometry="{Binding PathData}" />
+                    </DrawingImage.Drawing>
+                </DrawingImage>
+            </Image.Source>
+        </Image>-->
 
 
-        
-        <!--<Path StrokeThickness="{Binding Appearance.GlyphThickness}" Stroke="{Binding Appearance.GlyphColor, Converter={StaticResource MyconverterColorToSolidColorBrush}}" >
+            <!--<Path StrokeThickness="{Binding Appearance.GlyphThickness}" Stroke="{Binding Appearance.GlyphColor, Converter={StaticResource MyconverterColorToSolidColorBrush}}" >
             <Path.Fill>
                 <MultiBinding Converter="{StaticResource DrawGlyphes}">
                     <Binding Path="Appearance.GlyphSelected"/>
@@ -55,6 +94,7 @@
                 </MultiBinding>
             </Path.Data>
         </Path>-->
-
+        <!--</Canvas>-->
     </Grid>
+
 </UserControl>

@@ -257,7 +257,17 @@ namespace Cockpit.GUI.Views.Profile
                             $"{nameUC}",                                                                                        //2 name of UC
                             new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, AngleSwitch },//3 [Left, Top, Width, Height, Angle]
 
-                            FullImage,                                                                                           //4 [images] & startimageposition
+                            FullImage,                                                                                           //4 [images]
+                     
+                             2,                                                                                                 //5  nbr points
+                             "Franklin Gothic", "Normal", "Normal",                                                             //6  Family, Style, Weight
+                            12d, new double[] { 0d, 0d, 0d, 0d },                                                               //9 Size, [padding L,T,R,B]
+                            new int[] { 1, 1 },  Colors.Red, 1d,                                                                 //11 [TextAlign H,V], TextColor, %distance
+
+                            4d, Colors.Black, 0.9d, 0d,                                                                         //14 line thickness, line color, line length, Angle
+
+                            new string[] {"Hello1","hel2" },
+
 
                             2, 1d, 2, 3 }, true)
                 };

@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:gg="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
              xmlns:cal="http://www.caliburnproject.org"
-             mc:Ignorable="d"  d:DesignHeight="450" d:DesignWidth="800"
+             mc:Ignorable="d"  d:DesignHeight="450" d:DesignWidth="800" 
              Background="Transparent" cal:Message.Attach="[Event MouseMove] = [Action PreviewMouseMoveOnMonitorView($source, $mousepoint, $eventArgs)];
                                                           [Event PreviewKeyDown] = [Action KeyTest($pressedKey, $eventargs)]" 
                                                           >

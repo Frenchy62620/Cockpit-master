@@ -306,30 +306,38 @@ namespace Cockpit.Core.Plugins.Common.CustomControls
                 }
             }
         }
+        public Size MeasureString(string text, Color color)
+        {
+            var formattedText = new FormattedText(text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                                new Typeface( FontFamily, this.FontStyle, this.FontWeight, FontStretches.Normal),
+                                FontSize, new SolidColorBrush(color), new NumberSubstitution(), 1);
+            FontStretch a = FontStretches.Normal;
+            return new Size(formattedText.Width, formattedText.Height);
+        }
+        public FormattedText GetFormattedText(Color labelcolor, string text)
+        {
+            Typeface type = new Typeface(FontFamily, FontStyle, FontWeight, FontStretches.Normal);
+            FormattedText formatedText = new FormattedText(text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, type, FontSize, 
+                                                           new SolidColorBrush(labelcolor), 1d /*PixelsPerDip*/);
+            formatedText.SetTextDecorations(TextDecorations);
 
-        //public FormattedText GetFormattedText(Brush textBrush, string text)
-        //{
-        //    Typeface type = new Typeface(FontFamily, FontStyle, FontWeight, FontStretches.Normal);
-        //    FormattedText formatedText = new FormattedText(text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, type, FontSize, textBrush/*, VisualTreeHelper.GetDpi(this).PixelsPerDip*/);
-        //    formatedText.SetTextDecorations(TextDecorations);
+            formatedText.Trimming = TextTrimming.CharacterEllipsis;
 
-        //    formatedText.Trimming = TextTrimming.CharacterEllipsis;
+            switch (_horizontalAlignment)
+            {
+                case TextHorizontalAlignment.Left:
+                    formatedText.TextAlignment = TextAlignment.Left;
+                    break;
+                case TextHorizontalAlignment.Center:
+                    formatedText.TextAlignment = TextAlignment.Center;
+                    break;
+                case TextHorizontalAlignment.Right:
+                    formatedText.TextAlignment = TextAlignment.Right;
+                    break;
+            }
 
-        //    switch (_horizontalAlignment)
-        //    {
-        //        case TextHorizontalAlignment.Left:
-        //            formatedText.TextAlignment = TextAlignment.Left;
-        //            break;
-        //        case TextHorizontalAlignment.Center:
-        //            formatedText.TextAlignment = TextAlignment.Center;
-        //            break;
-        //        case TextHorizontalAlignment.Right:
-        //            formatedText.TextAlignment = TextAlignment.Right;
-        //            break;
-        //    }
-
-        //    return formatedText;
-        //}
+            return formatedText;
+        }
 
         //public void RenderText(DrawingContext drawingContext, Brush textBrush, string text, Rect rectangle)
         //{
