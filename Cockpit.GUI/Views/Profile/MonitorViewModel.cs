@@ -114,27 +114,9 @@ namespace Cockpit.GUI.Views.Profile
             var FullImage = (dropInfo.Data as ToolBoxGroup).SelectedToolBoxItem.FullImageName;
             var groupname = (dropInfo.Data as ToolBoxGroup).GroupName;
 
-            var num = MyCockpitViewModels.Count;
-            var nameUC = tbg.SelectedToolBoxItem.ShortImageName;
+            var nameUC = GiveName(tbg.SelectedToolBoxItem.ShortImageName);
 
-            //var nbr = MyCockpitViewModels.Select(t => t.NameUC.Equals(nameUC)).Count();
-            //if (nbr > 0)
-            //{
-            //    nameUC = $"{nameUC}_{nbr}";
-            //}
-
-            //if (!hash.Add(nameUC))
-            //{
-            //    var nbr = hash.Select(t => t.StartsWith(nameUC)).Count();
-            //    nameUC = $"{nameUC}_{nbr}";
-            //}
-
-            if (SortedDico.ContainsKey(nameUC))
-            {
-                var nbr = SortedDico.Count(t => t.Key.StartsWith(nameUC));
-                nameUC = $"{nameUC}_{nbr}";
-            }
-
+ 
             Ninject.Parameters.Parameter[] param = null;
 
             Ninject.Parameters.Parameter[][] paramproperties = null;
@@ -439,30 +421,31 @@ namespace Cockpit.GUI.Views.Profile
                     }
                 }
 
-                return;
+
+
 
 
                 var sol = GetChilds(MyCockpitViewModels);
 
 
-                    foreach (var m in MyCockpitViewModels.ToList())
-                {
-                    if (m.NameUC.Equals("mfd"))
-                    {
-                        var c = SortedDico[m.NameUC];
-                        SortedDico.Add("xfd", c);
-                        SortedDico.Remove(m.NameUC);
-                        m.NameUC = "xfd";
-                        (c.pm.GetProperties()[0] as LayoutPropertyViewModel).NameUC = m.NameUC;
-                        if (hash_name_general.Contains("mfd"))
-                        {
-                            int idx = hash_name_general.ToList().IndexOf(hash_name_general.Single(i => i == "mfd"));
-                            hash_name_general.Remove("mfd");
-                            hash_name_general.Add("xfd");
-                        }
-                        break;
-                    }
-                }
+                //    foreach (var m in MyCockpitViewModels.ToList())
+                //{
+                //    if (m.NameUC.Equals("mfd"))
+                //    {
+                //        var c = SortedDico[m.NameUC];
+                //        SortedDico.Add("xfd", c);
+                //        SortedDico.Remove(m.NameUC);
+                //        m.NameUC = "xfd";
+                //        (c.pm.GetProperties()[0] as LayoutPropertyViewModel).NameUC = m.NameUC;
+                //        if (hash_name_general.Contains("mfd"))
+                //        {
+                //            int idx = hash_name_general.ToList().IndexOf(hash_name_general.Single(i => i == "mfd"));
+                //            hash_name_general.Remove("mfd");
+                //            hash_name_general.Add("xfd");
+                //        }
+                //        break;
+                //    }
+                //}
             }
 
 
@@ -696,9 +679,33 @@ namespace Cockpit.GUI.Views.Profile
             }
         }
 
-        private bool IsAlreadySelected(ContentControl s)
+        public string GiveName(string nameUC)
         {
-            return DictContentcontrol[s];
+            var list = GetAllNameUC(MyCockpitViewModels);
+
+            var c = list.Count(x => x.StartsWith($"{nameUC}_") || x.StartsWith($"{nameUC}"));
+            var newname = nameUC;
+            if (c > 0)
+            {
+                for (int i = c; true; i++)
+                {
+                    newname = $"{nameUC}_{i}";
+                    if (!list.Any(x => x.Equals(newname)))
+                        break;
+                }
+            }
+
+            return newname;
+
+            IEnumerable<string> GetAllNameUC(BindableCollection<PluginModel> v)
+            {
+                return v.Select(x => x.NameUC)
+                            .Union(v.Where(x => x.ToString().Contains("Panel_ViewModel"))
+                                        .SelectMany(y => GetAllNameUC((y as Panel_ViewModel).MyCockpitViewModels))
+                );
+            }
+
+
         }
 
         public void Handle(RemovePanelEvent message)
