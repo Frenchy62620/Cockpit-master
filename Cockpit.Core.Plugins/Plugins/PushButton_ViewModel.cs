@@ -28,6 +28,7 @@ namespace Cockpit.Core.Plugins.Plugins
             NameUC = (string)settings[2];
 
             this.eventAggregator = eventAggregator;
+            System.Diagnostics.Debug.WriteLine($"entree push {NameUC} {this}");
         }
 
         #region PluginModel
@@ -65,7 +66,7 @@ namespace Cockpit.Core.Plugins.Plugins
 
         ~PushButton_ViewModel()
         {
-            System.Diagnostics.Debug.WriteLine("sortie push");
+            System.Diagnostics.Debug.WriteLine($"sortie push {NameUC}");
         }
         #region Selection Image
 

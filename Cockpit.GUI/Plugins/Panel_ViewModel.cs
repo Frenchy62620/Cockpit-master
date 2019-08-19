@@ -539,5 +539,14 @@ namespace Cockpit.GUI.Plugins
                 mv.SortedDico.Remove(message.NameUC);
             }
         }
+
+
+        public void Handle(RenameUCEvent message)
+        {
+            if(message.OldName.Equals(NameUC))
+            {
+                NameUC = message.NewName;
+            }
+        }
     }
 }

@@ -377,6 +377,36 @@ namespace Cockpit.GUI.Views.Profile
             }
         }
 
+
+
+        IEnumerable<string> GetChilds(BindableCollection<PluginModel> v )
+        {
+            return v.Select(x => x.NameUC)
+                        .Union(v.Where(x => x.ToString().Contains("Panel_ViewModel"))
+                                    .SelectMany(y => GetChilds((y as Panel_ViewModel).MyCockpitViewModels))
+            );
+        }
+
+        IEnumerable<PluginModel> GetChilds(BindableCollection<PluginModel> v, string s)
+        {
+            return v.Where(x => x.NameUC.StartsWith($"{s}_") || x.NameUC.Equals(s))
+                        .Union(v.Where(x => x.ToString().Contains("Panel_ViewModel"))
+                                    .SelectMany(y => GetChilds((y as Panel_ViewModel).MyCockpitViewModels, s))
+            );
+        }
+
+        public PluginModel GetSingleChild(string s)
+        {
+            return GetChilds(MyCockpitViewModels, s).Single();
+
+            IEnumerable<PluginModel> GetChilds(BindableCollection<PluginModel> v, string ss)
+            {
+                return v.Where(x => x.NameUC.Equals(ss))
+                            .Union(v.Where(x => x.ToString().Contains("Panel_ViewModel"))
+                                        .SelectMany(y => GetChilds((y as Panel_ViewModel).MyCockpitViewModels, ss))
+                );
+            }
+        }
         public void KeyTest(object sender, KeyEventArgs e)
         {
             if (e == null || hash_name_general.Count() == 0) return;
@@ -386,6 +416,54 @@ namespace Cockpit.GUI.Views.Profile
             //ModifierKeys.Control 2
             //ModifierKeys.Shift 4
             //ModifierKeys.Windows 8
+
+            if (key == Key.C)
+            {
+
+                var xy = RemoveUC("mfd_1");
+                var w = xy.Item1;
+                var p = xy.Item2;
+                int ii = w.IndexOf(w.Single(i => i.NameUC == "mfd_1"));
+                w.RemoveAt(ii);
+                SortedDico.Remove("mfd_1");
+                (BindableCollection<PluginModel>, PluginModel) RemoveUC(string ss)
+                {
+                    return GetChildx(MyCockpitViewModels, ss).Single();
+
+                    IEnumerable<(BindableCollection<PluginModel>, PluginModel)> GetChildx(BindableCollection<PluginModel> v, string s)
+                    {
+                        return v.Where(x => x.NameUC.Equals(s)).Select(x => (v, x))
+                                    .Union(v.Where(x => x.ToString().Contains("Panel_ViewModel"))
+                                                .SelectMany(y => GetChildx((y as Panel_ViewModel).MyCockpitViewModels, s))
+                        );
+                    }
+                }
+
+                return;
+
+
+                var sol = GetChilds(MyCockpitViewModels);
+
+
+                    foreach (var m in MyCockpitViewModels.ToList())
+                {
+                    if (m.NameUC.Equals("mfd"))
+                    {
+                        var c = SortedDico[m.NameUC];
+                        SortedDico.Add("xfd", c);
+                        SortedDico.Remove(m.NameUC);
+                        m.NameUC = "xfd";
+                        (c.pm.GetProperties()[0] as LayoutPropertyViewModel).NameUC = m.NameUC;
+                        if (hash_name_general.Contains("mfd"))
+                        {
+                            int idx = hash_name_general.ToList().IndexOf(hash_name_general.Single(i => i == "mfd"));
+                            hash_name_general.Remove("mfd");
+                            hash_name_general.Add("xfd");
+                        }
+                        break;
+                    }
+                }
+            }
 
 
             if (MoveKeys.Contains(key))

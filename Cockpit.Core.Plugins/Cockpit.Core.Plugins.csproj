@@ -93,6 +93,7 @@
     <Compile Include="Common\CustomControls\NotificationObject.cs" />
     <Compile Include="Common\CustomControls\PropertyNotificationEventArgs.cs" />
     <Compile Include="Events\VisibilityPanelEvent.cs" />
+    <Compile Include="Events\RenameUCEvent.cs" />
     <Compile Include="Plugins\PluginModel.cs" />
     <Compile Include="Plugins\PluginProperties.cs" />
     <Compile Include="Plugins\Properties\EnumBindingSourceExtension.cs" />

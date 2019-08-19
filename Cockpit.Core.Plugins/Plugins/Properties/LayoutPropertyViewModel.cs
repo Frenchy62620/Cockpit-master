@@ -1,11 +1,12 @@
 ﻿using Caliburn.Micro;
+using Cockpit.Core.Plugins.Events;
 using System;
 using System.Windows.Controls;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Core.Plugins.Plugins.Properties
 {
-    public class LayoutPropertyViewModel:PluginProperties/*, Core.Common.Events.IHandle<PropertyLayoutEvent>*/
+    public class LayoutPropertyViewModel:PluginProperties, Core.Common.Events.IHandle<RenameUCEvent>
     {
         private readonly IEventAggregator eventAggregator;
    
@@ -53,12 +54,13 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
 
         public string Name { get; set; }
 
-        private string nameUC;
+        private string nameUC ="";
         public string NameUC
         {
             get => nameUC;
             set
             {
+                if (nameUC.Equals(value)) return;
                 nameUC = value;
                 NotifyOfPropertyChange(() => NameUC);
             }
@@ -171,6 +173,11 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         public void WHHaveFocus(object sender)
         {
             AskModifyFromControl = true;
+        }
+
+        public void Handle(RenameUCEvent message)
+        {
+
         }
     }
 }
