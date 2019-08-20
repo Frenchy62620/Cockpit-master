@@ -69,17 +69,19 @@
                     </Rectangle.Fill>
                 </Rectangle>
 
+                <!--<ItemsControl ItemsSource="{Binding MyCockpitViewModels}" >-->
                 <ItemsControl ItemsSource="{Binding MyCockpitViewModels}" >
                     <ItemsControl.ItemTemplate>
+                        
                         <DataTemplate>
                             <!--<Border BorderThickness="{Binding IsUCSelected, Converter={StaticResource MyConverterMargin}}" BorderBrush="Red" >-->
                             <AdornerDecorator >
-                                <ContentControl cal:View.Model="{Binding}" 
+                                <ContentControl cal:View.Model="{Binding}"  
                                                 cal:Message.Attach="[Event MouseLeftButtonDown] = [Action MouseLeftButtonDownOnContentControl($source, $dataContext, $eventArgs)];
                                                                     [Event Loaded] = [Action ContentControlLoaded($source, $dataContext)];
                                                                     [Event MouseDoubleClick] = [Action MouseDoubleClickOnContentControl($source, $eventArgs)];
                                                                     [Event MouseWheel] = [Action MouseWheelOnContentControl($source, $eventArgs)];
-                                                [Event PreviewMouseLeftButtonDown] = [Action PreviewMouseLeftButtonDownOnContentControl($source, $eventArgs)]">
+                                                [Event PreviewMouseLeftButtonDown] = [Action PreviewMouseLeftButtonDownOnContentControl($source, $dataContext, $eventArgs)]">
                                     <ContentControl.RenderTransform>
                                         <TransformGroup>
                                             <RotateTransform Angle="{Binding Layout.AngleRotation}" />

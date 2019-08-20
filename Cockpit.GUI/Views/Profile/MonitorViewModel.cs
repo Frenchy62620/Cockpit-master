@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using Cockpit.Core.Common;
+using Cockpit.Core.Plugins.Events;
 using Cockpit.Core.Plugins.Plugins;
 using Cockpit.Core.Plugins.Plugins.Properties;
 using Cockpit.GUI.Events;
@@ -35,13 +36,27 @@ namespace Cockpit.GUI.Views.Profile
         }
     }
 
-    public class MonitorViewModel : PanelViewModel, IDropTarget, Core.Common.Events.IHandle<RemovePanelEvent>
+    public class Elt: PropertyChangedBase
+    {
+        public ContentControl cc;
+        public PluginModel pm;
+        public int selected = 0;
+
+        public Elt(ContentControl cc, PluginModel pm, int selected = -1)
+        {
+            this.cc = cc;
+            this.pm = pm;
+            this.selected = selected;
+        }
+    }
+
+    public class MonitorViewModel : PanelViewModel, IDropTarget, Core.Common.Events.IHandle<RenameUCEvent>
     {
         public double ZoomFactorFromMonitorViewModel;
         public Dictionary<ContentControl, bool> DictContentcontrol = new Dictionary<ContentControl, bool>();
 
         public SortedDictionary<string, Elements> SortedDico = new SortedDictionary<string, Elements>();
-        public HashSet<string> hash_name_general = new HashSet<string>();
+        public HashSet<string> AdornersSelectedList = new HashSet<string>();
 
         private readonly IEventAggregator eventAggregator;
         private readonly IResolutionRoot resolutionRoot;
@@ -58,7 +73,7 @@ namespace Cockpit.GUI.Views.Profile
         {
             this.resolutionRoot = resolutionRoot;
             this.eventAggregator = eventAggregator;
-            //this.eventAggregator.Subscribe(this);
+            this.eventAggregator.Subscribe(this);
 
             Title = "Monitor1";
             IconName = "console-16.png";
@@ -74,7 +89,7 @@ namespace Cockpit.GUI.Views.Profile
             this.fileSystem = fileSystem;
 
             MyCockpitViewModels = new BindableCollection<PluginModel>();
-            //IsPanelActive = true;
+
             NbrSelected = 0;
         }
 
@@ -264,11 +279,11 @@ namespace Cockpit.GUI.Views.Profile
             //var view = ViewLocator.LocateForModel(viewmodel, null, null);
             // ViewModelBinder.Bind(viewmodel, view, null);
             var v = viewmodel as PluginModel;
+
+
             v.ZoomFactorFromPluginModel = ZoomFactorFromMonitorViewModel;
 
             MyCockpitViewModels.Add((PluginModel)viewmodel);
-
-
 
 
         }
@@ -276,7 +291,6 @@ namespace Cockpit.GUI.Views.Profile
         #endregion
 
         public BindableCollection<PluginModel> MyCockpitViewModels { get; set; }
-
 
         private static int untitledIndex;
         private int untitledId;
@@ -300,6 +314,7 @@ namespace Cockpit.GUI.Views.Profile
             this.Title = panel.Layout.NameUC;
             return this;
         }
+
 
         private bool enabled;
         public bool Enabled
@@ -391,7 +406,7 @@ namespace Cockpit.GUI.Views.Profile
         }
         public void KeyTest(object sender, KeyEventArgs e)
         {
-            if (e == null || hash_name_general.Count() == 0) return;
+            if (e == null || AdornersSelectedList.Count() == 0) return;
             var key = e.Key;
             e.Handled = true;
             //ModifierKeys.Alt 1
@@ -402,20 +417,27 @@ namespace Cockpit.GUI.Views.Profile
             if (key == Key.C)
             {
 
+                RemoveAllCCFromContainer("A10-CDU-Panel");
+
+                return;
+
                 var xy = RemoveUC("mfd_1");
                 var w = xy.Item1;
                 var p = xy.Item2;
+                var ip = xy.Item3;
                 int ii = w.IndexOf(w.Single(i => i.NameUC == "mfd_1"));
                 w.RemoveAt(ii);
                 SortedDico.Remove("mfd_1");
-                (BindableCollection<PluginModel>, PluginModel) RemoveUC(string ss)
+
+
+                (BindableCollection<PluginModel>, PluginModel, int) RemoveUC(string ss)
                 {
                     return GetChildx(MyCockpitViewModels, ss).Single();
 
-                    IEnumerable<(BindableCollection<PluginModel>, PluginModel)> GetChildx(BindableCollection<PluginModel> v, string s)
+                    IEnumerable<(BindableCollection<PluginModel>, PluginModel, int)> GetChildx(BindableCollection<PluginModel> listOfpm, string s)
                     {
-                        return v.Where(x => x.NameUC.Equals(s)).Select(x => (v, x))
-                                    .Union(v.Where(x => x.ToString().Contains("Panel_ViewModel"))
+                        return listOfpm.Where(x => x.NameUC.Equals(s)).Select(pm => (listOfpm, pm, listOfpm.IndexOf(listOfpm.Single(i => i.NameUC.Equals(s)))))
+                                    .Union(listOfpm.Where(x => x.ToString().Contains("Panel_ViewModel"))
                                                 .SelectMany(y => GetChildx((y as Panel_ViewModel).MyCockpitViewModels, s))
                         );
                     }
@@ -457,41 +479,27 @@ namespace Cockpit.GUI.Views.Profile
             }
             if (key == Key.Delete)
             {
-                foreach(var name in hash_name_general.ToList())
+                foreach(var name in AdornersSelectedList.ToList())
                 {
                     RemoveAdorner(SortedDico[name].cc, SortedDico[name].pm);
 
                     if (SortedDico[name].pm.ToString().Equals("Cockpit.GUI.Plugins.Panel_ViewModel"))
                     {
-                        eventAggregator.Publish(new RemovePanelEvent(NameUC: name, IsPanel: true));
-                        if (MyCockpitViewModels.Any(t => t.NameUC.Equals(name)))
-                        {
-                            MyCockpitViewModels.Remove(SortedDico[name].pm);
-                            SortedDico.Remove(name);
-                        }
+                        RemoveAllCCFromContainer(name);
                     }
-                    else
-                    {
-                        if (MyCockpitViewModels.Any(t => t.NameUC.Equals(name)))
-                        {
-                            MyCockpitViewModels.Remove(SortedDico[name].pm);
-                            SortedDico.Remove(name);
-                        }
-                        else
-                        {
-                            eventAggregator.Publish(new RemovePanelEvent(NameUC: name));
-                        }
-                    }
+
+                    RemoveCC(name);
+
                 }
 
-                hash_name_general.Clear();
+                AdornersSelectedList.Clear();
                 eventAggregator.Publish(new DisplayPropertiesEvent(new[] { LayoutMonitor }));
             }
         }
 
         public void MoveContenControlByKeys(Key key, int step)
         {
-            var list = SortedDico.Where(item => hash_name_general.Contains(item.Key)).Select(item => item.Value.pm);
+            var list = SortedDico.Where(item => AdornersSelectedList.Contains(item.Key)).Select(item => item.Value.pm);
             switch (key)
             {
                 case Key.Left:
@@ -568,8 +576,9 @@ namespace Cockpit.GUI.Views.Profile
             }
         }
 
-        public void PreviewMouseLeftButtonDownOnContentControl(ContentControl cc, MouseEventArgs e)
+        public void PreviewMouseLeftButtonDownOnContentControl(ContentControl cc, PluginModel pm, MouseEventArgs e)
         {
+
         }
 
         public void MouseLeftButtonDownOnContentControl(ContentControl cc, PluginModel pm, MouseEventArgs e)
@@ -578,14 +587,14 @@ namespace Cockpit.GUI.Views.Profile
 
             var CtrlDown = (Keyboard.Modifiers & ModifierKeys.Control) != 0;
 
-            if (!CtrlDown || hash_name_general.Count == 0 || !MyCockpitViewModels.Any(t => t.NameUC.Equals(hash_name_general.ElementAt(0))))
+            if (!CtrlDown || AdornersSelectedList.Count == 0 || !MyCockpitViewModels.Any(t => t.NameUC.Equals(AdornersSelectedList.ElementAt(0))))
             {
                 RemoveAdorners();
                 AddNewAdorner(cc, pm);
             }
             else
             {
-                if (hash_name_general.Contains(pm.NameUC))
+                if (AdornersSelectedList.Contains(pm.NameUC))
                 {
                     RemoveAdorner(cc, pm);
                     UpdateFirstAdorner();
@@ -596,10 +605,10 @@ namespace Cockpit.GUI.Views.Profile
                 }
             }
 
-            if (hash_name_general.Count() == 0)
+            if (AdornersSelectedList.Count() == 0)
                 eventAggregator.Publish(new DisplayPropertiesEvent(new[] { LayoutMonitor }));
             else
-                eventAggregator.Publish(new DisplayPropertiesEvent(SortedDico[hash_name_general.ElementAt(0)].pm.GetProperties()));
+                eventAggregator.Publish(new DisplayPropertiesEvent(SortedDico[AdornersSelectedList.ElementAt(0)].pm.GetProperties()));
         }
 
 
@@ -607,11 +616,12 @@ namespace Cockpit.GUI.Views.Profile
         {
             if (SortedDico.ContainsKey(pm.NameUC))
                 return;
-            cc.Tag = "0";
+
             SortedDico[pm.NameUC] = new Elements(cc, pm);
             RemoveAdorners();
             AddNewAdorner(cc, pm);
-            eventAggregator.Publish(new DisplayPropertiesEvent(SortedDico[hash_name_general.ElementAt(0)].pm.GetProperties()));
+
+            eventAggregator.Publish(new DisplayPropertiesEvent(SortedDico[AdornersSelectedList.ElementAt(0)].pm.GetProperties()));
             cc.Focus();
         }
 
@@ -626,12 +636,12 @@ namespace Cockpit.GUI.Views.Profile
                         if (typeof(MyAdorner).IsAssignableFrom(adorner.GetType()))
                             adornerLayer.Remove(adorner);
             }
-            hash_name_general.Remove(pm.NameUC);
+            AdornersSelectedList.Remove(pm.NameUC);
         }
 
         public void RemoveAdorners()
         {
-            foreach(var name in hash_name_general)
+            foreach(var name in AdornersSelectedList)
             {
                 var cc = SortedDico[name].cc;
                 var adornerLayer = AdornerLayer.GetAdornerLayer(cc);
@@ -644,7 +654,7 @@ namespace Cockpit.GUI.Views.Profile
                                 adornerLayer.Remove(adorner);
                 }
             }
-            hash_name_general.Clear();
+            AdornersSelectedList.Clear();
         }
 
         public void AddNewAdorner(ContentControl cc, PluginModel pm, int color = 0)
@@ -654,15 +664,15 @@ namespace Cockpit.GUI.Views.Profile
             {
                 MyAdorner myAdorner = new MyAdorner(cc, color);
                 adornerLayer.Add(myAdorner);
-                hash_name_general.Add(pm.NameUC);
+                AdornersSelectedList.Add(pm.NameUC);
                 cc.Focus();
             }
         }
 
         public void UpdateFirstAdorner()
         {
-            if (hash_name_general.Count == 0) return;
-            var cc = SortedDico[hash_name_general.ElementAt(0)].cc;
+            if (AdornersSelectedList.Count == 0) return;
+            var cc = SortedDico[AdornersSelectedList.ElementAt(0)].cc;
 
             var adornerLayer = AdornerLayer.GetAdornerLayer(cc);
             if (adornerLayer != null)
@@ -679,13 +689,14 @@ namespace Cockpit.GUI.Views.Profile
             }
         }
 
-        public string GiveName(string nameUC)
+        private string GiveName(string nameUC)
         {
             var list = GetAllNameUC(MyCockpitViewModels);
-
-            var c = list.Count(x => x.StartsWith($"{nameUC}_") || x.StartsWith($"{nameUC}"));
             var newname = nameUC;
-            if (c > 0)
+
+            var c = list.Count(x => x.StartsWith($"{nameUC}_") || x.Equals($"{nameUC}"));
+
+            if (list.Contains(nameUC))
             {
                 for (int i = c; true; i++)
                 {
@@ -704,13 +715,113 @@ namespace Cockpit.GUI.Views.Profile
                                         .SelectMany(y => GetAllNameUC((y as Panel_ViewModel).MyCockpitViewModels))
                 );
             }
+        }
+
+        private bool RenameUC(string oldname, string newname)
+        {
+            if (!GiveName(newname).Equals(newname)) return false;
+            var result = GetContainerOfCC(MyCockpitViewModels, oldname).Single();
+            var pm = result.Item1.ElementAt(result.Item2);
+            pm.NameUC = newname;
+            var cc = SortedDico[oldname].cc;
+            SortedDico.Remove(oldname);
+            SortedDico.Add(newname, new Elements(cc, pm));
+            if (AdornersSelectedList.Contains(oldname))
+            {
+                var list = AdornersSelectedList.ToList();
+                AdornersSelectedList.Clear();
+                foreach (var x in list)
+                {
+                    AdornersSelectedList.Add(x.Equals(oldname) ? newname : x);
+                }
+            }
+            return true;
+
+
+
+            IEnumerable<(BindableCollection<PluginModel>, int)> GetContainerOfCC(BindableCollection<PluginModel> listOfpm, string s)
+            {
+                return listOfpm.Where(x => x.NameUC.Equals(s)).Select(p => (listOfpm, listOfpm.IndexOf(listOfpm.Single(i => i.NameUC.Equals(s)))))
+                            .Union(listOfpm.Where(x => x.ToString().Contains("Panel_ViewModel"))
+                                        .SelectMany(y => GetContainerOfCC((y as Panel_ViewModel).MyCockpitViewModels, s))
+                );
+            }
 
 
         }
 
-        public void Handle(RemovePanelEvent message)
+        public void RemoveAllCCFromContainer(string container)
         {
-            //MyCockpitViewModels.Remove(SortedDico[message.NameUC].pm);
+            var w =  GetCCFromContainer(MyCockpitViewModels, container).Single();
+            var result  = GetAllChildrenOfContainer(w.Item2, 0);
+
+
+            //foreach (var pm in w.Item1)
+            //    System.Diagnostics.Debug.WriteLine($"1:{pm} {pm.NameUC}");
+
+            //foreach (var pm in w.Item2)
+            //    System.Diagnostics.Debug.WriteLine($"2:{pm} {pm.NameUC}");
+
+
+            foreach (var collection in result.Reverse())
+                foreach (var pm in collection.Item1.ToList())
+                {
+                    System.Diagnostics.Debug.WriteLine($"2:{pm.NameUC} order {collection.Item2}");
+                    if (pm.ToString().Contains("Panel_ViewModel"))
+                    {
+                        (pm as Panel_ViewModel).MyCockpitViewModels.Clear();
+                        System.Diagnostics.Debug.WriteLine($"3:{(pm as Panel_ViewModel).MyCockpitViewModels} clear");
+                    }
+                    SortedDico.Remove(pm.NameUC);
+                    collection.Item1.RemoveAt(collection.Item1.IndexOf(collection.Item1.Single(t => t.NameUC.Equals(pm.NameUC))));                 
+                }
+                
+
+
+            IEnumerable<(BindableCollection<PluginModel>, BindableCollection<PluginModel>)> GetCCFromContainer(BindableCollection<PluginModel> listOfpm, string s)
+            {
+                return listOfpm.Where(x => x.NameUC.Equals(s)).Select(t => (listOfpm, (t as Panel_ViewModel).MyCockpitViewModels))
+                            .Union(listOfpm.Where(x => x.ToString().Contains("Panel_ViewModel"))
+                                        .SelectMany(y => GetCCFromContainer((y as Panel_ViewModel).MyCockpitViewModels, s))
+                );
+            }
+
+            IEnumerable<(BindableCollection<PluginModel>, int)> GetAllChildrenOfContainer(BindableCollection<PluginModel> listOfpm, int order)
+            {
+                return listOfpm.Select(t => (listOfpm, order))
+                            .Union(listOfpm.Where(x => x.ToString().Contains("Panel_ViewModel"))
+                                        .SelectMany(y => GetAllChildrenOfContainer((y as Panel_ViewModel).MyCockpitViewModels, ++order))
+                );
+            }
+        }
+
+
+        public void RemoveCC(string nameUC)
+        {
+            var w = GetContainer(nameUC);
+            SortedDico.Remove(nameUC);
+            w.Item1.RemoveAt(w.Item2);
+
+            (BindableCollection<PluginModel>, int) GetContainer(string nameuc)
+            {
+                return GetChildPanel(MyCockpitViewModels, nameuc).Single();
+
+                IEnumerable<(BindableCollection<PluginModel>, int)> GetChildPanel(BindableCollection<PluginModel> listOfpm, string s)
+                {
+                    return listOfpm.Where(x => x.NameUC.Equals(s)).Select(pm => (listOfpm, listOfpm.IndexOf(listOfpm.Single(i => i.NameUC.Equals(s)))))
+                                .Union(listOfpm.Where(x => x.ToString().Contains("Panel_ViewModel"))
+                                            .SelectMany(y => GetChildPanel((y as Panel_ViewModel).MyCockpitViewModels, s))
+                    );
+                }
+            }
+        }
+
+        public void Handle(RenameUCEvent message)
+        {
+            if (message.Reponse) return;
+            var result = RenameUC(message.OldName, message.NewName);
+            var newname = result ? message.NewName : message.OldName;
+            eventAggregator.Publish(new RenameUCEvent(message.OldName, newname, true));
         }
     }
 }

@@ -33,13 +33,13 @@ namespace Cockpit.GUI.Plugins
         public Dictionary<ContentControl, bool> DictContentcontrol = new Dictionary<ContentControl, bool>();
 
         public string lastNameUC = "";
+        private MonitorViewModel mv { get; set; }
 
-        MonitorViewModel mv { get; set; }
         public Panel_ViewModel(IEventAggregator eventAggregator, IResolutionRoot resolutionRoot, params object[] settings)
         {
             this.resolutionRoot = resolutionRoot;
             this.eventAggregator = eventAggregator;
-            this.eventAggregator.Subscribe(this);
+            //this.eventAggregator.Subscribe(this);
 
             mv = (MonitorViewModel)settings[1];
             Layout = new LayoutPropertyViewModel(eventAggregator, settings);
@@ -62,7 +62,7 @@ namespace Cockpit.GUI.Plugins
         }
         ~Panel_ViewModel()
         {
-
+            System.Diagnostics.Debug.WriteLine($"sortie panel {NameUC}");
         }
         public BindableCollection<PluginModel> MyCockpitViewModels { get; set; }
 
@@ -168,31 +168,30 @@ namespace Cockpit.GUI.Plugins
         public void MouseLeftButtonDownOnContentControl(ContentControl cc, PluginModel pm, MouseEventArgs e)
         {
             e.Handled = true;
-            if (cc.Tag == null) return;
 
             var CtrlDown = (Keyboard.Modifiers & ModifierKeys.Control) != 0;
-            if (!CtrlDown || mv.hash_name_general.Count == 0 || !MyCockpitViewModels.Any(t => t.NameUC.Equals(mv.hash_name_general.ElementAt(0))))
+            if (!CtrlDown || mv.AdornersSelectedList.Count == 0 || !MyCockpitViewModels.Any(t => t.NameUC.Equals(mv.AdornersSelectedList.ElementAt(0))))
             {
-                mv.RemoveAdorners();
-                mv.AddNewAdorner(cc, pm);
+                RemoveAdorners();
+                AddNewAdorner(cc, pm);
             }
             else
             {
-                if (mv.hash_name_general.Contains(pm.NameUC))
+                if (mv.AdornersSelectedList.Contains(pm.NameUC))
                 {
-                    mv.RemoveAdorner(cc, pm);
-                    mv.UpdateFirstAdorner();
+                    RemoveAdorner(cc, pm);
+                    UpdateFirstAdorner();
                 }
                 else
                 {
-                    mv.AddNewAdorner(cc, pm, 2);
+                    AddNewAdorner(cc, pm, 2);
                 }
             }
 
-            if (mv.hash_name_general.Count() == 0)
+            if (mv.AdornersSelectedList.Count() == 0)
                 eventAggregator.Publish(new DisplayPropertiesEvent(new[] { (PluginProperties)mv.LayoutMonitor }));
             else
-                eventAggregator.Publish(new DisplayPropertiesEvent(mv.SortedDico[mv.hash_name_general.ElementAt(0)].pm.GetProperties()));
+                eventAggregator.Publish(new DisplayPropertiesEvent(mv.SortedDico[mv.AdornersSelectedList.ElementAt(0)].pm.GetProperties()));
 
         }
 
@@ -266,77 +265,34 @@ namespace Cockpit.GUI.Plugins
         {
             if (mv.SortedDico.ContainsKey(pm.NameUC))
                 return;
-            cc.Tag = "0";
             mv.SortedDico[pm.NameUC] = new Elements(cc, pm);
 
-            mv.RemoveAdorners();
-            mv.AddNewAdorner(cc, pm);
+            RemoveAdorners();
+            AddNewAdorner(cc, pm);
 
-            eventAggregator.Publish(new DisplayPropertiesEvent(mv.SortedDico[mv.hash_name_general.ElementAt(0)].pm.GetProperties()));
+            eventAggregator.Publish(new DisplayPropertiesEvent(mv.SortedDico[mv.AdornersSelectedList.ElementAt(0)].pm.GetProperties()));
             cc.Focus();
 
         }
 
-        public void RemoveAdorner(ContentControl cc, PluginModel pm)
+        private void RemoveAdorner(ContentControl cc, PluginModel pm)
         {
-            var adornerLayer = AdornerLayer.GetAdornerLayer(cc);
-            if (adornerLayer != null)
-            {
-                Adorner[] adorners = adornerLayer.GetAdorners(cc);
-                if (adorners != null)
-                    foreach (var adorner in adorners)
-                        if (typeof(MyAdorner).IsAssignableFrom(adorner.GetType()))
-                            adornerLayer.Remove(adorner);
-            }
-            mv.hash_name_general.Remove(pm.NameUC);
+            mv.RemoveAdorner(cc, pm);
         }
 
-        public void RemoveAdorners()
+        private void RemoveAdorners()
         {
-            foreach (var name in mv.hash_name_general)
-            {
-                var cc = mv.SortedDico[name].cc;
-                var adornerLayer = AdornerLayer.GetAdornerLayer(cc);
-                if (adornerLayer != null)
-                {
-                    Adorner[] adorners = adornerLayer.GetAdorners(cc);
-                    if (adorners != null)
-                        foreach (var adorner in adorners)
-                            if (typeof(MyAdorner).IsAssignableFrom(adorner.GetType()))
-                                adornerLayer.Remove(adorner);
-                }
-            }
-            mv.hash_name_general.Clear();
+            mv.RemoveAdorners();
         }
 
-        public void AddNewAdorner(ContentControl cc, PluginModel pm, int color = 0)
+        private void AddNewAdorner(ContentControl cc, PluginModel pm, int color = 0)
         {
-            var adornerLayer = AdornerLayer.GetAdornerLayer(cc);
-            if (adornerLayer != null)
-            {
-                MyAdorner myAdorner = new MyAdorner(cc, color);
-                adornerLayer.Add(myAdorner);
-                mv.hash_name_general.Add(pm.NameUC);
-            }
+            mv.AddNewAdorner(cc, pm, color);
         }
 
         public void UpdateFirstAdorner()
         {
-            if (mv.hash_name_general.Count == 0) return;
-            var cc = mv.SortedDico[mv.hash_name_general.ElementAt(0)].cc;
-
-            var adornerLayer = AdornerLayer.GetAdornerLayer(cc);
-            if (adornerLayer != null)
-            {
-                Adorner[] adorners = adornerLayer.GetAdorners(cc);
-                if (adorners != null)
-                    foreach (var adorner in adorners)
-                        if (typeof(MyAdorner).IsAssignableFrom(adorner.GetType()))
-                            adornerLayer.Remove(adorner);
-
-                MyAdorner myAdorner = new MyAdorner(cc, 0);
-                adornerLayer.Add(myAdorner);
-            }
+            mv.UpdateFirstAdorner();
         }
 
 
@@ -508,45 +464,36 @@ namespace Cockpit.GUI.Plugins
 
         public void Handle(RemovePanelEvent message)
         {
-            if (MyCockpitViewModels == null) return;
+            //if (MyCockpitViewModels == null) return;
 
-            if (message.IsPanel)
-            {
-                if (message.NameUC.Equals(NameUC))
-                {
-                    foreach (var item in MyCockpitViewModels.ToList())
-                    {
-                        if (item.ToString().Equals("Cockpit.GUI.Plugins.Panel_ViewModel"))
-                        {
-                            eventAggregator.Publish(new RemovePanelEvent(NameUC: item.NameUC, IsPanel: true));
-                            continue;
-                        }
-                        if (MyCockpitViewModels.Count() > 0)
-                        {
-                            MyCockpitViewModels.Remove(MyCockpitViewModels.Where(t => t.NameUC.Equals(item.NameUC)).First());
-                            mv.SortedDico.Remove(item.NameUC);
-                        }
-                    }
-                    MyCockpitViewModels = null;
-                    eventAggregator.Unsubscribe(this);
-                    return;
-                }
-            }
+            //if (message.IsPanel)
+            //{
+            //    if (message.NameUC.Equals(NameUC))
+            //    {
+            //        foreach (var item in MyCockpitViewModels.ToList())
+            //        {
+            //            if (item.ToString().Equals("Cockpit.GUI.Plugins.Panel_ViewModel"))
+            //            {
+            //                eventAggregator.Publish(new RemovePanelEvent(NameUC: item.NameUC, IsPanel: true));
+            //                continue;
+            //            }
+            //            if (MyCockpitViewModels.Count() > 0)
+            //            {
+            //                MyCockpitViewModels.Remove(MyCockpitViewModels.Where(t => t.NameUC.Equals(item.NameUC)).First());
+            //                mv.SortedDico.Remove(item.NameUC);
+            //            }
+            //        }
+            //        MyCockpitViewModels = null;
+            //        eventAggregator.Unsubscribe(this);
+            //        return;
+            //    }
+            //}
 
-            if (MyCockpitViewModels.Any(t => t.NameUC.Equals(message.NameUC)))
-            {
-                MyCockpitViewModels.Remove(mv.SortedDico[message.NameUC].pm);
-                mv.SortedDico.Remove(message.NameUC);
-            }
-        }
-
-
-        public void Handle(RenameUCEvent message)
-        {
-            if(message.OldName.Equals(NameUC))
-            {
-                NameUC = message.NewName;
-            }
+            //if (MyCockpitViewModels.Any(t => t.NameUC.Equals(message.NameUC)))
+            //{
+            //    MyCockpitViewModels.Remove(mv.SortedDico[message.NameUC].pm);
+            //    mv.SortedDico.Remove(message.NameUC);
+            //}
         }
     }
 }

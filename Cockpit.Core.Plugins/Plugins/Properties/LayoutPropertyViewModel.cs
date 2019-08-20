@@ -2,6 +2,7 @@
 using Cockpit.Core.Plugins.Events;
 using System;
 using System.Windows.Controls;
+
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Core.Plugins.Plugins.Properties
@@ -12,15 +13,10 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
    
         //public bool Linked = false;
         public double Factor;
+
         public LayoutPropertyViewModel(IEventAggregator eventAggregator, params object[] settings)
         {
-            //bool IsModeEditor = (bool)settings[0];
-            //if (IsModeEditor)
-            //{
-            //    //var view = ViewLocator.LocateForModel(this, null, null);
-            //    //ViewModelBinder.Bind(this, view, null);
-                
-            //}
+
 
             NameUC = (string)settings[2];
 
@@ -38,7 +34,12 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             Height = height;
 
             this.eventAggregator = eventAggregator;
-            eventAggregator.Subscribe(this);
+
+            bool IsModeEditor = (bool)settings[0];
+            if (IsModeEditor)
+            {
+                eventAggregator.Subscribe(this);
+            }
 
             Name = "Layout";
         }
@@ -166,18 +167,26 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         public void LostFocus(object sender, System.EventArgs e)
         {
             NewText = (sender as TextBox).Text;
+            if (OldText.Equals(NewText)) return;
+            eventAggregator.Publish(new RenameUCEvent(OldText, NewText));
         }
 
 
-        public bool AskModifyFromControl = false;
-        public void WHHaveFocus(object sender)
-        {
-            AskModifyFromControl = true;
-        }
+        //public bool AskModifyFromControl = false;
+        //public void WHHaveFocus(object sender)
+        //{
+        //    AskModifyFromControl = true;
+        //}
 
         public void Handle(RenameUCEvent message)
         {
+            if (string.IsNullOrEmpty(NewText) || !message.Reponse) return;
 
+            if (message.NewName.Equals(OldText))
+            {
+                System.Windows.MessageBox.Show($"** The name  << {NewText} >> already exists. **\n\n      Please change it.", "Error about renaming");
+                NameUC = OldText;
+            }
         }
     }
 }

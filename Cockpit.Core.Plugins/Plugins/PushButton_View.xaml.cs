@@ -14,7 +14,7 @@ namespace Cockpit.Core.Plugins.Plugins
         }
         ~PushButton_View()
         {
-            System.Diagnostics.Debug.WriteLine("sortie pushView");
+            System.Diagnostics.Debug.WriteLine($"sortie pushView");
         }
     }
 }

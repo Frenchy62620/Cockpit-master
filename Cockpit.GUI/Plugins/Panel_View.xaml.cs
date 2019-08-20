@@ -13,7 +13,7 @@ namespace Cockpit.GUI.Plugins
         }
         ~Panel_View()
         {
-
+            System.Diagnostics.Debug.WriteLine($"sortie panelView");
         }
     }
 }
