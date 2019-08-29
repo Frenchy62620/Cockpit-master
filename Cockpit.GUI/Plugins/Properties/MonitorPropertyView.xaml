@@ -3,14 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" 
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:ip="clr-namespace:Cockpit.GUI.Common.CustomControls"    
              xmlns:dc="clr-namespace:Cockpit.GUI.Plugins.Properties"
-             Height="Auto"  d:DesignWidth="180">
+              mc:Ignorable="d" Height="Auto"  d:DesignWidth="180">
     <UserControl.Resources>
         <!--<Helios:EnumConverter Type="{x:Type Helios:ImageAlignment}" x:Key="AlignmentTypes" />-->
         
-        <Style x:Key="FillStyle" TargetType="{x:Type ip:ColorWellView}">
+        <Style x:Key="FillStyle" TargetType="{x:Type xctk:ColorPicker}">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding FillBackground}" Value="False">
                     <Setter Property="Visibility" Value="Collapsed" />
@@ -60,9 +60,9 @@
         <Label Grid.Column="0" Grid.Row="4" FontSize="10" HorizontalAlignment="Right" VerticalAlignment="Top" Content="Fill"/>      
         
         <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal">
-            <CheckBox x:Name="FillBackground" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,6,6,6"  />        
-            <ip:ColorWellView Color="{Binding BackgroundColor, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="0,2" 
-                              Style="{StaticResource FillStyle}" />
+            <CheckBox x:Name="FillBackground" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,6,6,6"  />
+            <xctk:ColorPicker x:Name="Background" HorizontalAlignment="Left" Margin="0,2" DisplayColorAndName="True"
+                              ColorMode="ColorCanvas"  UsingAlphaChannel="True" Style="{StaticResource FillStyle}" />
         </StackPanel>
         
         <Label Grid.Column="0" Grid.Row="5" FontSize="10" HorizontalAlignment="Right">Image</Label>

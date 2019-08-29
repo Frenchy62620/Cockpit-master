@@ -5,6 +5,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum LayoutRotation
     {
+        [Description("0° None")]
         None,
         [Description("90° Clockwise")]
         CW = 90,

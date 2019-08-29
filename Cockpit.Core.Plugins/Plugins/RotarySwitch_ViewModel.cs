@@ -1,9 +1,8 @@
-﻿using Cockpit.Core.Plugins.Plugins.Properties;
+﻿using Cockpit.Core.Common;
+using Cockpit.Core.Plugins.Plugins.Properties;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Core.Plugins.Plugins

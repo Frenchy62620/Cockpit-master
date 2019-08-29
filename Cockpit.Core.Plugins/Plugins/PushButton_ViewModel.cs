@@ -1,4 +1,5 @@
-﻿using Cockpit.Core.Plugins.Events;
+﻿using Cockpit.Core.Common;
+using Cockpit.Core.Plugins.Events;
 using Cockpit.Core.Plugins.Plugins.Properties;
 using System.Windows;
 using System.Windows.Input;

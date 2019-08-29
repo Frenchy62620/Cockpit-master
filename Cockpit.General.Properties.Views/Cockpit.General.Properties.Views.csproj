@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1323F4EB-7ED9-4D44-BCC8-DC3E6B4A9CED}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Cockpit.General.Properties.Views</RootNamespace>
+    <AssemblyName>Cockpit.General.Properties.Views</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Caliburn.Micro, Version=3.2.0.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Caliburn.Micro.Core.3.2.0\lib\net45\Caliburn.Micro.dll</HintPath>
+    </Reference>
+    <Reference Include="Caliburn.Micro.Platform, Version=3.2.0.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Caliburn.Micro.3.2.0\lib\net45\Caliburn.Micro.Platform.dll</HintPath>
+    </Reference>
+    <Reference Include="Caliburn.Micro.Platform.Core, Version=3.2.0.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Caliburn.Micro.3.2.0\lib\net45\Caliburn.Micro.Platform.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Caliburn.Micro.3.2.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.5.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Converters\EnumToIntConverter.cs" />
+    <Compile Include="CustomControls\FolderPicker\FolderPickerView.xaml.cs">
+      <DependentUpon>FolderPickerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\FontPicker\FontChooserDialogView.xaml.cs">
+      <DependentUpon>FontChooserDialogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\FontPicker\FontFamilyListItem.cs" />
+    <Compile Include="CustomControls\FontPicker\FontPickerView.xaml.cs">
+      <DependentUpon>FontPickerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\FontPicker\TextDecorations.cs" />
+    <Compile Include="CustomControls\FontPicker\TextFormat.cs" />
+    <Compile Include="CustomControls\FontPicker\TextHorizontalAlignment.cs" />
+    <Compile Include="CustomControls\FontPicker\TextVerticalAlignment.cs" />
+    <Compile Include="CustomControls\FontPicker\TypefaceListItem.cs" />
+    <Compile Include="CustomControls\ImagePicker\ImagePickerView.xaml.cs">
+      <DependentUpon>ImagePickerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\IPropertyNotification.cs" />
+    <Compile Include="CustomControls\NotificationObject.cs" />
+    <Compile Include="CustomControls\PropertyNotificationEventArgs.cs" />
+    <Compile Include="EnumBindingSourceExtension.cs" />
+    <Compile Include="EnumDescriptionTypeConverter.cs" />
+    <Compile Include="LayoutPropertyView.xaml.cs">
+      <DependentUpon>LayoutPropertyView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LayoutRotation.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PushButtonAppearanceView.xaml.cs">
+      <DependentUpon>PushButtonAppearanceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PushButtonBehaviorView.xaml.cs">
+      <DependentUpon>PushButtonBehaviorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PushButtonGlyph.cs" />
+    <Compile Include="RotarySwitchAppearanceView.xaml.cs">
+      <DependentUpon>RotarySwitchAppearanceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="RotarySwitchBehaviorView.xaml.cs">
+      <DependentUpon>RotarySwitchBehaviorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SwitchAppearanceView.xaml.cs">
+      <DependentUpon>SwitchAppearanceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SwitchBehaviorView.xaml.cs">
+      <DependentUpon>SwitchBehaviorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SwitchType.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="CustomControls\FolderPicker\FolderPickerView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomControls\FontPicker\FontChooserDialogView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomControls\FontPicker\FontPickerView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomControls\ImagePicker\ImagePickerView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="LayoutPropertyView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PushButtonAppearanceView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PushButtonBehaviorView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="RotarySwitchAppearanceView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="RotarySwitchBehaviorView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SwitchAppearanceView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SwitchBehaviorView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -36,19 +36,19 @@ namespace Cockpit.GUI.Views.Profile
         }
     }
 
-    public class Elt: PropertyChangedBase
-    {
-        public ContentControl cc;
-        public PluginModel pm;
-        public int selected = 0;
+    //public class Elt: PropertyChangedBase
+    //{
+    //    public ContentControl cc;
+    //    public PluginModel pm;
+    //    public int selected = 0;
 
-        public Elt(ContentControl cc, PluginModel pm, int selected = -1)
-        {
-            this.cc = cc;
-            this.pm = pm;
-            this.selected = selected;
-        }
-    }
+    //    public Elt(ContentControl cc, PluginModel pm, int selected = -1)
+    //    {
+    //        this.cc = cc;
+    //        this.pm = pm;
+    //        this.selected = selected;
+    //    }
+    //}
 
     public class MonitorViewModel : PanelViewModel, IDropTarget, Core.Common.Events.IHandle<RenameUCEvent>
     {
@@ -150,7 +150,7 @@ namespace Cockpit.GUI.Views.Profile
                             new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, 0 },//3  [Left, Top, Width, Height, Angle]
 
                             new string[]{ FullImage, FullImage1 }, 0,                                                           //4  [images] & startimageposition
-                            2d, 0.8d, (PushButtonGlyph)0, Colors.White,                                                         //6  Glyph: Thickness, Scale, Type, Color
+                            2d, 0.8d, (PushButtonGlyph)1, Colors.White,                                                         //6  Glyph: Thickness, Scale, Type, Color
                             "Hello", "1,1", "Franklin Gothic", "Normal", "Normal",                                              //10 Text, TextPushOffset, Family, Style, Weight
                             12d, new double[] { 0d, 0d, 0d, 0d },                                                               //15 Size, [padding L,T,R,B]
                             new int[] { 1, 1 },  Colors.White,                                                                  //17 [TextAlign H,V], TextColor
@@ -277,7 +277,7 @@ namespace Cockpit.GUI.Views.Profile
             var viewmodel = resolutionRoot.TryGet(typeClass, param);
 
             //var view = ViewLocator.LocateForModel(viewmodel, null, null);
-            // ViewModelBinder.Bind(viewmodel, view, null);
+            //ViewModelBinder.Bind(viewmodel, view, null);
             var v = viewmodel as PluginModel;
 
 

@@ -1,5 +1,5 @@
 ﻿using Caliburn.Micro;
-using Cockpit.Core.Plugins.Plugins;
+using Cockpit.Core.Common;
 using Cockpit.Core.Plugins.Plugins.Properties;
 using Cockpit.GUI.Events;
 using Cockpit.GUI.Plugins.Properties;
@@ -13,16 +13,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using Cockpit.Core.Plugins.Events;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.GUI.Plugins
 {
-    public class Panel_ViewModel : PluginModel, IDropTarget, Core.Common.Events.IHandle<RemovePanelEvent>,
-                                                             Core.Common.Events.IHandle<Core.Plugins.Events.VisibilityPanelEvent>
+    public class Panel_ViewModel : PluginModel, IDropTarget, Core.Common.Events.IHandle<Core.Plugins.Events.VisibilityPanelEvent>
     {
         private readonly IEventAggregator eventAggregator;
         private readonly IResolutionRoot resolutionRoot;
@@ -165,6 +162,19 @@ namespace Cockpit.GUI.Plugins
         //{
         //    //ToolTip = $"({UCLeft}, {UCTop})\n({ScaleX:0.##}, {(ScaleX * ImageSize[0]):0.##}, {(ScaleX * ImageSize[1]):0.##})";
         //}
+        public void Ichanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if ((bool)e.NewValue)
+            {
+
+            }
+            else
+            {
+
+            }
+
+        }
+
         public void MouseLeftButtonDownOnContentControl(ContentControl cc, PluginModel pm, MouseEventArgs e)
         {
             e.Handled = true;
@@ -460,40 +470,6 @@ namespace Cockpit.GUI.Plugins
             if (!NameUC.Equals(message.PanelName)) return;
 
             IsVisible = !IsVisible;
-        }
-
-        public void Handle(RemovePanelEvent message)
-        {
-            //if (MyCockpitViewModels == null) return;
-
-            //if (message.IsPanel)
-            //{
-            //    if (message.NameUC.Equals(NameUC))
-            //    {
-            //        foreach (var item in MyCockpitViewModels.ToList())
-            //        {
-            //            if (item.ToString().Equals("Cockpit.GUI.Plugins.Panel_ViewModel"))
-            //            {
-            //                eventAggregator.Publish(new RemovePanelEvent(NameUC: item.NameUC, IsPanel: true));
-            //                continue;
-            //            }
-            //            if (MyCockpitViewModels.Count() > 0)
-            //            {
-            //                MyCockpitViewModels.Remove(MyCockpitViewModels.Where(t => t.NameUC.Equals(item.NameUC)).First());
-            //                mv.SortedDico.Remove(item.NameUC);
-            //            }
-            //        }
-            //        MyCockpitViewModels = null;
-            //        eventAggregator.Unsubscribe(this);
-            //        return;
-            //    }
-            //}
-
-            //if (MyCockpitViewModels.Any(t => t.NameUC.Equals(message.NameUC)))
-            //{
-            //    MyCockpitViewModels.Remove(mv.SortedDico[message.NameUC].pm);
-            //    mv.SortedDico.Remove(message.NameUC);
-            //}
         }
     }
 }

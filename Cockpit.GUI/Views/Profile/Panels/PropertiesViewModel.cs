@@ -1,7 +1,6 @@
 ﻿using Caliburn.Micro;
-using Cockpit.Core.Plugins.Plugins;
+using Cockpit.Core.Common;
 using Cockpit.GUI.Events;
-using Cockpit.GUI.Plugins;
 using Cockpit.GUI.Views.Main;
 using Ninject;
 using Ninject.Syntax;

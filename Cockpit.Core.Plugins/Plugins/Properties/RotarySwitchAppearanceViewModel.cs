@@ -1,11 +1,9 @@
-﻿using Caliburn.Micro;
+﻿using Cockpit.Core.Common;
 using Cockpit.Core.Plugins.Common.CustomControls;
 using System;
-using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Media.TextFormatting;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Core.Plugins.Plugins.Properties

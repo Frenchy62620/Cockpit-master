@@ -1,4 +1,4 @@
-﻿using Caliburn.Micro;
+﻿using Cockpit.Core.Common;
 using Cockpit.Core.Plugins.Events;
 using System;
 using System.Windows.Controls;
@@ -26,7 +26,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             var width = (double)((int[])settings[3])[2];
             var height = (double)((int[])settings[3])[3];
 
-            SelectedSwitchRotation = (LayoutRotation)((int[])settings[3])[4];
+            IndexAngle = ((int[])settings[3])[4];
 
             Factor = height / width;
 
@@ -119,15 +119,15 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             }
         }
 
-        private LayoutRotation selectedSwitchRotation;
-        public LayoutRotation SelectedSwitchRotation
+        private int indexAngle;
+        public int IndexAngle
         {
-            get => selectedSwitchRotation;
+            get => indexAngle;
             set
             {
-                selectedSwitchRotation = value;
-                AngleRotation = (double)value;
-                NotifyOfPropertyChange(() => SelectedSwitchRotation);
+                indexAngle = value;
+                AngleRotation = (int)Enum.GetValues(typeof(LayoutRotation)).GetValue(value);
+                NotifyOfPropertyChange(() => IndexAngle);
             }
         }
 
@@ -138,7 +138,6 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             set
             {
                 angleRotation = value;
-                //SelectedSwitchRotation = (SwitchRotation)value;
                 NotifyOfPropertyChange(() => AngleRotation);
             }
         }

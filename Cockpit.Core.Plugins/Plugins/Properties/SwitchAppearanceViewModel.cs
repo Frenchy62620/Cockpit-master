@@ -1,4 +1,4 @@
-﻿using Caliburn.Micro;
+﻿using Cockpit.Core.Common;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Core.Plugins.Plugins.Properties

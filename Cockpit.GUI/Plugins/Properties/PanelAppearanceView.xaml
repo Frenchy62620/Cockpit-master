@@ -3,9 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" 
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:ip="clr-namespace:Cockpit.GUI.Common.CustomControls"    
-             Height="Auto"  d:DesignWidth="180">
+             mc:Ignorable="d" Height="Auto"  d:DesignWidth="180">
     <UserControl.Resources>
         <!--<Helios:EnumConverter Type="{x:Type Helios:ImageAlignment}" x:Key="AlignmentTypes" />-->
 
@@ -42,7 +42,7 @@
             </Style.Triggers>
         </Style>
 
-        <Style x:Key="BackgroundColorWellStyle" TargetType="ip:ColorWellView">
+        <Style x:Key="FillStyle" TargetType="xctk:ColorPicker">
             <Setter Property="Visibility" Value="Collapsed" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Path=FillBackground}" Value="True">
@@ -80,8 +80,8 @@
 
         <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
             <CheckBox VerticalAlignment="Top" Margin="0,6,6,6" IsChecked="{Binding Path=FillBackground}" />
-            <ip:ColorWellView Color="{Binding BackgroundColor,Mode=TwoWay}" HorizontalAlignment="Left" 
-                              Style="{StaticResource BackgroundColorWellStyle}" Margin="0,2" />
+            <xctk:ColorPicker x:Name="Background" HorizontalAlignment="Left" Margin="0,2" DisplayColorAndName="True"
+                              ColorMode="ColorCanvas"  UsingAlphaChannel="True" Style="{StaticResource FillStyle}" />
         </StackPanel>
 
         <Label Grid.Column="0" Grid.Row="4" FontSize="10" HorizontalAlignment="Right" Content="Image" />

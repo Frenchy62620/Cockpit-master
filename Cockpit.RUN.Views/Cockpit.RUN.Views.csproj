@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{9DADAAA8-238D-415E-907C-F6AF9AA289B2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Cockpit.RUN.Views</RootNamespace>
+    <AssemblyName>Cockpit.RUN.Views</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Caliburn.Micro, Version=3.2.0.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Caliburn.Micro.Core.3.2.0\lib\net45\Caliburn.Micro.dll</HintPath>
+    </Reference>
+    <Reference Include="Caliburn.Micro.Platform, Version=3.2.0.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Caliburn.Micro.3.2.0\lib\net45\Caliburn.Micro.Platform.dll</HintPath>
+    </Reference>
+    <Reference Include="Caliburn.Micro.Platform.Core, Version=3.2.0.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Caliburn.Micro.3.2.0\lib\net45\Caliburn.Micro.Platform.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Caliburn.Micro.3.2.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Common\Converters\MyConverter.cs" />
+    <Compile Include="Common\Converters\MyMultiConverter.cs" />
+    <Compile Include="Common\CustomControls\ColorPicker\ColorPicker.cs" />
+    <Compile Include="Common\CustomControls\ColorPicker\ColorPickerDialogView.xaml.cs">
+      <DependentUpon>ColorPickerDialogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Common\CustomControls\ColorPicker\ColorPickerSupport.cs" />
+    <Compile Include="Common\CustomControls\ColorPicker\ColorWellView.xaml.cs">
+      <DependentUpon>ColorWellView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Common\CustomControls\FontPicker\FontChooserDialogView.xaml.cs">
+      <DependentUpon>FontChooserDialogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Common\CustomControls\FontPicker\FontFamilyListItem.cs" />
+    <Compile Include="Common\CustomControls\FontPicker\FontPickerView.xaml.cs">
+      <DependentUpon>FontPickerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Common\CustomControls\FontPicker\TextDecorations.cs" />
+    <Compile Include="Common\CustomControls\FontPicker\TextFormat.cs" />
+    <Compile Include="Common\CustomControls\FontPicker\TextHorizontalAlignment.cs" />
+    <Compile Include="Common\CustomControls\FontPicker\TextVerticalAlignment.cs" />
+    <Compile Include="Common\CustomControls\FontPicker\TypefaceListItem.cs" />
+    <Compile Include="Common\CustomControls\ImagePicker\ImagePickerView.xaml.cs">
+      <DependentUpon>ImagePickerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Common\CustomControls\IPropertyNotification.cs" />
+    <Compile Include="Common\CustomControls\NotificationObject.cs" />
+    <Compile Include="Common\CustomControls\PropertyNotificationEventArgs.cs" />
+    <Compile Include="EnumBindingSourceExtension.cs" />
+    <Compile Include="EnumDescriptionTypeConverter.cs" />
+    <Compile Include="LayoutPropertyView.xaml.cs">
+      <DependentUpon>LayoutPropertyView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PushButtonAppearanceView.xaml.cs">
+      <DependentUpon>PushButtonAppearanceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PushButtonBehaviorView.xaml.cs">
+      <DependentUpon>PushButtonBehaviorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PushButtonGlyph.cs" />
+    <Compile Include="PushButton_View.xaml.cs">
+      <DependentUpon>PushButton_View.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Common\CustomControls\ColorPicker\ColorPickerDialogView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Common\CustomControls\ColorPicker\ColorWellView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Common\CustomControls\FontPicker\FontChooserDialogView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Common\CustomControls\FontPicker\FontPickerView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Common\CustomControls\ImagePicker\ImagePickerView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="LayoutPropertyView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
+    </Page>
+    <Page Include="PushButtonAppearanceView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PushButtonBehaviorView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PushButton_View.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

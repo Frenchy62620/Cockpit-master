@@ -1,0 +1,124 @@
+﻿<UserControl 
+    x:Class="Cockpit.RUN.Views.PushButton_View"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:converters="clr-namespace:Cockpit.RUN.Views.Common.Converters"
+    xmlns:cal="http://www.caliburnproject.org"
+    mc:Ignorable="d" d:DesignHeight="150" d:DesignWidth="70"
+    x:Name="usercontrol"  ToolTip="{Binding ToolTip}"
+    VerticalAlignment = "Top" HorizontalAlignment = "Left" ClipToBounds="True"
+    cal:Message.Attach="[Event MouseEnter] = [Action MouseEnterInUC($eventArgs)];
+                        [Event MouseLeftButtonDown] = [Action MouseLeftButtonDownOnUC($source, $eventArgs)];
+                        [Event MouseLeftButtonUp] = [Action MouseLeftButtonUp()]">
+    <!--RenderTransformOrigin="0.5,0.5"    ;[Event MouseLeftButtonDown] = [Action MouseLeftButtonDown($source, $mousepoint, 'false')]" -->
+    <!--<UserControl.RenderTransform>
+        <TransformGroup>
+            --><!--<RotateTransform x:Name="rotation" Angle="{Binding Layout.AngleRotation}" />-->
+            <!--<ScaleTransform x:Name="scale" ScaleX="{Binding ScaleX}" ScaleY="{Binding ScaleX}"/>--><!--
+        </TransformGroup>
+    </UserControl.RenderTransform>-->
+    <UserControl.Resources>
+        <converters:MyconverterColorToSolidColorBrush x:Key="MyconverterColorToSolidColorBrush" />
+        <converters:MyMultiConverterMargin x:Key="MyMultiConverterMargin" />
+        <converters:DrawGlyphes x:Key="DrawGlyphes" />
+    </UserControl.Resources>
+    
+    
+    <Grid x:Name="Switch"  Width="{Binding Path=Layout.Width}" Height="{Binding Path=Layout.Height}" >
+        
+        <Image x:Name="Pushed" Source="{Binding Appearance.PushedImage, Mode=TwoWay}"
+               HorizontalAlignment="Center" VerticalAlignment="Center" >
+            <Image.Style>
+                <Style TargetType="{x:Type Image}">
+                    <Setter Property="Visibility" Value="Hidden" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Appearance.IndexImage, Mode=TwoWay}" Value="1">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Image.Style>
+        </Image>
+
+        <Image x:Name="Normal" Source="{Binding Appearance.Image}"
+               HorizontalAlignment="Center" VerticalAlignment="Center" >
+            <Image.Style>
+                <Style TargetType="{x:Type Image}">
+                    <Setter Property="Visibility" Value="Hidden" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Appearance.IndexImage}" Value="0">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Image.Style>
+        </Image>
+        <TextBlock Text="{Binding Appearance.GlyphText}" Foreground="{Binding Appearance.TextColor, Converter={StaticResource MyconverterColorToSolidColorBrush}}"
+                   HorizontalAlignment="{Binding Appearance.SelectedHAlignType}" VerticalAlignment="{Binding Appearance.SelectedVAlignType}" 
+                   FontFamily="{Binding Appearance.TextFormat.FontFamily}" FontSize="{Binding Appearance.TextFormat.FontSize}" 
+                   FontStyle="{Binding Appearance.TextFormat.FontStyle}"
+                   FontWeight="{Binding Appearance.TextFormat.FontWeight}" TextDecorations="{Binding Appearance.TextFormat.TextDecorations}"
+                   >
+            <TextBlock.Margin>
+                <MultiBinding Converter="{StaticResource MyMultiConverterMargin }">
+                    <Binding Path="Appearance.TextFormat.PaddingLeft" />
+                    <Binding Path="Appearance.TextFormat.PaddingTop" />
+                    <Binding Path="Appearance.TextFormat.PaddingRight" />
+                    <Binding Path="Appearance.TextFormat.PaddingBottom" />
+                    <Binding Path="Width" RelativeSource="{RelativeSource AncestorType={x:Type Grid}}"/>
+                    <Binding Path="Height" RelativeSource="{RelativeSource AncestorType={x:Type Grid}}"/>
+                </MultiBinding>
+            </TextBlock.Margin>
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Appearance.IndexImage}" Value="1">
+                            <Setter Property="RenderTransform" >
+                                <Setter.Value>
+                                    <TranslateTransform X="{Binding Appearance.Offset.X}" Y="{Binding Appearance.Offset.Y}"  />
+                                    <!--<TranslateTransform>
+                                        <TranslateTransform.X>
+                                            <Binding Path="pushButtonAppearance.Offset.X"/>
+                                        </TranslateTransform.X>
+                                        <TranslateTransform.Y>
+                                            <Binding Path="pushButtonAppearance.Offset.Y"/>
+                                        </TranslateTransform.Y>
+                                    </TranslateTransform>-->
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+        
+        <!--<Rectangle x:Name="DesignFrame"
+                   Width="{Binding ElementName=Switch, Path=Width, UpdateSourceTrigger=PropertyChanged}"
+                   Height="{Binding ElementName=Switch, Path=Height, UpdateSourceTrigger=PropertyChanged}"
+                   Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource IsModeSelected}"
+                   cal:Message.Attach="[Event MouseLeftButtonDown] = [Action MouseLeftButtonDown($source, $mousepoint, $eventArgs, $executionContext, $datacontext)];
+                                       [Event MouseLeftButtonUp] = [Action MouseLeftButtonUp]" >
+        </Rectangle>-->
+
+        <Path StrokeThickness="{Binding Appearance.GlyphThickness}" Stroke="{Binding Appearance.GlyphColor, Converter={StaticResource MyconverterColorToSolidColorBrush}}" >
+            <Path.Fill>
+                <MultiBinding Converter="{StaticResource DrawGlyphes}">
+                    <Binding Path="Appearance.GlyphSelected"/>
+                    <Binding Path="Appearance.GlyphColor"/>
+                </MultiBinding>
+            </Path.Fill>
+
+            <Path.Data>
+                <MultiBinding Converter="{StaticResource DrawGlyphes}">
+                    <Binding Path="Appearance.GlyphSelected"/>
+                    <Binding Path="Appearance.GlyphScale"/>
+                    <Binding Path="Width" RelativeSource="{RelativeSource AncestorType={x:Type Grid}}"/>
+                    <Binding Path="Height" RelativeSource="{RelativeSource AncestorType={x:Type Grid}}"/>
+                    <Binding Path="Appearance.GlyphThickness"/>
+                </MultiBinding>
+            </Path.Data>
+        </Path>
+    </Grid>
+</UserControl>

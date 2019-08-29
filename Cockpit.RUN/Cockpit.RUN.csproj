@@ -70,6 +70,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Common\Converters\MyConverter.cs" />
     <Compile Include="Views\CockpitViewModel.cs" />
     <Compile Include="Views\StartupView.xaml.cs">
       <DependentUpon>StartupView.xaml</DependentUpon>
@@ -145,6 +146,10 @@
     <ProjectReference Include="..\Cockpit.Core\Cockpit.Core.csproj">
       <Project>{bcf7160f-9cb9-46e5-91ca-ee15e1d5ed54}</Project>
       <Name>Cockpit.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cockpit.RUN.Common\Cockpit.RUN.Common.csproj">
+      <Project>{8278F85F-BF49-4B9D-BF49-E57946DF1487}</Project>
+      <Name>Cockpit.RUN.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

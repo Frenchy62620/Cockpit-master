@@ -137,14 +137,6 @@
     <Compile Include="Common\Converters\EnumDisplayEntry.cs" />
     <Compile Include="Common\Converters\MyConverter.cs" />
     <Compile Include="Common\Converters\MyMultiConverter.cs" />
-    <Compile Include="Common\CustomControls\ColorPicker\ColorPicker.cs" />
-    <Compile Include="Common\CustomControls\ColorPicker\ColorPickerDialogView.xaml.cs">
-      <DependentUpon>ColorPickerDialogView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Common\CustomControls\ColorPicker\ColorPickerSupport.cs" />
-    <Compile Include="Common\CustomControls\ColorPicker\ColorWellView.xaml.cs">
-      <DependentUpon>ColorWellView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Common\CustomControls\FolderPicker\FolderPickerView.xaml.cs">
       <DependentUpon>FolderPickerView.xaml</DependentUpon>
     </Compile>
@@ -271,14 +263,6 @@
     <Compile Include="Views\Profile\MonitorViewModel.cs" />
     <Compile Include="Views\Profile\ToolBoxGroup.cs" />
     <Compile Include="Views\Profile\ToolBoxItem.cs" />
-    <Page Include="Common\CustomControls\ColorPicker\ColorPickerDialogView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Common\CustomControls\ColorPicker\ColorWellView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Common\CustomControls\FolderPicker\FolderPickerView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -406,6 +390,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Cockpit.Core.Common\Cockpit.Core.Common.csproj">
+      <Project>{07EC4990-A61F-4F76-A555-75B1CB0C7182}</Project>
+      <Name>Cockpit.Core.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Cockpit.Core.Contracts\Cockpit.Core.Contracts.csproj">
       <Project>{58285BD6-810D-4BBD-8249-230C3B0AC76F}</Project>
       <Name>Cockpit.Core.Contracts</Name>

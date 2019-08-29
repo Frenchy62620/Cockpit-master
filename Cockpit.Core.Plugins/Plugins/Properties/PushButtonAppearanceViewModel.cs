@@ -1,4 +1,5 @@
-﻿using Cockpit.Core.Plugins.Common.CustomControls;
+﻿using Cockpit.Core.Common;
+using Cockpit.Core.Plugins.Common.CustomControls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +39,9 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
 
             GlyphThickness = (double)settings[index++];
             GlyphScale = (double)settings[index++];
-            SelectedPushButtonGlyph = (PushButtonGlyph)(int)settings[index++];
+            //SelectedPushButtonGlyph = (PushButtonGlyph)(int)settings[index++];
+            //SelectedPushButtonGlyph = (int)settings[index++];
+            GlyphSelected = (int)settings[index++];
             GlyphColor = (Color)settings[index++];
             GlyphText = (string)settings[index++];
             TextPushOffset = (string)settings[index++]; 
@@ -183,18 +186,18 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         //        NotifyOfPropertyChange(() => VAlign);
         //    }
         //}
-        private PushButtonGlyph selectedPushButtonGlyph;
-        public PushButtonGlyph SelectedPushButtonGlyph
-        {
-            get => selectedPushButtonGlyph;
+        //private int selectedPushButtonGlyph;
+        //public int SelectedPushButtonGlyph
+        //{
+        //    get => selectedPushButtonGlyph;
 
-            set
-            {
-                selectedPushButtonGlyph = value;
-                GlyphSelected = (int)value;
-                NotifyOfPropertyChange(() => SelectedPushButtonGlyph);
-            }
-        }
+        //    set
+        //    {
+        //        selectedPushButtonGlyph = value;
+        //        GlyphSelected = (int)value;
+        //        NotifyOfPropertyChange(() => SelectedPushButtonGlyph);
+        //    }
+        //}
         private int glyphSelected;
         public int GlyphSelected
         {

@@ -1,4 +1,4 @@
-﻿using Cockpit.Core.Plugins.Plugins;
+﻿using Cockpit.Core.Common;
 
 namespace Cockpit.GUI.Events
 {

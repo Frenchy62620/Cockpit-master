@@ -20,8 +20,9 @@ namespace Cockpit.RUN.Bootstrap
 
         protected override void Configure()
         {
+            kernel = new StandardKernel();
             //kernel = ServiceBootstrapper.Create();
-            //kernel.Bind<IWindowManager>().To<WindowManager>().InSingletonScope();
+            kernel.Bind<IWindowManager>().To<WindowManager>().InSingletonScope();
             //kernel.Bind<IResultFactory>().To<ResultFactory>();
             //kernel.Bind<IParser>().To<Parser>();
             kernel.Bind<CockpitViewModel>().ToSelf().InSingletonScope();
@@ -43,10 +44,11 @@ namespace Cockpit.RUN.Bootstrap
 
 	    protected override void OnStartup(object sender, StartupEventArgs e)
 	    {
-	        //Coroutine.BeginExecute(kernel
-         //       .Get<SettingsLoaderViewModel>()
-         //       .Load(OnSettingsLoaded)
-         //       .GetEnumerator());
+            //Coroutine.BeginExecute(kernel
+            //    .Get<SettingsLoaderViewModel>()
+            //    .Load(OnSettingsLoaded)
+            //    .GetEnumerator());
+            DisplayRootViewFor<StartupViewModel>();
         }
 
         private void OnSettingsLoaded()

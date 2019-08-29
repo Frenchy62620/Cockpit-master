@@ -1,7 +1,7 @@
 ﻿using Caliburn.Micro;
 using Cockpit.Core.Plugins.Events;
-using Cockpit.Core.Plugins.Plugins;
 using Cockpit.Core.Plugins.Plugins.Properties;
+using Cockpit.RUN.Common;
 using Cockpit.RUN.Plugins.Properties;
 using Ninject.Syntax;
 using System.Collections.Generic;

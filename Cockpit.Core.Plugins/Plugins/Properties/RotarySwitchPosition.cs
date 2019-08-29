@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using Cockpit.Core.Common;
 using Action = System.Action;
 
 namespace Cockpit.Core.Plugins.Plugins.Properties

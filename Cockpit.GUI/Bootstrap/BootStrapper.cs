@@ -14,6 +14,7 @@ using Cockpit.GUI.Shells;
 using Cockpit.GUI.Views.Main;
 using Cockpit.GUI.Views.Profile.Panels;
 using Ninject;
+using Xceed.Wpf.Toolkit;
 using ILog = Cockpit.Core.Common.ILog;
 using Parser = Cockpit.GUI.Common.CommandLine.Parser;
 
@@ -39,6 +40,7 @@ namespace Cockpit.GUI.Bootstrap
             kernel.Bind<TrayIconViewModel>().ToSelf().InSingletonScope();
             ConfigurePanels();
 
+            SetupCustomConvention();
             SetupCustomMessageBindings();
         }
 
@@ -62,7 +64,8 @@ namespace Cockpit.GUI.Bootstrap
 
         private void OnSettingsLoaded()
         {
-            ViewLocator.NameTransformer.AddRule(@"ViewModel", @"ViewX");
+            //ViewLocator.NameTransformer.AddRule(@"ViewModel", @"ViewX");
+            ViewLocator.AddNamespaceMapping("Cockpit.Core.Plugins.Plugins.Properties", "Cockpit.General.Properties.Views");
             DisplayRootViewFor<TrayIconViewModel>();
             DisplayRootViewFor<MainShellViewModel>();
         }
@@ -83,14 +86,18 @@ namespace Cockpit.GUI.Bootstrap
             var assemblies = new List<Assembly>();
             assemblies.AddRange(base.SelectAssemblies());
             //Load new ViewModels here
-            string[] fileEntries = Directory.GetFiles(Directory.GetCurrentDirectory());
+            //string[] fileEntries = Directory.GetFiles(Directory.GetCurrentDirectory());
 
-            assemblies.AddRange(from fileName in fileEntries
-                                where fileName.EndsWith("Cockpit.Core.Plugins.dll")
-                                select Assembly.LoadFile(fileName));
+            //assemblies.AddRange(from fileName in fileEntries
+            //                    where fileName.EndsWith("Cockpit.Core.Plugins.dll")
+            //                    select Assembly.LoadFile(fileName));
             //assemblies.AddRange(from fileName in fileEntries
             //                    where fileName.Contains("ViewsX.dll")
             //                    select Assembly.LoadFile(fileName));
+
+            assemblies.Add(Assembly.LoadFile(@"J:\ProjetC#\Cockpit-master\Cockpit.GUI\bin\Debug\Cockpit.Core.Plugins.dll"));
+            assemblies.Add(Assembly.LoadFile(@"J:\ProjetC#\Cockpit-master\Cockpit.GUI\bin\Debug\Cockpit.General.Properties.Views.dll"));
+
             return assemblies;
 
 
@@ -99,6 +106,38 @@ namespace Cockpit.GUI.Bootstrap
         private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             kernel.Get<ILog>().Error(e.ExceptionObject as Exception);
+        }
+
+        private void SetupCustomConvention()
+        {
+            var selectedConvention = ConventionManager.AddElementConvention<ColorPicker>(ColorPicker.SelectedColorProperty, "SelectedColor", "ValueChanged");
+            //var maximumConvention = ConventionManager.AddElementConvention<FrameworkElement>(IntegerUpDown.MaximumProperty, "Maximum", "ValueChanged");
+            //var minimumConvention = ConventionManager.AddElementConvention<FrameworkElement>(IntegerUpDown.MinimumProperty, "Minimum", "ValueChanged");
+
+            //bind the properties
+            var baseBindProperties = ViewModelBinder.BindProperties;
+            ViewModelBinder.BindProperties =
+                (frameWorkElements, viewModels) =>
+                {
+                    foreach (var frameworkElement in frameWorkElements)
+                    {
+                        var selectedPropertyName = frameworkElement.Name + "Color";
+                        var selectedProperty = viewModels
+                                .GetPropertyCaseInsensitive(selectedPropertyName);
+
+                        if (selectedProperty != null)
+                        {
+                            ConventionManager.SetBindingWithoutBindingOverwrite(
+                                    viewModels,
+                                    selectedPropertyName,
+                                    selectedProperty,
+                                    frameworkElement,
+                                    selectedConvention,
+                                    selectedConvention.GetBindableProperty(frameworkElement));
+                        }
+                    }
+                    return baseBindProperties(frameWorkElements, viewModels);
+                };
         }
 
         private void SetupCustomMessageBindings()
