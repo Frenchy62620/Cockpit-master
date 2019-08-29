@@ -36,7 +36,7 @@ namespace Cockpit.GUI.Plugins
         {
             this.resolutionRoot = resolutionRoot;
             this.eventAggregator = eventAggregator;
-            //this.eventAggregator.Subscribe(this);
+            this.eventAggregator.Subscribe(this);
 
             mv = (MonitorViewModel)settings[1];
             Layout = new LayoutPropertyViewModel(eventAggregator, settings);

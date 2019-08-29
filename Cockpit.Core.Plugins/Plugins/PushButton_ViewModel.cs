@@ -23,8 +23,8 @@ namespace Cockpit.Core.Plugins.Plugins
         public PushButton_ViewModel(IEventAggregator eventAggregator, params object[] settings)
         {
             Layout = new LayoutPropertyViewModel(eventAggregator, settings);
-            Appearance = new PushButtonAppearanceViewModel(eventAggregator, settings);
-            Behavior = new PushButtonBehaviorViewModel(eventAggregator, settings);
+            Appearance = new PushButtonAppearanceViewModel(settings);
+            Behavior = new PushButtonBehaviorViewModel(settings);
 
             NameUC = (string)settings[2];
 

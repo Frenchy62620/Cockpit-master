@@ -7,17 +7,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Core.Plugins.Plugins.Properties
 {
     public class PushButtonAppearanceViewModel : PluginProperties
 
     {
-        private readonly IEventAggregator eventAggregator;
-
         public string NameUC { get; set; }
-        public PushButtonAppearanceViewModel(IEventAggregator eventAggregator, params object[] settings)
+        public PushButtonAppearanceViewModel(params object[] settings)
         {
 
             bool IsModeEditor = (bool)settings[0];
@@ -61,8 +58,8 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
 
             TextColor = (Color)settings[++index];
 
-            eventAggregator.Subscribe(this);
-            this.eventAggregator = eventAggregator;
+            //eventAggregator.Subscribe(this);
+            //this.eventAggregator = eventAggregator;
             
             Name = "Appearance";
         }
@@ -332,26 +329,5 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
                 TextFormat.PaddingTop = TextFormat.PaddingBottom;
             }
         }
-
-
- 
-
-        //public void Handle(PushButtonAppearanceEvent message)
-        //{
-        //    //Image = message.Image[0];
-        //    //PushedImage = message.Image[1];
-        //}
-
-        //public void Handle(NewLayoutEvent message)
-        //{
-        //    LayoutHeight = message.NewLayoutHeight;
-        //    LayoutWidth = message.NewLayoutWidth;
-        //    //DrawGlyph(GlyphSelected);
-        //}
-
-        //private void SendEvent()
-        //{
-        //    eventAggregator.Publish(new NewAppearanceEvent(NameUC, Appearance));
-        //}
     }
 }

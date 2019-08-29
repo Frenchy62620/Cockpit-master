@@ -6,13 +6,118 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:cal="http://www.caliburnproject.org"
     xmlns:gg="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
-    mc:Ignorable="d" d:DesignHeight="150" d:DesignWidth="70" ToolTip="{Binding ToolTip}"    Style="{StaticResource PanelAnimation}"
+    mc:Ignorable="d" d:DesignHeight="150" d:DesignWidth="70" ToolTip="{Binding ToolTip}"    Style="{DynamicResource ResourceKey=PanelAnimation1}"
     VerticalAlignment = "Top" HorizontalAlignment = "Left" ClipToBounds="True" Background="Transparent"
     cal:Message.Attach="[Event MouseDown] = [Action MouseLeftButtonDownOnPanelView($source, $mousepoint, $eventArgs)];
                         [Event IsVisibleChanged] = [Action Ichanged($source, $eventArgs)]"  >
     <!--cal:Message.Attach="[Event MouseEnter] = [Action MouseEnter($eventArgs)];
                         [Event MouseDoubleClick] = [Action MouseDoubleClickOnPanel($dataContext, $eventArgs)]"-->
     <UserControl.Resources>
+
+        <Style x:Key="PanelAnimation1" TargetType="{x:Type UserControl}">
+            <Setter Property="RenderTransformOrigin" Value="1.0,0.0"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <TransformGroup>
+                        <ScaleTransform  />
+                        <!--<RotateTransform x:Name="rotation" Angle="{Binding AngleRotation}"/>-->
+                    </TransformGroup>
+                </Setter.Value>
+            </Setter>
+
+            <Style.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <!--<Condition Binding="{Binding Path=Initialized}" Value="True"/>-->
+                        <Condition Binding="{Binding Path=IsVisible}" Value="False"/>
+                        <Condition Binding="{Binding Path=ScaleXX}" Value="True"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="RenderTransformOrigin" Value="{Binding Path=RenderO, Converter={StaticResource MyConverterRender}}"/>
+                    <MultiDataTrigger.EnterActions>
+                        <BeginStoryboard x:Name="BeginXtoLeft">
+                            <Storyboard FillBehavior="HoldEnd">
+                                <!--<DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:2" AutoReverse="False"/>-->
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Children[0].ScaleX" To="0" Duration="0:0:0.4"/>
+                                <!--<DoubleAnimation Storyboard.TargetProperty="(Canvas.Left)" To="0" Duration="0:0:1.2"/>-->
+                            </Storyboard>
+                        </BeginStoryboard>
+                        <!--</DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>-->
+                    </MultiDataTrigger.EnterActions>
+                    <MultiDataTrigger.ExitActions>
+                        <RemoveStoryboard BeginStoryboardName="BeginXtoLeft"/>
+                    </MultiDataTrigger.ExitActions>
+                </MultiDataTrigger>
+
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <!--<Condition Binding="{Binding Path=Initialized}" Value="True"/>-->
+                        <Condition Binding="{Binding Path=IsVisible}" Value="True"/>
+                        <Condition Binding="{Binding Path=ScaleXX}" Value="True"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="RenderTransformOrigin" Value="{Binding Path=RenderO, Converter={StaticResource MyConverterRender}}"/>
+                    <MultiDataTrigger.EnterActions>
+                        <BeginStoryboard x:Name="CancelXtoLeft">
+                            <Storyboard FillBehavior="HoldEnd">
+                                <!--<DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:2" AutoReverse="False"/>-->
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Children[0].ScaleX" To="1" Duration="0:0:0.4"/>
+                                <!--<DoubleAnimation Storyboard.TargetProperty="(Canvas.Left)" To="0" Duration="0:0:1.2"/>-->
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </MultiDataTrigger.EnterActions>
+                    <MultiDataTrigger.ExitActions>
+                        <RemoveStoryboard BeginStoryboardName="CancelXtoLeft"/>
+                    </MultiDataTrigger.ExitActions>
+                </MultiDataTrigger>
+
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <!--<Condition Binding="{Binding Path=Initialized}" Value="True"/>-->
+                        <Condition Binding="{Binding Path=IsVisible}" Value="False"/>
+                        <Condition Binding="{Binding Path=ScaleXX}" Value="False"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="RenderTransformOrigin" Value="{Binding Path=RenderO, Converter={StaticResource MyConverterRender}}"/>
+                    <MultiDataTrigger.EnterActions>
+                        <BeginStoryboard x:Name="BeginYtoUp">
+                            <Storyboard FillBehavior="HoldEnd">
+                                <!--<DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:2" AutoReverse="False"/>-->
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Children[0].ScaleY" To="0" Duration="0:0:0.4"/>
+                                <!--<DoubleAnimation Storyboard.TargetProperty="(Canvas.Left)" To="0" Duration="0:0:1.2"/>-->
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </MultiDataTrigger.EnterActions>
+                    <MultiDataTrigger.ExitActions>
+                        <RemoveStoryboard BeginStoryboardName="BeginYtoUp"/>
+                    </MultiDataTrigger.ExitActions>
+                </MultiDataTrigger>
+
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <!--<Condition Binding="{Binding Path=Initialized}" Value="True"/>-->
+                        <Condition Binding="{Binding Path=IsVisible}" Value="True"/>
+                        <Condition Binding="{Binding Path=ScaleXX}" Value="False"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="RenderTransformOrigin" Value="{Binding Path=RenderO, Converter={StaticResource MyConverterRender}}"/>
+                    <MultiDataTrigger.EnterActions>
+                        <BeginStoryboard x:Name="CancelYtoUp">
+                            <Storyboard FillBehavior="HoldEnd">
+                                <!--<DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:2" AutoReverse="False"/>-->
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Children[0].ScaleY" To="1" Duration="0:0:0.4"/>
+                                <!--<DoubleAnimation Storyboard.TargetProperty="(Canvas.Left)" To="0" Duration="0:0:1.2"/>-->
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </MultiDataTrigger.EnterActions>
+                    <MultiDataTrigger.ExitActions>
+                        <RemoveStoryboard BeginStoryboardName="CancelYtoUp"/>
+                    </MultiDataTrigger.ExitActions>
+                </MultiDataTrigger>
+
+
+            </Style.Triggers>
+        </Style>
+
+
+
         <DataTemplate x:Key="BoxDragAdorner">
             <Grid x:Name="Over">
 

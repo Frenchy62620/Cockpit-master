@@ -1,5 +1,4 @@
 ﻿using Cockpit.Core.Common;
-using Cockpit.Core.Common.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +8,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
 {
     public class PushButtonBehaviorViewModel : PluginProperties
     {
-        private readonly IEventAggregator eventAggregator;
-        public PushButtonBehaviorViewModel(IEventAggregator eventAggregator, params object[] settings)
+        public PushButtonBehaviorViewModel(params object[] settings)
         {
             PushButtonTypes = Enum.GetValues(typeof(PushButtonType)).Cast<PushButtonType>().ToList();
             SelectedPushButtonType = (PushButtonType)(int)settings[19];

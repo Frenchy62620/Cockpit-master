@@ -26,8 +26,8 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             var width = (double)((int[])settings[3])[2];
             var height = (double)((int[])settings[3])[3];
 
-            IndexAngle = ((int[])settings[3])[4];
-
+            var value = ((int[])settings[3])[4];
+            IndexAngle = Array.FindIndex((int[])Enum.GetValues(typeof(LayoutRotation)), w => w == value); 
             Factor = height / width;
 
             Width = width;

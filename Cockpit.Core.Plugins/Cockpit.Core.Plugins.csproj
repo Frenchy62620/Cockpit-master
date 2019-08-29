@@ -63,9 +63,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\Converters\MyConverter.cs" />
-    <Compile Include="Common\CustomControls\FolderPicker\FolderPickerView.xaml.cs">
-      <DependentUpon>FolderPickerView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Common\CustomControls\FontPicker\FontChooserDialogView.xaml.cs">
       <DependentUpon>FontChooserDialogView.xaml</DependentUpon>
     </Compile>
@@ -78,9 +75,6 @@
     <Compile Include="Common\CustomControls\FontPicker\TextHorizontalAlignment.cs" />
     <Compile Include="Common\CustomControls\FontPicker\TextVerticalAlignment.cs" />
     <Compile Include="Common\CustomControls\FontPicker\TypefaceListItem.cs" />
-    <Compile Include="Common\CustomControls\ImagePicker\ImagePickerView.xaml.cs">
-      <DependentUpon>ImagePickerView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Common\CustomControls\IPropertyNotification.cs" />
     <Compile Include="Common\CustomControls\NotificationObject.cs" />
     <Compile Include="Common\CustomControls\PropertyNotificationEventArgs.cs" />
@@ -126,19 +120,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Common\CustomControls\FolderPicker\FolderPickerView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>XamlIntelliSenseFileGenerator</Generator>
-    </Page>
     <Page Include="Common\CustomControls\FontPicker\FontChooserDialogView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Common\CustomControls\FontPicker\FontPickerView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Common\CustomControls\ImagePicker\ImagePickerView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

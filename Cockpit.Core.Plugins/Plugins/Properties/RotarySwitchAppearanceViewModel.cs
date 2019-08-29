@@ -8,10 +8,6 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Core.Plugins.Plugins.Properties
 {
-    //,
-    //                                Core.Common.Events.IHandle<ThreeWayToggleSwitchAppearanceEvent>,
-    //                                Core.Common.Events.IHandle<PropertyHasIndicatorEvent>,
-    //                                Core.Common.Events.IHandle<PropertyHas3ImagesEvent>
     public class RotarySwitchAppearanceViewModel : PluginProperties
     {
         private readonly IEventAggregator eventAggregator;
@@ -24,8 +20,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             bool IsModeEditor = (bool)settings[0];
             if (IsModeEditor)
             {
-                //var view = ViewLocator.LocateForModel(this, null, null);
-                //ViewModelBinder.Bind(this, view, null);
+
             }
             NameUC = (string)settings[2];
 
