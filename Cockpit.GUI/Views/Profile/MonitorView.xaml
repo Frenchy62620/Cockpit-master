@@ -80,7 +80,7 @@
                                                 cal:Message.Attach="[Event MouseLeftButtonDown] = [Action MouseLeftButtonDownOnContentControl($source, $dataContext, $eventArgs)];
                                                                     [Event Loaded] = [Action ContentControlLoaded($source, $dataContext)];
                                                                     [Event MouseDoubleClick] = [Action MouseDoubleClickOnContentControl($source, $eventArgs)];
-                                                                    [Event MouseWheel] = [Action MouseWheelOnContentControl($source, $eventArgs)];
+                                                                    [Event PreviewMouseWheel] = [Action PreviewMouseWheelOnContentControl($source, $eventArgs)];
                                                 [Event PreviewMouseLeftButtonDown] = [Action PreviewMouseLeftButtonDownOnContentControl($source, $dataContext, $eventArgs)]">
                                     <ContentControl.RenderTransform>
                                         <TransformGroup>

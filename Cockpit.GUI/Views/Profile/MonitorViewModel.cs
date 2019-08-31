@@ -538,7 +538,7 @@ namespace Cockpit.GUI.Views.Profile
             }
         }
 
-        public void MouseWheelOnContentControl(object sender, MouseWheelEventArgs e)
+        public void PreviewMouseWheelOnContentControl(object sender, MouseWheelEventArgs e)
         {
             var ctrl = Keyboard.IsKeyDown(key: Key.LeftCtrl) || Keyboard.IsKeyDown(key: Key.RightCtrl);
             var shift = Keyboard.IsKeyDown(key: Key.LeftShift) || Keyboard.IsKeyDown(key: Key.RightShift);

@@ -13,10 +13,10 @@
                         [Event MouseLeftButtonDown] = [Action MouseLeftButtonDownOnUC($source, $mousepoint, $eventArgs)];
                         [Event MouseWheel] = [Action MouseWheelOnUC($source, $eventArgs)]" >
 
-
-    <!--cal:Message.Attach="[Event MouseEnter] = [Action MouseEnterInUC($eventArgs)];
-                        [Event MouseLeftButtonDown] = [Action MouseLeftButtonDownOnUC($source, $mousepoint, $eventArgs)];
-                        [Event MouseLeftButtonUp] = [Action MouseLeftButtonUp()]"-->
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />        
+    </UserControl.Resources>
+    
     <!--RenderTransformOrigin="0.5,0.5"-->
     <UserControl.RenderTransform>
         <TransformGroup>
@@ -25,9 +25,12 @@
         </TransformGroup>
     </UserControl.RenderTransform>
 
+    
+    
     <Grid x:Name="Switch"  Width="{Binding Path=Layout.Width}" Height="{Binding Path=Layout.Height}" >
         <!--<Canvas>-->
-        <Path StrokeThickness="{Binding Appearance.LineThickness}" Stroke="{Binding Appearance.LineColor, Converter={StaticResource MyconverterColorToSolidColorBrush}}" >
+        <Path StrokeThickness="{Binding Appearance.LineThickness}" Stroke="{Binding Appearance.LineColor, Converter={StaticResource MyconverterColorToSolidColorBrush}}"
+              Visibility="{Binding Appearance.IsLinesVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Path.Data>
                 <MultiBinding Converter="{StaticResource DrawGlyphes}">
                     <Binding Path="Width" RelativeSource="{RelativeSource AncestorType={x:Type Grid}}"/>
@@ -38,20 +41,22 @@
 
         </Path>
         <ItemsControl x:Name="RotarySwitchPositions"  Background="Transparent"  BorderThickness="0" 
-                 HorizontalContentAlignment="Stretch" ItemsSource="{Binding RotarySwitchPositions}" >
+                      HorizontalContentAlignment="Stretch" ItemsSource="{Binding RotarySwitchPositions}" 
+                      Visibility="{Binding Appearance.IsLabelsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <!--ItemTemplate="{StaticResource PositionLayout}"-->
                 <ItemsControl.ItemTemplate>
                     <DataTemplate><!--{Binding NamePosition, diag:PresentationTraceSources.TraceLevel=High}-->
-                        <Canvas>
+                    <Canvas>
                         <TextBlock x:Name="NamePosition"  Text="{Binding NamePosition}" 
                                    Canvas.Left="{Binding TextLeft, Mode=TwoWay}" Canvas.Top="{Binding TextTop, Mode=TwoWay}" 
                                    HorizontalAlignment="Center" VerticalAlignment="Center"
                                    Foreground="{Binding RotarySwitchViewModel.Appearance.LabelColor, Converter={StaticResource MyconverterColorToSolidColorBrush}}"
                                    FontFamily="{Binding RotarySwitchViewModel.Appearance.TextFormat.FontFamily}" FontSize="{Binding RotarySwitchViewModel.Appearance.TextFormat.FontSize}"
                                    FontStyle="{Binding RotarySwitchViewModel.Appearance.TextFormat.FontStyle}" FontWeight="{Binding RotarySwitchViewModel.Appearance.TextFormat.FontWeight}" 
-                                   TextDecorations="{Binding RotarySwitchViewModel.Appearance.TextFormat.TextDecorations}"/>
-                        </Canvas>
-                    </DataTemplate>
+                                   TextDecorations="{Binding RotarySwitchViewModel.Appearance.TextFormat.TextDecorations}"
+                                   Visibility="{Binding Appearance.IsLabelsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    </Canvas>
+                </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
             <!--<TextBlock Text="{Binding NamePosition}" Canvas.Top="{Binding TextTop}" Canvas.Left="{Binding TextLeft}"

@@ -34,7 +34,7 @@ namespace Cockpit.Core.Plugins.Plugins
             this.eventAggregator = eventAggregator;
             this.eventAggregator.Subscribe(this);
 
-
+            ToolTip = "Superbe";
 
 
 
