@@ -7,16 +7,13 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
     public class RotarySwitchPosition : PropertyChangedBase
     {
         public RotarySwitch_ViewModel RotarySwitchViewModel { get;  } 
-        public RotarySwitchPosition(int tag, RotarySwitch_ViewModel rm, Action rebuild, string name = "")
+        public RotarySwitchPosition(int tag, RotarySwitch_ViewModel rm, Action rebuild, string name, int angle)
         {
             RotarySwitchViewModel = rm;
-            if (string.IsNullOrEmpty(name))
-                NamePosition = tag.ToString();
+            NamePosition = string.IsNullOrEmpty(name) ? tag.ToString() : name;
             Rebuild = rebuild;
             Tag = tag;
-            Angle = tag * 20;
-            
-
+            Angle = angle < 0 ? tag * 20 : angle;         
         }
         public PluginProperties Appearance { get;}
         public Action Rebuild; 

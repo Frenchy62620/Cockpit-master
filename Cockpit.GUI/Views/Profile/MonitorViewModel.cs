@@ -540,11 +540,14 @@ namespace Cockpit.GUI.Views.Profile
 
         public void MouseWheelOnContentControl(object sender, MouseWheelEventArgs e)
         {
-            e.Handled = true;
+            var ctrl = Keyboard.IsKeyDown(key: Key.LeftCtrl) || Keyboard.IsKeyDown(key: Key.RightCtrl);
+            var shift = Keyboard.IsKeyDown(key: Key.LeftShift) || Keyboard.IsKeyDown(key: Key.RightShift);
+                                    
+            if (!ctrl && !shift) return;
 
-            var match = Keyboard.IsKeyDown(key: Key.LeftCtrl) || Keyboard.IsKeyDown(key: Key.RightCtrl);
-            var step = (match ? 5 : 1) * (e.Delta > 0 ? 1 : -1);
-            var list = DictContentcontrol.Where(item => item.Value).Select(item => item.Key.DataContext as PluginModel);
+            e.Handled = true;
+            var step = (shift ? 5 : 1) * (e.Delta > 0 ? 1 : -1);
+            var list = SortedDico.Where(item => AdornersSelectedList.Contains(item.Key)).Select(item => item.Value.pm);
             foreach (var item in list)
             {
                 item.Width += step;

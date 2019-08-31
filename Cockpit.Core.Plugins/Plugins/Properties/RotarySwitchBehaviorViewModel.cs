@@ -10,6 +10,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
     public class RotarySwitchBehaviorViewModel : PluginProperties
     {
         private readonly IEventAggregator eventAggregator;
+        public RotarySwitch_ViewModel RotarySwitchViewModel { get; }
 
         public RotarySwitchBehaviorViewModel(IEventAggregator eventAggregator, RotarySwitch_ViewModel pm, params object[] settings)
         {
@@ -25,19 +26,15 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
 
             this.eventAggregator = eventAggregator;
 
-            //SwitchOrientation = Enum.GetValues(typeof(SwitchOrientation)).Cast<SwitchOrientation>().ToList();
-
             eventAggregator.Subscribe(this);
-            //Has3Images = true;
-            HasIndicator = false;
-            SelectedSwitchTypeIndex = (int) SwitchType.OnOnOn;
-            SelectedDefaultPosition = SwitchPosition.One;
+
             Name = "Behavior";
             LineAngles = "";
-
             RotarySwitchViewModel = pm;
 
-            AddPosition();
+            AddPosition("pos0", 0);
+            AddPosition("pos1", 90);
+            RotarySwitchPositionIndex = 1;
 
         }
         private int Idx;
@@ -55,10 +52,34 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
 
         public string Name { get; set; }
 
-        public RotarySwitch_ViewModel RotarySwitchViewModel { get; }
-        public void AddPosition()
+        private int rotarySwitchPositionIndex;
+
+        public int RotarySwitchPositionIndex
         {
-            var rotary = new RotarySwitchPosition(Idx++, RotarySwitchViewModel, RebuildListOfAngles);
+            get => rotarySwitchPositionIndex;
+            set
+            {
+                rotarySwitchPositionIndex = value;
+                AngleRot = RotarySwitchViewModel.RotarySwitchPositions[value].Angle;
+                NotifyOfPropertyChange(() => RotarySwitchPositionIndex);
+            }
+        }
+
+        private double angleRot;
+        public double AngleRot
+        {
+            get => angleRot;
+
+            set
+            {
+                angleRot = value;
+                NotifyOfPropertyChange(() => AngleRot);
+            }
+        }
+
+        public void AddPosition(string name = "", int angle = -1)
+        {
+            var rotary = new RotarySwitchPosition(Idx++, RotarySwitchViewModel, RebuildListOfAngles, name, angle);
             RotarySwitchViewModel.RotarySwitchPositions.Add(rotary);
             RebuildListOfAngles();
         }
@@ -94,30 +115,30 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         //    }
         //}
 
-        private int selectedSwitchTypeIndex;
-        public int SelectedSwitchTypeIndex
-        {
-            get => selectedSwitchTypeIndex;
-            set
-            {
-                if (value == 3 || value == 8)
-                {
-                    IsPanelButtonUp = Visibility.Visible;
-                    if (value == 8)
-                        IsPanelButtonDn = Visibility.Visible;
-                }
-                else
-                {
-                    IsPanelButtonUp = Visibility.Collapsed;
-                    IsPanelButtonDn = Visibility.Collapsed;
-                }
+        //private int selectedSwitchTypeIndex;
+        //public int SelectedSwitchTypeIndex
+        //{
+        //    get => selectedSwitchTypeIndex;
+        //    set
+        //    {
+        //        if (value == 3 || value == 8)
+        //        {
+        //            IsPanelButtonUp = Visibility.Visible;
+        //            if (value == 8)
+        //                IsPanelButtonDn = Visibility.Visible;
+        //        }
+        //        else
+        //        {
+        //            IsPanelButtonUp = Visibility.Collapsed;
+        //            IsPanelButtonDn = Visibility.Collapsed;
+        //        }
 
-                selectedSwitchTypeIndex = value;
-                SetNumberOfPosition(value >= 4);
-                Has3Images = value >= 4;
-                NotifyOfPropertyChange(() => SelectedSwitchTypeIndex);
-            }
-        }
+        //        selectedSwitchTypeIndex = value;
+        //        SetNumberOfPosition(value >= 4);
+        //        Has3Images = value >= 4;
+        //        NotifyOfPropertyChange(() => SelectedSwitchTypeIndex);
+        //    }
+        //}
 
         //public IReadOnlyList<SwitchOrientation> SwitchOrientation { get; }
 
@@ -133,116 +154,101 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         //}
 
 
-        private List<SwitchPosition> defaultPositions;
-        public List<SwitchPosition> DefaultPositions
-        {
-            get => defaultPositions;
-            set
-            {
-                defaultPositions = value;
-                NotifyOfPropertyChange(() => DefaultPositions);
-            }
-        }
-
-        private int defaultInitialPosition;
-        public int DefaultInitialPosition
-        {
-            get => defaultInitialPosition;
-
-            set
-            {
-                //if (!AppearancewModel.Has3Images && value > 1)
-                //    defaultInitialPosition = 1;
-                //else
-                //    defaultInitialPosition = value;
+        //private List<SwitchPosition> defaultPositions;
+        //public List<SwitchPosition> DefaultPositions
+        //{
+        //    get => defaultPositions;
+        //    set
+        //    {
+        //        defaultPositions = value;
+        //        NotifyOfPropertyChange(() => DefaultPositions);
+        //    }
+        //}
 
 
-                SelectedDefaultPosition = (SwitchPosition)defaultInitialPosition;
-            }
-        }
 
-        private SwitchPosition selectedDefaultPosition;
-        public SwitchPosition SelectedDefaultPosition
-        {
-            get => selectedDefaultPosition;
+        //private SwitchPosition selectedDefaultPosition;
+        //public SwitchPosition SelectedDefaultPosition
+        //{
+        //    get => selectedDefaultPosition;
 
-            set
-            {
-                selectedDefaultPosition = value;
-                NotifyOfPropertyChange(() => SelectedDefaultPosition);
-            }
-        }
+        //    set
+        //    {
+        //        selectedDefaultPosition = value;
+        //        NotifyOfPropertyChange(() => SelectedDefaultPosition);
+        //    }
+        //}
 
-        void SetNumberOfPosition(bool numberOfPositionEqual3)
-        {
-            DefaultPositions = Enum.GetValues(typeof(SwitchPosition)).Cast<SwitchPosition>().Take(numberOfPositionEqual3 ? 3 : 2).ToList();
-            if (SelectedSwitchTypeIndex == 3 || (SelectedDefaultPosition == SwitchPosition.Two && !numberOfPositionEqual3))
-                SelectedDefaultPosition = DefaultPositions[1];
-        }
+        //void SetNumberOfPosition(bool numberOfPositionEqual3)
+        //{
+        //    DefaultPositions = Enum.GetValues(typeof(SwitchPosition)).Cast<SwitchPosition>().Take(numberOfPositionEqual3 ? 3 : 2).ToList();
+        //    if (SelectedSwitchTypeIndex == 3 || (SelectedDefaultPosition == SwitchPosition.Two && !numberOfPositionEqual3))
+        //        SelectedDefaultPosition = DefaultPositions[1];
+        //}
 
-        private Visibility _IsPanelButtonUp;
-        public Visibility IsPanelButtonUp
-        {
-            get => _IsPanelButtonUp;
+        //private Visibility _IsPanelButtonUp;
+        //public Visibility IsPanelButtonUp
+        //{
+        //    get => _IsPanelButtonUp;
 
-            set
-            {
-                _IsPanelButtonUp = value;
-                NotifyOfPropertyChange(() => IsPanelButtonUp);
-            }
-        }
-        private Visibility _IsPanelButtonDn;
-        public Visibility IsPanelButtonDn
-        {
-            get => _IsPanelButtonDn;
+        //    set
+        //    {
+        //        _IsPanelButtonUp = value;
+        //        NotifyOfPropertyChange(() => IsPanelButtonUp);
+        //    }
+        //}
+        //private Visibility _IsPanelButtonDn;
+        //public Visibility IsPanelButtonDn
+        //{
+        //    get => _IsPanelButtonDn;
 
-            set
-            {
-                _IsPanelButtonUp = value;
-                NotifyOfPropertyChange(() => IsPanelButtonDn);
-            }
-        }
-        private string _NameOfPanelUp;
-        public string NameOfPanelUp
-        {
-            get => _NameOfPanelUp;
+        //    set
+        //    {
+        //        _IsPanelButtonUp = value;
+        //        NotifyOfPropertyChange(() => IsPanelButtonDn);
+        //    }
+        //}
+        //private string _NameOfPanelUp;
+        //public string NameOfPanelUp
+        //{
+        //    get => _NameOfPanelUp;
 
-            set
-            {
-                _NameOfPanelUp = value;
-                NotifyOfPropertyChange(() => _NameOfPanelUp);
-            }
-        }
-        private string _NameOfPanelDn;
-        public string NameOfPanelDn
-        {
-            get => _NameOfPanelDn;
+        //    set
+        //    {
+        //        _NameOfPanelUp = value;
+        //        NotifyOfPropertyChange(() => _NameOfPanelUp);
+        //    }
+        //}
+        //private string _NameOfPanelDn;
+        //public string NameOfPanelDn
+        //{
+        //    get => _NameOfPanelDn;
 
-            set
-            {
-                _NameOfPanelDn = value;
-                NotifyOfPropertyChange(() => _NameOfPanelDn);
-            }
-        }
-        private bool hasIndicator;
-        public bool HasIndicator
-        {
-            get => hasIndicator;
-            set
-            {
-                hasIndicator = value;
-                NotifyOfPropertyChange(() => HasIndicator);
-            }
-        }
-        private bool has3images;
-        public bool Has3Images
-        {
-            get => has3images;
-            set
-            {
-                has3images = value;
-                NotifyOfPropertyChange(() => Has3Images);
-            }
-        }
+        //    set
+        //    {
+        //        _NameOfPanelDn = value;
+        //        NotifyOfPropertyChange(() => _NameOfPanelDn);
+        //    }
+        //}
+        //private bool hasIndicator;
+        //public bool HasIndicator
+        //{
+        //    get => hasIndicator;
+        //    set
+        //    {
+        //        hasIndicator = value;
+        //        NotifyOfPropertyChange(() => HasIndicator);
+        //    }
+        //}
+        //private bool has3images;
+        //public bool Has3Images
+        //{
+        //    get => has3images;
+        //    set
+        //    {
+        //        has3images = value;
+        //        NotifyOfPropertyChange(() => Has3Images);
+        //    }
+        //}
     }
 }

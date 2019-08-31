@@ -4,15 +4,19 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
     xmlns:cal="http://www.caliburnproject.org"
+    xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
     mc:Ignorable="d" d:DesignHeight="150" d:DesignWidth="70"
     x:Name="usercontrol"  ToolTip="{Binding ToolTip}"
-    VerticalAlignment = "Top" HorizontalAlignment = "Left" ClipToBounds="False"
+    VerticalAlignment = "Top" HorizontalAlignment = "Left" ClipToBounds="False" 
     cal:Message.Attach="[Event MouseEnter] = [Action MouseEnterInUC($eventArgs)];
                         [Event MouseLeftButtonDown] = [Action MouseLeftButtonDownOnUC($source, $mousepoint, $eventArgs)];
-                        [Event MouseLeftButtonUp] = [Action MouseLeftButtonUp()]">
-    
+                        [Event MouseWheel] = [Action MouseWheelOnUC($source, $eventArgs)]" >
+
+
+    <!--cal:Message.Attach="[Event MouseEnter] = [Action MouseEnterInUC($eventArgs)];
+                        [Event MouseLeftButtonDown] = [Action MouseLeftButtonDownOnUC($source, $mousepoint, $eventArgs)];
+                        [Event MouseLeftButtonUp] = [Action MouseLeftButtonUp()]"-->
     <!--RenderTransformOrigin="0.5,0.5"-->
     <UserControl.RenderTransform>
         <TransformGroup>
@@ -67,7 +71,7 @@
                RenderTransformOrigin="0.5,0.5">
             <Image.RenderTransform>
                 <!--<RotateTransform x:Name="rotationSwitch" Angle="{Binding AngleSwitch}" />-->
-                <RotateTransform x:Name="rotationSwitch" Angle="45" />
+                <RotateTransform x:Name="rotationSwitch" Angle="{Binding Behavior.AngleRot}" />
             </Image.RenderTransform>
         </Image>
         <!--<Image>

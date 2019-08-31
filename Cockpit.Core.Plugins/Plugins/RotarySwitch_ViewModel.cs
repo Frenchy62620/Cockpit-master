@@ -82,6 +82,20 @@ namespace Cockpit.Core.Plugins.Plugins
 
         }
 
+        public void MouseWheelOnUC(object sender, MouseWheelEventArgs e)
+        {
+            e.Handled = true;
+
+            if (e.Delta > 0 && Behavior.RotarySwitchPositionIndex < RotarySwitchPositions.Count - 1)
+            {
+                Behavior.RotarySwitchPositionIndex++; 
+            }
+            if (e.Delta < 0 && Behavior.RotarySwitchPositionIndex > 0)
+            {
+                Behavior.RotarySwitchPositionIndex--;
+            }
+        }
+
         public void MouseLeftButtonUp()
         {
 
