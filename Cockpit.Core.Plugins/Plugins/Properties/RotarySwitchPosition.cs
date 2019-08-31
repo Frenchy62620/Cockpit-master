@@ -6,7 +6,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
 {
     public class RotarySwitchPosition : PropertyChangedBase
     {
-        public RotarySwitch_ViewModel RotarySwitchViewModel { get; } 
+        public RotarySwitch_ViewModel RotarySwitchViewModel { get;  } 
         public RotarySwitchPosition(int tag, RotarySwitch_ViewModel rm, Action rebuild, string name = "")
         {
             RotarySwitchViewModel = rm;
@@ -34,18 +34,18 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             }
         }
 
-        private double rotation = 0;
+        private double rotation = -1;
         public double Angle
         {
             get => rotation;
             set
             {
-               if( rotation != value)
+                if (rotation != value)
                 {
                     rotation = value;
                     NotifyOfPropertyChange(() => Angle);
                     Rebuild();
-                    RotarySwitchViewModel.Appearance.CalculateLabelPosition();
+                    RotarySwitchViewModel.Appearance.CalculateXYPosition(this);
                 }
             }
         }

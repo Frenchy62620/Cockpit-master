@@ -63,21 +63,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\Converters\MyConverter.cs" />
-    <Compile Include="Common\CustomControls\FontPicker\FontChooserDialogView.xaml.cs">
-      <DependentUpon>FontChooserDialogView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Common\CustomControls\FontPicker\FontFamilyListItem.cs" />
-    <Compile Include="Common\CustomControls\FontPicker\FontPickerView.xaml.cs">
-      <DependentUpon>FontPickerView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Common\CustomControls\FontPicker\TextDecorations.cs" />
-    <Compile Include="Common\CustomControls\FontPicker\TextFormat.cs" />
-    <Compile Include="Common\CustomControls\FontPicker\TextHorizontalAlignment.cs" />
-    <Compile Include="Common\CustomControls\FontPicker\TextVerticalAlignment.cs" />
-    <Compile Include="Common\CustomControls\FontPicker\TypefaceListItem.cs" />
-    <Compile Include="Common\CustomControls\IPropertyNotification.cs" />
-    <Compile Include="Common\CustomControls\NotificationObject.cs" />
-    <Compile Include="Common\CustomControls\PropertyNotificationEventArgs.cs" />
     <Compile Include="Events\VisibilityPanelEvent.cs" />
     <Compile Include="Events\RenameUCEvent.cs" />
     <Compile Include="Plugins\Properties\EnumBindingSourceExtension.cs" />
@@ -120,14 +105,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Common\CustomControls\FontPicker\FontChooserDialogView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Common\CustomControls\FontPicker\FontPickerView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Plugins\PushButton_View.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

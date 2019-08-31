@@ -3,14 +3,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:conv="clr-namespace:Cockpit.General.Properties.Views.Converters"
     xmlns:pe="clr-namespace:Cockpit.General.Properties.Views"
     xmlns:cal="http://www.caliburnproject.org"             
     mc:Ignorable="d" 
     Height="Auto" d:DesignWidth="180">
     <UserControl.Resources>
-        <conv:EnumToIntConverter x:Key="EnumToIntConverter"/>
-
         <Style TargetType="{x:Type TextBox}">
             <Setter Property="Validation.ErrorTemplate">
                 <Setter.Value>

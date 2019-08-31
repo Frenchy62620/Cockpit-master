@@ -3,16 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:ip="clr-namespace:Cockpit.General.Properties.Views.CustomControls" 
-             xmlns:pe="clr-namespace:Cockpit.General.Properties.Views"
-             xmlns:conv="clr-namespace:Cockpit.General.Properties.Views.Converters"  
+             xmlns:ip="clr-namespace:Cockpit.Core.Common.CustomControls;assembly=Cockpit.Core.Common" 
+             xmlns:pe="clr-namespace:Cockpit.General.Properties.Views" 
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d"        Height="Auto" d:DesignWidth="180">
 
     <UserControl.Resources>
-        <conv:EnumToIntConverter x:Key="EnumToIntConverter"/>
-
         <Style x:Key="LabelGlyphStyle" TargetType="{x:Type Label}">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding GlyphSelected}" Value="0">

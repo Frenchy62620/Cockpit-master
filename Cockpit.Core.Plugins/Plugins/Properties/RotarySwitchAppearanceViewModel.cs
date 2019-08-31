@@ -1,5 +1,5 @@
 ﻿using Cockpit.Core.Common;
-using Cockpit.Core.Plugins.Common.CustomControls;
+using Cockpit.Core.Common.CustomControls;
 using System;
 using System.Linq;
 using System.Windows;
@@ -61,7 +61,17 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             Name = "Appareance";
         }
 
-        public TextFormat TextFormat { get; set; }
+        private TextFormat textformat;
+        public TextFormat TextFormat
+        {
+            get => textformat;
+
+            set
+            {
+                textformat = value;
+                NotifyOfPropertyChange(() => TextFormat);
+            }
+        }
         public string Name { get; set; }
 
         #region Selection Image
@@ -232,6 +242,8 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             v1.Normalize();
             foreach (var t in RotarySwitchViewModel.RotarySwitchPositions.ToList())
             {
+                CalculateXYPosition(t);
+                continue;
                 Matrix m1 = new Matrix();
                 m1.Rotate(t.Angle);
                 FormattedText labelText = TextFormat.GetFormattedText(LabelColor, t.NamePosition);
@@ -307,7 +319,56 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
 
             }
         }
+        public void CalculateXYPosition(RotarySwitchPosition rs)
+        {
+            var _center = new Point(RotarySwitchViewModel.Layout.Width / 2d, RotarySwitchViewModel.Layout.Height / 2d);
+            Vector v1 = new Point(_center.X, 0) - _center;
+            double labelDistance = v1.Length * LabelDistance;
+            v1.Normalize();
+            Matrix m1 = new Matrix();
+            m1.Rotate(rs.Angle);
+            FormattedText labelText = TextFormat.GetFormattedText(LabelColor, rs.NamePosition);
 
+            labelText.TextAlignment = TextAlignment.Center;
+            labelText.MaxTextWidth = RotarySwitchViewModel.Layout.Width;
+            labelText.MaxTextHeight = RotarySwitchViewModel.Layout.Height;
+
+            //if (rotarySwitch.MaxLabelHeight > 0d && rotarySwitch.MaxLabelHeight < RotarySwitchViewModel.Layout.Height)
+            //{
+            //    labelText.MaxTextHeight = rotarySwitch.MaxLabelHeight;
+            //}
+            //if (rotarySwitch.MaxLabelWidth > 0d && rotarySwitch.MaxLabelWidth < RotarySwitchViewModel.Layout.Width)
+            //{
+            //    labelText.MaxTextWidth = rotarySwitch.MaxLabelWidth;
+            //}
+
+
+            Point location = _center + (v1 * m1 * labelDistance);
+
+            if (rs.Angle <= 10d || rs.Angle >= 350d)
+            {
+                location.X -= labelText.Width / 2d;
+                location.Y -= labelText.Height;
+            }
+            else if (rs.Angle < 170d)
+            {
+                location.X += labelText.Height / 4d;
+                location.Y -= labelText.Height / 2d;
+            }
+            else if (rs.Angle <= 190d)
+            {
+                location.X -= labelText.Width / 2d;
+            }
+            else
+            {
+                location.X -= (labelText.Width + labelText.Height / 4d);
+                location.Y -= labelText.Height / 2d;
+            }
+
+            System.Diagnostics.Debug.WriteLine($"angle: {rs.Angle}, label: {labelText.Text}, location: {location}");
+            rs.TextLeft = Math.Round(location.X, 0, MidpointRounding.ToEven);
+            rs.TextTop = Math.Round(location.Y, 0, MidpointRounding.ToEven);
+        }
 
     }
 

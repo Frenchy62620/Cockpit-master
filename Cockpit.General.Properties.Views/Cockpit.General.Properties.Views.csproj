@@ -61,28 +61,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Converters\EnumToIntConverter.cs" />
-    <Compile Include="CustomControls\FolderPicker\FolderPickerView.xaml.cs">
-      <DependentUpon>FolderPickerView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControls\FontPicker\FontChooserDialogView.xaml.cs">
-      <DependentUpon>FontChooserDialogView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControls\FontPicker\FontFamilyListItem.cs" />
-    <Compile Include="CustomControls\FontPicker\FontPickerView.xaml.cs">
-      <DependentUpon>FontPickerView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControls\FontPicker\TextDecorations.cs" />
-    <Compile Include="CustomControls\FontPicker\TextFormat.cs" />
-    <Compile Include="CustomControls\FontPicker\TextHorizontalAlignment.cs" />
-    <Compile Include="CustomControls\FontPicker\TextVerticalAlignment.cs" />
-    <Compile Include="CustomControls\FontPicker\TypefaceListItem.cs" />
-    <Compile Include="CustomControls\ImagePicker\ImagePickerView.xaml.cs">
-      <DependentUpon>ImagePickerView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControls\IPropertyNotification.cs" />
-    <Compile Include="CustomControls\NotificationObject.cs" />
-    <Compile Include="CustomControls\PropertyNotificationEventArgs.cs" />
     <Compile Include="EnumBindingSourceExtension.cs" />
     <Compile Include="EnumDescriptionTypeConverter.cs" />
     <Compile Include="LayoutPropertyView.xaml.cs">
@@ -112,22 +90,6 @@
     <Compile Include="SwitchType.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="CustomControls\FolderPicker\FolderPickerView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="CustomControls\FontPicker\FontChooserDialogView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="CustomControls\FontPicker\FontPickerView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="CustomControls\ImagePicker\ImagePickerView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="LayoutPropertyView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -159,6 +121,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Cockpit.Core.Common\Cockpit.Core.Common.csproj">
+      <Project>{07ec4990-a61f-4f76-a555-75b1cb0c7182}</Project>
+      <Name>Cockpit.Core.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
