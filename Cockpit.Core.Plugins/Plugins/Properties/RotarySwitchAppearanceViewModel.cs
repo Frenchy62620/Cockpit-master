@@ -211,26 +211,28 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         //    }
         //}
 
-        //private bool hasIndicator;
-        //public bool HasIndicator
-        //{
-        //    get => hasIndicator;
-        //    set
-        //    {
-        //        hasIndicator = value;
-        //        NotifyOfPropertyChange(() => HasIndicator);
-        //    }
-        //}
-        //private bool has3Images;
-        //public bool Has3Images
-        //{
-        //    get => has3Images;
-        //    set
-        //    {
-        //        has3Images = value;
-        //        NotifyOfPropertyChange(() => Has3Images);
-        //    }
-        //}
+        private bool isLabelsVisible;
+        public bool IsLabelsVisible
+        {
+            get => isLabelsVisible;
+            set
+            {
+                isLabelsVisible = value;
+                NotifyOfPropertyChange(() => IsLabelsVisible);
+            }
+        }
+
+        private bool isLinesVisible;
+        public bool IsLinesVisible
+        {
+            get => isLinesVisible;
+            set
+            {
+                isLinesVisible = value;
+                NotifyOfPropertyChange(() => IsLinesVisible);
+            }
+        }
+
         #endregion
 
         public void CalculateLabelPosition()

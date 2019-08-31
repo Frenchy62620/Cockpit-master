@@ -36,7 +36,7 @@
         <ip:ImagePickerView Grid.Column="1" Grid.Row="1" ImageFilename="{Binding Image, Mode=TwoWay}" Grid.ColumnSpan="2" />
 
         <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Orientation="Horizontal">
-            <CheckBox x:Name="IsLinesVisible" Margin="4,11,2,2" IsChecked="True" 
+            <CheckBox x:Name="IsLinesVisible" Margin="4,11,2,2" 
                       ToolTip="When check lines will be renderd extending from the know for each switch position." />
             <TextBlock Margin="4,10,2,2" FontSize="12" FontWeight="Bold" Text="Lines" />
         </StackPanel>
@@ -62,7 +62,7 @@
         </Grid>
         
         <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="6" Orientation="Horizontal">
-            <CheckBox x:Name="IsLabelsVisible" Margin="4,11,2,2" IsChecked="True" ToolTip="When check labels will be rendered for each switch position." />
+            <CheckBox x:Name="IsLabelsVisible" Margin="4,11,2,2"  ToolTip="When check labels will be rendered for each switch position." />
             <TextBlock Margin="4,10,2,2" FontSize="12" FontWeight="Bold" Text="Labels" />
         </StackPanel>
         <Grid Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2" Visibility="{Binding IsChecked, ElementName=IsLabelsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
