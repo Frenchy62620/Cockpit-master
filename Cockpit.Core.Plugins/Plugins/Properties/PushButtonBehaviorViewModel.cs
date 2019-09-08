@@ -1,4 +1,6 @@
-﻿using Cockpit.Core.Common;
+﻿using Caliburn.Micro;
+using Cockpit.Core.Common;
+using Cockpit.Core.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +8,7 @@ using System.Windows;
 
 namespace Cockpit.Core.Plugins.Plugins.Properties
 {
-    public class PushButtonBehaviorViewModel : PluginProperties
+    public class PushButtonBehaviorViewModel : PropertyChangedBase, IPluginProperty
     {
         public PushButtonBehaviorViewModel(params object[] settings)
         {

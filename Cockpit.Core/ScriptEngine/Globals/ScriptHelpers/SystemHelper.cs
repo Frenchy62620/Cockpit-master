@@ -8,7 +8,7 @@ using Cockpit.Core.ScriptEngine.ThreadTiming.Strategies;
 
 namespace Cockpit.Core.ScriptEngine.Globals.ScriptHelpers
 {
-    [Global(Name = "system")]
+    //[Global(Name = "system")]
     public class SystemHelper : IScriptHelper
     {
         private readonly IThreadTimingFactory threadTimingFactory;

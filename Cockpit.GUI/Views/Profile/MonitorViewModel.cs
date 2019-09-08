@@ -1,7 +1,7 @@
 ﻿using Caliburn.Micro;
 using Cockpit.Core.Common;
-using Cockpit.Core.Plugins.Events;
-using Cockpit.Core.Plugins.Plugins;
+using Cockpit.Core.Contracts;
+using Cockpit.Core.Model.Events;
 using Cockpit.Core.Plugins.Plugins.Properties;
 using Cockpit.GUI.Events;
 using Cockpit.GUI.Plugins;
@@ -15,6 +15,7 @@ using Ninject.Syntax;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -27,9 +28,9 @@ namespace Cockpit.GUI.Views.Profile
     public class Elements
     {
         public ContentControl cc;
-        public PluginModel pm;
+        public IPluginModel pm;
 
-        public Elements(ContentControl cc, PluginModel pm)
+        public Elements(ContentControl cc, IPluginModel pm)
         {
             this.cc = cc;
             this.pm = pm;
@@ -52,10 +53,14 @@ namespace Cockpit.GUI.Views.Profile
 
     public class MonitorViewModel : PanelViewModel, IDropTarget, Core.Common.Events.IHandle<RenameUCEvent>
     {
+        private Dictionary<Assembly, List<Type>> pluginTypes;
+        private Dictionary<string, Identity> Identities;
+
         public double ZoomFactorFromMonitorViewModel;
         public Dictionary<ContentControl, bool> DictContentcontrol = new Dictionary<ContentControl, bool>();
 
         public SortedDictionary<string, Elements> SortedDico = new SortedDictionary<string, Elements>();
+        
         public HashSet<string> AdornersSelectedList = new HashSet<string>();
 
         private readonly IEventAggregator eventAggregator;
@@ -88,9 +93,17 @@ namespace Cockpit.GUI.Views.Profile
 
             this.fileSystem = fileSystem;
 
-            MyCockpitViewModels = new BindableCollection<PluginModel>();
+            MyCockpitViewModels = new BindableCollection<IPluginModel>();
 
             NbrSelected = 0;
+
+            pluginTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes())
+                                                                 .Where( t  => typeof(IPluginModel).IsAssignableFrom(t) && t.IsClass && !t.IsAbstract)
+                                                                 .GroupBy(x => x.Assembly).ToDictionary(d => d.Key, d => d.ToList());
+
+
+            Identities = pluginTypes.Values.SelectMany(c => c).ToDictionary(x => GetIdentityKey(x), x => GetIdentity(x));
+
         }
 
         protected override void OnViewAttached(object view, object context)
@@ -129,6 +142,15 @@ namespace Cockpit.GUI.Views.Profile
             var FullImage = (dropInfo.Data as ToolBoxGroup).SelectedToolBoxItem.FullImageName;
             var groupname = (dropInfo.Data as ToolBoxGroup).GroupName;
 
+            var key = groupname + tbg.SelectedToolBoxItem.ShortImageName;
+            string model = "";
+            if (Identities.ContainsKey(key))
+                model = Identities[key].Type.ToString();
+            else if (Identities.ContainsKey(groupname))
+                model = Identities[groupname].Type.ToString();
+            else
+                throw new ArgumentException($" problem on GroupName : {groupname}, ImageName : {FullImage} / {tbg.SelectedToolBoxItem.ShortImageName}");
+
             var nameUC = GiveName(tbg.SelectedToolBoxItem.ShortImageName);
 
  
@@ -136,7 +158,7 @@ namespace Cockpit.GUI.Views.Profile
 
             Ninject.Parameters.Parameter[][] paramproperties = null;
             //string[] properties;
-            string model="";
+            //string model="";
             var AngleSwitch = 90;
             if (groupname.StartsWith("PushButton"))
             {
@@ -158,8 +180,8 @@ namespace Cockpit.GUI.Views.Profile
                             1                                                                                                   //19 Button Type
                                                                         }, true)
                 };
-
-                model = "Cockpit.Core.Plugins.Plugins.PushButton_ViewModel, Cockpit.Core.Plugins";
+                //model = "Cockpit.Core.Plugins.Plugins.PushButton_ViewModel, Cockpit.Core.Plugins";
+                //model = "Cockpit.Core.Plugins.Plugins.PushButton_ViewModel";
                 //properties = new string[] { "Cockpit.Core.Plugins.Plugins.Properties.LayoutPropertyViewModel",
                 //                            "Cockpit.Core.Plugins.Plugins.Properties.PushButtonAppearanceViewModel",
                 //                            "Cockpit.Core.Plugins.Plugins.Properties.PushButtonBehaviorViewModel"};
@@ -167,39 +189,39 @@ namespace Cockpit.GUI.Views.Profile
 
 
 
-                paramproperties = new Ninject.Parameters.Parameter[][]
-                {
-                    new Ninject.Parameters.Parameter[]
-                    {
-                        // Layout
-                        new ConstructorArgument("settings", new object[]{
-                            true, this,                                                                                         //0  In Mode Editor?
-                            $"{nameUC}",                                                                                        //1  name of UC
-                            new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, 0 } //2  [Left, Top, Width, Height, Angle]
-                        }, true)
-                    },
-                        // Appearance
-                    new Ninject.Parameters.Parameter[]
-                    {
-                        new ConstructorArgument("settings", new object[]{
-                            true, this,                                                                                         //0  In Mode Editor?
-                            $"{nameUC}",                                                                                        //1  name of UC
-                            new string[]{ FullImage, FullImage1 }, 0,                                                           //2  images, start image position
-                            2d, 0.8d, (PushButtonGlyph)0, Colors.White,                                                         //4  Glyph: Thickness, Scale, Type, Color
-                            "Hello", "1,1", "Franklin Gothic", "Normal", "Normal",                                              //8  Text, TextPushOffset, Family, Style, Weight
-                            12d, new double[] { 0d, 0d, 0d, 0d },                                                               //13 Size, [padding L,T,R,B]
-                            new int[] { 1, 1 },  Colors.White                                                                   //15 [TextAlign H,V], TextColor
-                        }, true)
-                    },
-                        // Behavior
-                    new Ninject.Parameters.Parameter[]
-                    {
-                        new ConstructorArgument("settings", new object[]{
-                            true, this,                                                                                         //0  In Mode Editor?
-                            $"{nameUC}",                                                                                        //1  name of UC
-                            1                                                                                                   //2 Button Type
-                        }, true)}
-                    };
+                //paramproperties = new Ninject.Parameters.Parameter[][]
+                //{
+                //    new Ninject.Parameters.Parameter[]
+                //    {
+                //        // Layout
+                //        new ConstructorArgument("settings", new object[]{
+                //            true, this,                                                                                         //0  In Mode Editor?
+                //            $"{nameUC}",                                                                                        //1  name of UC
+                //            new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, 0 } //2  [Left, Top, Width, Height, Angle]
+                //        }, true)
+                //    },
+                //        // Appearance
+                //    new Ninject.Parameters.Parameter[]
+                //    {
+                //        new ConstructorArgument("settings", new object[]{
+                //            true, this,                                                                                         //0  In Mode Editor?
+                //            $"{nameUC}",                                                                                        //1  name of UC
+                //            new string[]{ FullImage, FullImage1 }, 0,                                                           //2  images, start image position
+                //            2d, 0.8d, (PushButtonGlyph)0, Colors.White,                                                         //4  Glyph: Thickness, Scale, Type, Color
+                //            "Hello", "1,1", "Franklin Gothic", "Normal", "Normal",                                              //8  Text, TextPushOffset, Family, Style, Weight
+                //            12d, new double[] { 0d, 0d, 0d, 0d },                                                               //13 Size, [padding L,T,R,B]
+                //            new int[] { 1, 1 },  Colors.White                                                                   //15 [TextAlign H,V], TextColor
+                //        }, true)
+                //    },
+                //        // Behavior
+                //    new Ninject.Parameters.Parameter[]
+                //    {
+                //        new ConstructorArgument("settings", new object[]{
+                //            true, this,                                                                                         //0  In Mode Editor?
+                //            $"{nameUC}",                                                                                        //1  name of UC
+                //            1                                                                                                   //2 Button Type
+                //        }, true)}
+                //};
 
 
             }
@@ -240,12 +262,11 @@ namespace Cockpit.GUI.Views.Profile
                 };
 
                 model = "Cockpit.Core.Plugins.Plugins.Switch_ViewModel, Cockpit.Core.Plugins";
+                model = "Cockpit.Core.Plugins.Plugins.Switch_ViewModel";
                 //properties = new string[] { "", "", "" };
             }
             else if (groupname.StartsWith("RotarySwitch"))
             {
-                var FullImage1 = FullImage.Replace("_0.png", "_1.png");
-                var FullImage2 = FullImage.Replace("_0.png", "_2.png");
                 AngleSwitch = 0;
                 param = new Ninject.Parameters.Parameter[]
                 {
@@ -270,27 +291,96 @@ namespace Cockpit.GUI.Views.Profile
                 };
 
                 model = "Cockpit.Core.Plugins.Plugins.RotarySwitch_ViewModel, Cockpit.Core.Plugins";
+                model = "Cockpit.Core.Plugins.Plugins.RotarySwitch_ViewModel";
                 //properties = new string[] { "", "", "" };
             }
-            var typeClass = Type.GetType(model);
+            else if (groupname.StartsWith("A10C"))
+            {
+                AngleSwitch = 0;
+                param = new Ninject.Parameters.Parameter[]
+                {
+                        new ConstructorArgument("settings", new object[]{                                                   //Switch Button
+                            true, this,                                                                                         //0 is in Mode Editor?
+                            $"{nameUC}",                                                                                        //2 name of UC
+                            new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, AngleSwitch },//3 [Left, Top, Width, Height, Angle]
+
+                            FullImage,                                                                                           //4 [images]
+                     
+                             2,                                                                                                 //5  nbr points
+                             "Franklin Gothic", "Normal", "Normal",                                                             //6  Family, Style, Weight
+                            12d, new double[] { 0d, 0d, 0d, 0d },                                                               //9 Size, [padding L,T,R,B]
+                            new int[] { 1, 1 },  Colors.Red, 1d,                                                                 //11 [TextAlign H,V], TextColor, %distance
+
+                            4d, Colors.Black, 0.9d, 0d,                                                                         //14 line thickness, line color, line length, Angle
+
+                            new string[] {"Hello1","hel2" },
+
+
+                            2, 1d, 2, 3 }, true)
+                };
+
+                //model = "Cockpit.Plugin.A10C.ViewModels.A10Alt_ViewModel";
+                //properties = new string[] { "", "", "" };
+            }
+            //var typeClass = Type.GetType(model);
+
+            var typeClass = GetType(model);
+
+            //GetIdentity(typeClass);
+
             //var viewmodel = Activator.CreateInstance(typeClass);
             var viewmodel = resolutionRoot.TryGet(typeClass, param);
 
             //var view = ViewLocator.LocateForModel(viewmodel, null, null);
             //ViewModelBinder.Bind(viewmodel, view, null);
-            var v = viewmodel as PluginModel;
+            var v = viewmodel as IPluginModel;
 
 
             v.ZoomFactorFromPluginModel = ZoomFactorFromMonitorViewModel;
 
-            MyCockpitViewModels.Add((PluginModel)viewmodel);
+            MyCockpitViewModels.Add((IPluginModel)viewmodel);
 
 
         }
 
         #endregion
+        public  string GetIdentityKey(Type pluginType)
+        {
+            var identity = GetAttribute<Identity>(pluginType);
+            return identity.GroupName + identity.Name;
+        }
+        public Identity GetIdentity(Type pluginType)
+        //public IEnumerable<MemberInfo> GetGlobalMembers(Type pluginType)
+        {
+            return  GetAttribute<Identity>(pluginType);
+        }
+        private  T GetAttribute<T>(Type type) where T : Attribute
+        {
+            return type.GetCustomAttributes(typeof(T), false).FirstOrDefault() as T;
+        }
 
-        public BindableCollection<PluginModel> MyCockpitViewModels { get; set; }
+        public Type GetType(string typeName)
+        {
+            //var type = Type.GetType(typeName);
+            //if (type != null) return type;
+            Type type;
+            foreach (var p in pluginTypes.Keys)
+            {
+                type = p.GetType(typeName);
+                if (type != null)
+                    return type;
+            }
+            foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                type = a.GetType(typeName);
+                if (type != null)
+                    return type;
+            }
+            return null;
+        }
+
+
+        public BindableCollection<IPluginModel> MyCockpitViewModels { get; set; }
 
         private static int untitledIndex;
         private int untitledId;
@@ -376,7 +466,7 @@ namespace Cockpit.GUI.Views.Profile
 
 
 
-        IEnumerable<string> GetChilds(BindableCollection<PluginModel> v )
+        IEnumerable<string> GetChilds(BindableCollection<IPluginModel> v )
         {
             return v.Select(x => x.NameUC)
                         .Union(v.Where(x => x.ToString().Contains("Panel_ViewModel"))
@@ -384,7 +474,7 @@ namespace Cockpit.GUI.Views.Profile
             );
         }
 
-        IEnumerable<PluginModel> GetChilds(BindableCollection<PluginModel> v, string s)
+        IEnumerable<IPluginModel> GetChilds(BindableCollection<IPluginModel> v, string s)
         {
             return v.Where(x => x.NameUC.StartsWith($"{s}_") || x.NameUC.Equals(s))
                         .Union(v.Where(x => x.ToString().Contains("Panel_ViewModel"))
@@ -392,11 +482,11 @@ namespace Cockpit.GUI.Views.Profile
             );
         }
 
-        public PluginModel GetSingleChild(string s)
+        public IPluginModel GetSingleChild(string s)
         {
             return GetChilds(MyCockpitViewModels, s).Single();
 
-            IEnumerable<PluginModel> GetChilds(BindableCollection<PluginModel> v, string ss)
+            IEnumerable<IPluginModel> GetChilds(BindableCollection<IPluginModel> v, string ss)
             {
                 return v.Where(x => x.NameUC.Equals(ss))
                             .Union(v.Where(x => x.ToString().Contains("Panel_ViewModel"))
@@ -430,11 +520,11 @@ namespace Cockpit.GUI.Views.Profile
                 SortedDico.Remove("mfd_1");
 
 
-                (BindableCollection<PluginModel>, PluginModel, int) RemoveUC(string ss)
+                (BindableCollection<IPluginModel>, IPluginModel, int) RemoveUC(string ss)
                 {
                     return GetChildx(MyCockpitViewModels, ss).Single();
 
-                    IEnumerable<(BindableCollection<PluginModel>, PluginModel, int)> GetChildx(BindableCollection<PluginModel> listOfpm, string s)
+                    IEnumerable<(BindableCollection<IPluginModel>, IPluginModel, int)> GetChildx(BindableCollection<IPluginModel> listOfpm, string s)
                     {
                         return listOfpm.Where(x => x.NameUC.Equals(s)).Select(pm => (listOfpm, pm, listOfpm.IndexOf(listOfpm.Single(i => i.NameUC.Equals(s)))))
                                     .Union(listOfpm.Where(x => x.ToString().Contains("Panel_ViewModel"))
@@ -574,17 +664,17 @@ namespace Cockpit.GUI.Views.Profile
         {
             if (s.DataContext.ToString().Contains("Panel_ViewModel"))
             {
-                var tabname = (s.DataContext as PluginModel).NameUC;
+                var tabname = (s.DataContext as IPluginModel).NameUC;
                 //eventAggregator.Publish(new NewPanelTabEvent(tabname));
             }
         }
 
-        public void PreviewMouseLeftButtonDownOnContentControl(ContentControl cc, PluginModel pm, MouseEventArgs e)
+        public void PreviewMouseLeftButtonDownOnContentControl(ContentControl cc, IPluginModel pm, MouseEventArgs e)
         {
 
         }
 
-        public void MouseLeftButtonDownOnContentControl(ContentControl cc, PluginModel pm, MouseEventArgs e)
+        public void MouseLeftButtonDownOnContentControl(ContentControl cc, IPluginModel pm, MouseEventArgs e)
         {
             e.Handled = true;
 
@@ -615,7 +705,7 @@ namespace Cockpit.GUI.Views.Profile
         }
 
 
-        public void ContentControlLoaded(ContentControl cc, PluginModel pm)
+        public void ContentControlLoaded(ContentControl cc, IPluginModel pm)
         {
             if (SortedDico.ContainsKey(pm.NameUC))
                 return;
@@ -628,7 +718,7 @@ namespace Cockpit.GUI.Views.Profile
             cc.Focus();
         }
 
-        public void RemoveAdorner(ContentControl cc, PluginModel pm)
+        public void RemoveAdorner(ContentControl cc, IPluginModel pm)
         {
             var adornerLayer = AdornerLayer.GetAdornerLayer(cc);
             if (adornerLayer != null)
@@ -660,7 +750,7 @@ namespace Cockpit.GUI.Views.Profile
             AdornersSelectedList.Clear();
         }
 
-        public void AddNewAdorner(ContentControl cc, PluginModel pm, int color = 0)
+        public void AddNewAdorner(ContentControl cc, IPluginModel pm, int color = 0)
         {
             var adornerLayer = AdornerLayer.GetAdornerLayer(cc);
             if (adornerLayer != null)
@@ -711,7 +801,7 @@ namespace Cockpit.GUI.Views.Profile
 
             return newname;
 
-            IEnumerable<string> GetAllNameUC(BindableCollection<PluginModel> v)
+            IEnumerable<string> GetAllNameUC(BindableCollection<IPluginModel> v)
             {
                 return v.Select(x => x.NameUC)
                             .Union(v.Where(x => x.ToString().Contains("Panel_ViewModel"))
@@ -742,7 +832,7 @@ namespace Cockpit.GUI.Views.Profile
 
 
 
-            IEnumerable<(BindableCollection<PluginModel>, int)> GetContainerOfCC(BindableCollection<PluginModel> listOfpm, string s)
+            IEnumerable<(BindableCollection<IPluginModel>, int)> GetContainerOfCC(BindableCollection<IPluginModel> listOfpm, string s)
             {
                 return listOfpm.Where(x => x.NameUC.Equals(s)).Select(p => (listOfpm, listOfpm.IndexOf(listOfpm.Single(i => i.NameUC.Equals(s)))))
                             .Union(listOfpm.Where(x => x.ToString().Contains("Panel_ViewModel"))
@@ -781,7 +871,7 @@ namespace Cockpit.GUI.Views.Profile
                 
 
 
-            IEnumerable<(BindableCollection<PluginModel>, BindableCollection<PluginModel>)> GetCCFromContainer(BindableCollection<PluginModel> listOfpm, string s)
+            IEnumerable<(BindableCollection<IPluginModel>, BindableCollection<IPluginModel>)> GetCCFromContainer(BindableCollection<IPluginModel> listOfpm, string s)
             {
                 return listOfpm.Where(x => x.NameUC.Equals(s)).Select(t => (listOfpm, (t as Panel_ViewModel).MyCockpitViewModels))
                             .Union(listOfpm.Where(x => x.ToString().Contains("Panel_ViewModel"))
@@ -789,7 +879,7 @@ namespace Cockpit.GUI.Views.Profile
                 );
             }
 
-            IEnumerable<(BindableCollection<PluginModel>, int)> GetAllChildrenOfContainer(BindableCollection<PluginModel> listOfpm, int order)
+            IEnumerable<(BindableCollection<IPluginModel>, int)> GetAllChildrenOfContainer(BindableCollection<IPluginModel> listOfpm, int order)
             {
                 return listOfpm.Select(t => (listOfpm, order))
                             .Union(listOfpm.Where(x => x.ToString().Contains("Panel_ViewModel"))
@@ -805,11 +895,11 @@ namespace Cockpit.GUI.Views.Profile
             SortedDico.Remove(nameUC);
             w.Item1.RemoveAt(w.Item2);
 
-            (BindableCollection<PluginModel>, int) GetContainer(string nameuc)
+            (BindableCollection<IPluginModel>, int) GetContainer(string nameuc)
             {
                 return GetChildPanel(MyCockpitViewModels, nameuc).Single();
 
-                IEnumerable<(BindableCollection<PluginModel>, int)> GetChildPanel(BindableCollection<PluginModel> listOfpm, string s)
+                IEnumerable<(BindableCollection<IPluginModel>, int)> GetChildPanel(BindableCollection<IPluginModel> listOfpm, string s)
                 {
                     return listOfpm.Where(x => x.NameUC.Equals(s)).Select(pm => (listOfpm, listOfpm.IndexOf(listOfpm.Single(i => i.NameUC.Equals(s)))))
                                 .Union(listOfpm.Where(x => x.ToString().Contains("Panel_ViewModel"))

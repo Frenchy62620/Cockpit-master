@@ -5,7 +5,7 @@ using Caliburn.Micro;
 using Cockpit.Core.Common;
 using Cockpit.Core.Model.Events;
 using Cockpit.Core.Persistence;
-using Cockpit.Core.ScriptEngine;
+//using Cockpit.Core.ScriptEngine;
 using Cockpit.GUI.Common.Strategies;
 using Cockpit.GUI.Events;
 using Cockpit.GUI.Events.Command;

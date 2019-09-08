@@ -1,5 +1,7 @@
-﻿using Cockpit.Core.Common;
-using Cockpit.Core.Plugins.Events;
+﻿using Caliburn.Micro;
+using Cockpit.Common.Properties.ViewModels;
+using Cockpit.Core.Contracts;
+using Cockpit.Core.Model.Events;
 using Cockpit.Core.Plugins.Plugins.Properties;
 using System.Windows;
 using System.Windows.Input;
@@ -7,12 +9,8 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Core.Plugins.Plugins
 {
-    public class PushButton_ViewModel : PluginModel  /*Core.Common.Events.IHandle<VisibilityPanelEvent>*/
-                                                     //Core.Common.Events.IHandle<TransformEvent>,
-                                                     //Core.Common.Events.IHandle<SelectedEvent>,
-                                                     //Core.Common.Events.IHandle<NewLayoutEvent>,
-                                                     //Core.Common.Events.IHandle<NewAppearanceEvent>,
-                                                     //IPlugin
+    [Identity(GroupName = "PushButton", Name ="", Type = typeof(PushButton_ViewModel))]
+    public class PushButton_ViewModel : PropertyChangedBase, IPluginModel 
     {
         private readonly IEventAggregator eventAggregator;
 
@@ -33,46 +31,65 @@ namespace Cockpit.Core.Plugins.Plugins
         }
 
         #region PluginModel
-        public override double Left
+        private string nameUC;
+        public string NameUC
+        {
+            get => nameUC;
+            set
+            {
+                nameUC = value;
+                NotifyOfPropertyChange(() => NameUC);
+            }
+        }
+
+        private double zoomfactorfrompluginmodel;
+        public double ZoomFactorFromPluginModel
+        {
+            get => zoomfactorfrompluginmodel;
+            set
+            {
+                zoomfactorfrompluginmodel = value;
+                NotifyOfPropertyChange(() => ZoomFactorFromPluginModel);
+            }
+        }
+
+        public double ScaleX
+        {
+            get => Layout.ScaleX;
+            set => Layout.ScaleX = value;
+        }
+        public double ScaleY
+        {
+            get => Layout.ScaleY;
+            set => Layout.ScaleY = value;
+        }
+
+        public double Left
         {
             get => Layout.UCLeft;
             set => Layout.UCLeft = value;
         }
-        public override double Top
+        public double Top
         {
             get => Layout.UCTop;
             set => Layout.UCTop = value;
         }
-        public override double Width
+        public double Width
         {
             get => Layout.Width;
             set => Layout.Width = value;
         }
-        public override double Height
+        public double Height
         {
             get => Layout.Height;
             set => Layout.Height = value;
         }
-        //public override double Angle
-        //{
-        //    get => Layout.AngleRotation;
-        //    set => Layout.AngleRotation = value;
-        //}
-        public override PluginProperties[] GetProperties()
+
+        public IPluginProperty[] GetProperties()
         {
-            return new PluginProperties[] { Layout, Appearance, Behavior };
+            return new IPluginProperty[] { Layout, Appearance, Behavior };
         }
         #endregion
-
-
-        ~PushButton_ViewModel()
-        {
-            System.Diagnostics.Debug.WriteLine($"sortie push {NameUC}");
-        }
-        #region Selection Image
-
-        #endregion
-
 
         #region Mouse Events
         public void MouseLeftButtonDownOnUC(IInputElement elem, Point pos, MouseEventArgs e)
@@ -95,42 +112,6 @@ namespace Cockpit.Core.Plugins.Plugins
         }
         #endregion
 
-        #region Mode Edition
-        //private bool _frame;
-        //public bool Frame
-        //{
-        //    get { return _frame; }
-        //    set
-        //    {
-        //        _frame = value;
-        //        NotifyOfPropertyChange(() => Frame);
-        //    }
-        //}
-        //private bool _isSelected;
-        //public bool IsSelected
-        //{
-        //    get { return _isSelected; }
-        //    set
-        //    {
-        //        _isSelected = value;
-        //        NotifyOfPropertyChange(() => IsSelected);
-        //    }
-        //}
-        #endregion
-
-        #region Scale, rotation, XY translation usercontrol
-        private double _scalex;
-        public double ScaleX
-        {
-            get { return _scalex; }
-            set
-            {
-                _scalex = value;
-                NotifyOfPropertyChange(() => ScaleX);
-            }
-        }
-        #endregion
-
         #region ToolTip
         private string _tooltip;
         public string ToolTip
@@ -144,37 +125,9 @@ namespace Cockpit.Core.Plugins.Plugins
         }
         #endregion
 
-
-
-        #region HandleEvents
-
-
-        //public void Handle(VisibilityPanelEvent message)
-        //{
-            //if (translate.fromProperty)
-            //{
-            //    UCLeft = translate.DeltaLeft;
-            //    CenterCircle = translate.DeltaTop;
-            //    return;
-            //}
-            //if (!IsSelected) return;
-            //if (translate.Size == 0)
-            //{
-            //    UCLeft += translate.DeltaLeft;
-            //    CenterCircle += translate.DeltaTop;
-            //    return;
-            //}
-            //ScaleX = ScaleX * (translate.Size + GlyphThickness) / GlyphThickness;
-        //}
-
-
-
-
-        //public void Handle(NewAppearanceEvent message)
-        //{
-        //    //pushButtonAppearance = (PushButtonAppearance) message.Appearance;
-
-        //}
-        #endregion
+        ~PushButton_ViewModel()
+        {
+            System.Diagnostics.Debug.WriteLine($"sortie push {NameUC}");
+        }
     }
 }

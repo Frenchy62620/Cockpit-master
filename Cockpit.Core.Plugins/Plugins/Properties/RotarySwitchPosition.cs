@@ -1,5 +1,5 @@
 ﻿using Caliburn.Micro;
-using Cockpit.Core.Common;
+using Cockpit.Core.Contracts;
 using Action = System.Action;
 
 namespace Cockpit.Core.Plugins.Plugins.Properties
@@ -15,7 +15,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             Tag = tag;
             Angle = angle < 0 ? tag * 20 : angle;         
         }
-        public PluginProperties Appearance { get;}
+        public IPluginProperty Appearance { get;}
         public Action Rebuild; 
         public int Tag;
         //public int Angle;

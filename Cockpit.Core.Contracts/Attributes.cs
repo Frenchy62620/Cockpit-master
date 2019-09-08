@@ -3,19 +3,10 @@
 namespace Cockpit.Core.Contracts
 {
     [AttributeUsage(AttributeTargets.Class)]
-    public class GlobalType : Attribute
+    public class Identity : Attribute
     {
-        public Type Type { get; set; }
-
-        public bool IsIndexed { get; set; }
-    }
-
-    [AttributeUsage(AttributeTargets.Class)]
-    public class Global : Attribute
-    {
+        public string GroupName { get; set; }
         public string Name { get; set; }
+        public Type Type { get; set; }
     }
-
-    [AttributeUsage(AttributeTargets.Enum)]
-    public class GlobalEnum : Attribute { }
 }

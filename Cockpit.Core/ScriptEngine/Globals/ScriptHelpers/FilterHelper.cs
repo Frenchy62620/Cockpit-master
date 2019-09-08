@@ -6,14 +6,14 @@ using Cockpit.Core.ScriptEngine.Globals.ScriptHelpers.Strategies;
 
 namespace Cockpit.Core.ScriptEngine.Globals.ScriptHelpers
 {
-    [GlobalEnum]
+    //[GlobalEnum]
     public enum Units
     {
         Degrees = 1,
         Radians = 2
     }
 
-    [Global(Name = "filters")]
+    //[Global(Name = "filters")]
     public class FilterHelper : IScriptHelper
     {
         private readonly Dictionary<string, double> deltaLastSamples;

@@ -87,8 +87,6 @@
     <Compile Include="CustomControls\IPropertyNotification.cs" />
     <Compile Include="CustomControls\NotificationObject.cs" />
     <Compile Include="CustomControls\PropertyNotificationEventArgs.cs" />
-    <Compile Include="PluginModel.cs" />
-    <Compile Include="PluginProperties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

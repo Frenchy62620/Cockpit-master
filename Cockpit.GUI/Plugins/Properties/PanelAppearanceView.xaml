@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-             xmlns:ip="clr-namespace:Cockpit.GUI.Common.CustomControls"    
+             xmlns:ip="clr-namespace:Cockpit.Core.Common.CustomControls;assembly=Cockpit.Core.Common"    
              mc:Ignorable="d" Height="Auto"  d:DesignWidth="180">
     <UserControl.Resources>
         <!--<Helios:EnumConverter Type="{x:Type Helios:ImageAlignment}" x:Key="AlignmentTypes" />-->

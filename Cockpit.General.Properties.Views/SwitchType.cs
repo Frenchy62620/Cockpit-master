@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Cockpit.Common.Properties.Views;
+using System.ComponentModel;
 
 namespace Cockpit.General.Properties.Views
 {

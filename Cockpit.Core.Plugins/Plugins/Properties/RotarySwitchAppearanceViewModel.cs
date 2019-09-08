@@ -1,5 +1,6 @@
-﻿using Cockpit.Core.Common;
+﻿using Caliburn.Micro;
 using Cockpit.Core.Common.CustomControls;
+using Cockpit.Core.Contracts;
 using System;
 using System.Linq;
 using System.Windows;
@@ -8,7 +9,7 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Core.Plugins.Plugins.Properties
 {
-    public class RotarySwitchAppearanceViewModel : PluginProperties
+    public class RotarySwitchAppearanceViewModel : PropertyChangedBase, IPluginProperty
     {
         private readonly IEventAggregator eventAggregator;
         public RotarySwitch_ViewModel RotarySwitchViewModel { get; }

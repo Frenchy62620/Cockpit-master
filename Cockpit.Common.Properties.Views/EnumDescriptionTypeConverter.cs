@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Reflection;
 
-namespace Cockpit.Core.Plugins.Plugins.Properties
+namespace Cockpit.Common.Properties.Views
 {
     public class EnumDescriptionTypeConverter : EnumConverter
     {

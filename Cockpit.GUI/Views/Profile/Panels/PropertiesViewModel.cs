@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using Cockpit.Core.Common;
+using Cockpit.Core.Contracts;
 using Cockpit.GUI.Events;
 using Cockpit.GUI.Views.Main;
 using Ninject;
@@ -14,7 +15,7 @@ namespace Cockpit.GUI.Views.Profile.Panels
     {
         private readonly IEventAggregator eventAggregator;
         private readonly IResolutionRoot resolutionRoot;
-        private Dictionary<string, PluginProperties> ViewModels;
+        private Dictionary<string, IPluginProperty> ViewModels;
 
         public PropertiesViewModel(IEventAggregator eventAggregator, IResolutionRoot resolutionRoot)
         {
@@ -22,15 +23,15 @@ namespace Cockpit.GUI.Views.Profile.Panels
             this.resolutionRoot = resolutionRoot;
             this.eventAggregator.Subscribe(this);
 
-            ViewModels = new Dictionary<string, PluginProperties>();
+            ViewModels = new Dictionary<string, IPluginProperty>();
 
             Title = "Property";
             IconName = "console-16.png";
         }
 
 
-        private BindableCollection<PluginProperties> _propertyViewModels = new BindableCollection<PluginProperties>();
-        public BindableCollection<PluginProperties> PropertyViewModels
+        private BindableCollection<IPluginProperty> _propertyViewModels = new BindableCollection<IPluginProperty>();
+        public BindableCollection<IPluginProperty> PropertyViewModels
         {
             get { return _propertyViewModels; }
             set
@@ -49,7 +50,7 @@ namespace Cockpit.GUI.Views.Profile.Panels
                 var viewmodel = resolutionRoot.TryGet(typeClass);
                 var view = ViewLocator.LocateForModel(viewmodel, null, null);
                 ViewModelBinder.Bind(viewmodel, view, null);
-                ViewModels[propertymodel] = (PluginProperties)viewmodel;
+                ViewModels[propertymodel] = (IPluginProperty)viewmodel;
             }
             if (AddToPropertyCollection) PropertyViewModels.Add(ViewModels[propertymodel]);
         }

@@ -1,4 +1,7 @@
-﻿using Cockpit.Core.Common;
+﻿using Caliburn.Micro;
+using Cockpit.Common.Properties.ViewModels;
+using Cockpit.Core.Common;
+using Cockpit.Core.Contracts;
 using Cockpit.Core.Plugins.Plugins.Properties;
 using System.Windows;
 using System.Windows.Input;
@@ -6,7 +9,8 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Core.Plugins.Plugins
 {
-    public class Switch_ViewModel : PluginModel
+    [Identity(GroupName = "Switch", Name = "", Type = typeof(Switch_ViewModel))]
+    public class Switch_ViewModel : PropertyChangedBase, IPluginModel
     {
         private readonly IEventAggregator eventAggregator;
 
@@ -31,30 +35,63 @@ namespace Cockpit.Core.Plugins.Plugins
         }
 
         #region PluginModel
-        public override double Left
+        private string nameUC;
+        public string NameUC
+        {
+            get => nameUC;
+            set
+            {
+                nameUC = value;
+                NotifyOfPropertyChange(() => NameUC);
+            }
+        }
+
+        private double zoomfactorfrompluginmodel;
+        public double ZoomFactorFromPluginModel
+        {
+            get => zoomfactorfrompluginmodel;
+            set
+            {
+                zoomfactorfrompluginmodel = value;
+                NotifyOfPropertyChange(() => ZoomFactorFromPluginModel);
+            }
+        }
+
+        public double ScaleX
+        {
+            get => Layout.ScaleX;
+            set => Layout.ScaleX = value;
+        }
+        public double ScaleY
+        {
+            get => Layout.ScaleY;
+            set => Layout.ScaleY = value;
+        }
+
+        public double Left
         {
             get => Layout.UCLeft;
             set => Layout.UCLeft = value;
         }
-        public override double Top
+        public double Top
         {
             get => Layout.UCTop;
             set => Layout.UCTop = value;
         }
-        public override double Width
+        public double Width
         {
             get => Layout.Width;
             set => Layout.Width = value;
         }
-        public override double Height
+        public double Height
         {
             get => Layout.Height;
             set => Layout.Height = value;
         }
 
-        public override PluginProperties[] GetProperties()
+        public IPluginProperty[] GetProperties()
         {
-            return new PluginProperties[] { Layout, Appearance, Behavior };
+            return new IPluginProperty[] { Layout, Appearance, Behavior };
         }
         #endregion
 

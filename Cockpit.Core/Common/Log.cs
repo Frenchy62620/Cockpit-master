@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Cockpit.Core.Persistence.Paths;
@@ -45,4 +46,6 @@ namespace Cockpit.Core.Common
                 fileSystem.AppendAllText(path, Environment.NewLine);
         }
     }
+
+
 }

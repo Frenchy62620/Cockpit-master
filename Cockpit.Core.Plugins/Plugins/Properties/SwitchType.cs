@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Cockpit.Common.Properties.ViewModels;
+using System.ComponentModel;
 
 namespace Cockpit.Core.Plugins.Plugins.Properties
 {

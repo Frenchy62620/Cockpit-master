@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Cockpit.General.Properties.Views
+namespace Cockpit.Common.Properties.ViewModels
 {
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum LayoutRotation

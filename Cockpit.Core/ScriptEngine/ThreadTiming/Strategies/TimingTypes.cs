@@ -2,7 +2,7 @@
 
 namespace Cockpit.Core.ScriptEngine.ThreadTiming.Strategies
 {
-    [GlobalEnum]
+    //[GlobalEnum]
     public enum TimingTypes
     {
         SystemTimer = 1,

@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:pe="clr-namespace:Cockpit.General.Properties.Views"
+             xmlns:local="clr-namespace:Cockpit.General.Properties.Views"
+             xmlns:pe="clr-namespace:Cockpit.Common.Properties.Views;assembly=Cockpit.Common.Properties.Views"
              Height="Auto"
              mc:Ignorable="d"          
              d:DesignWidth="180">
@@ -29,7 +30,7 @@
         <Label Grid.Column="0" Grid.Row="0" FontSize="10" HorizontalAlignment="Right" Content="SwitchButton Type"
                ToolTip="Selects what kind of toggle switch to emulate." />
         <ComboBox x:Name="SwitchTypes" Grid.Column="1" Grid.Row="0" FontSize="10" Margin="0,2,0,2" HorizontalAlignment="Left" 
-                  ItemsSource="{Binding Source={pe:EnumBindingSource {x:Type pe:SwitchType}}}" 
+                  ItemsSource="{Binding Source={pe:EnumBindingSource {x:Type local:SwitchType}}}" 
                   SelectedIndex ="{Binding SelectedSwitchTypeIndex}"  />
 
         <Label Grid.Column="0" Grid.Row="1" FontSize="10" HorizontalAlignment="Right" Content="Panel Name Up" ToolTip="Name of Panel controlled by the Button Up."

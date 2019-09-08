@@ -1,12 +1,12 @@
-﻿using Cockpit.Core.Common;
+﻿using Cockpit.Core.Contracts;
 
 namespace Cockpit.GUI.Events
 {
     public class DisplayPropertiesEvent
     {
-        public PluginProperties[] Properties;
+        public IPluginProperty[] Properties;
         public bool Clear;
-        public DisplayPropertiesEvent(PluginProperties[] properties, bool clear = false)
+        public DisplayPropertiesEvent(IPluginProperty[] properties, bool clear = false)
         {
             Clear = clear;
             Properties = properties;

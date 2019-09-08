@@ -1,5 +1,7 @@
-﻿using Cockpit.Core.Common;
+﻿using Caliburn.Micro;
+using Cockpit.Core.Common;
 using Cockpit.Core.Common.CustomControls;
+using Cockpit.Core.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +12,7 @@ using System.Windows.Media;
 
 namespace Cockpit.Core.Plugins.Plugins.Properties
 {
-    public class PushButtonAppearanceViewModel : PluginProperties
+    public class PushButtonAppearanceViewModel : PropertyChangedBase, IPluginProperty
 
     {
         public string NameUC { get; set; }

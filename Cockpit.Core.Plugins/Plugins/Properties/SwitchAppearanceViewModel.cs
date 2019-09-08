@@ -1,4 +1,5 @@
-﻿using Cockpit.Core.Common;
+﻿using Caliburn.Micro;
+using Cockpit.Core.Contracts;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Core.Plugins.Plugins.Properties
@@ -7,7 +8,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
     //                                Core.Common.Events.IHandle<ThreeWayToggleSwitchAppearanceEvent>,
     //                                Core.Common.Events.IHandle<PropertyHasIndicatorEvent>,
     //                                Core.Common.Events.IHandle<PropertyHas3ImagesEvent>
-    public class SwitchAppearanceViewModel : PluginProperties
+    public class SwitchAppearanceViewModel : PropertyChangedBase, IPluginProperty
     {
         private readonly IEventAggregator eventAggregator;
         public SwitchBehaviorViewModel Behavior { get; }

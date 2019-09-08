@@ -5,7 +5,7 @@ using Cockpit.Core.Model.Events;
 
 namespace Cockpit.Core.ScriptEngine.Globals.ScriptHelpers
 {
-    [Global(Name = "diagnostics")]
+    //[Global(Name = "diagnostics")]
     public class DiagnosticHelper : IScriptHelper
     {
         private readonly IEventAggregator eventAggregator;

@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ip="clr-namespace:Cockpit.Core.Common.CustomControls;assembly=Cockpit.Core.Common" 
-             xmlns:pe="clr-namespace:Cockpit.General.Properties.Views" 
+             xmlns:pe="clr-namespace:Cockpit.Common.Properties.Views;assembly=Cockpit.Common.Properties.Views" 
+             xmlns:local="clr-namespace:Cockpit.General.Properties.Views" 
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d"        Height="Auto" d:DesignWidth="180">
@@ -24,7 +25,7 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-        <Style x:Key="TextBoxGlyphStyle" TargetType="{x:Type TextBox}">
+        <Style x:Key="TextBoxGlyphStyle" TargetType="{x:Type xctk:IntegerUpDown}">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding GlyphSelected}" Value="0">
                     <Setter Property="Visibility" Value="Collapsed" />
@@ -81,12 +82,13 @@
         <Label Grid.Column="0" Grid.Row="4" FontSize="10" HorizontalAlignment="Right" Content="Symbol"
             ToolTip="Symbol to be rendered on this buttom."/>
         <ComboBox x:Name="PushButtonGlyphs" Grid.Column="1" Grid.Row="4" Margin="4,0,0,0" FontSize="10" HorizontalAlignment="Left"
-                  ItemsSource="{Binding Source={pe:EnumBindingSource {x:Type pe:PushButtonGlyph}}}"  SelectedIndex="{Binding GlyphSelected}"
+                  ItemsSource="{Binding Source={pe:EnumBindingSource {x:Type local:PushButtonGlyph}}}"  SelectedIndex="{Binding GlyphSelected}"
                   />
         <!--, Converter={StaticResource EnumToIntConverter}, Mode=TwoWay    SelectedItem="{Binding SelectedPushButtonGlyph}"-->
         <Label Grid.Column="0" Grid.Row="5" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource LabelGlyphStyle}" Content="Thickness"
             ToolTip="Thickness of the symbols lines."/>
-        <TextBox Grid.Column="1" Grid.Row="5" FontSize="10" Text="{Binding GlyphThickness, Mode=TwoWay}" Margin="2" Style="{StaticResource TextBoxGlyphStyle}"/>
+        <xctk:IntegerUpDown Grid.Column="1" Grid.Row="5" FontSize="10" Value="{Binding GlyphThickness, Mode=TwoWay}" Margin="2" Minimum="0" Maximum="10"
+                            TextAlignment="Left" Style="{StaticResource TextBoxGlyphStyle}"/>
         
         <Label Grid.Column="0" Grid.Row="6" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource LabelGlyphStyle}" Content="Color"
             ToolTip="Color of the symbol."/>

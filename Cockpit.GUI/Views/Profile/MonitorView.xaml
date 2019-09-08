@@ -85,6 +85,7 @@
                                     <ContentControl.RenderTransform>
                                         <TransformGroup>
                                             <RotateTransform Angle="{Binding Layout.AngleRotation}" />
+                                            <ScaleTransform ScaleX="1" ScaleY="1"  />
                                         </TransformGroup>
                                     </ContentControl.RenderTransform>
                                 </ContentControl>

@@ -4,9 +4,9 @@ using Cockpit.Core.Common;
 using Cockpit.Core.Common.Events;
 using Cockpit.Core.Persistence;
 using Cockpit.Core.Persistence.Paths;
-using Cockpit.Core.ScriptEngine.Globals;
+//using Cockpit.Core.ScriptEngine.Globals;
 
-using Cockpit.Core.ScriptEngine.ThreadTiming;
+//using Cockpit.Core.ScriptEngine.ThreadTiming;
 using Ninject;
 using Ninject.Activation;
 using Ninject.Parameters;
@@ -37,7 +37,7 @@ namespace Cockpit.Core.Services
 
         private static void BindGlobalsProviders(StandardKernel kernel)
         {
-            kernel.Bind<IGlobalProvider>().To<ScriptHelpersGlobalProvider>();
+            //kernel.Bind<IGlobalProvider>().To<ScriptHelpersGlobalProvider>();
             //kernel.Bind<IGlobalProvider>().To<CurveGlobalProvider>();
         }
 
@@ -57,7 +57,7 @@ namespace Cockpit.Core.Services
             //kernel.Bind<IScriptParser>().To<PythonScriptParser>();
             //kernel.Bind<ICodeCompletionProvider>().To<CodeCompletionProvider>();
             //kernel.Bind<IRuntimeInfoProvider>().To<RuntimeInfoProvider>();
-            kernel.Bind<IThreadTimingFactory>().To<ThreadTimingFactory>().InSingletonScope();
+            //kernel.Bind<IThreadTimingFactory>().To<ThreadTimingFactory>().InSingletonScope();
         }
 
         public static void AddCustomBindings(IKernel kernel)

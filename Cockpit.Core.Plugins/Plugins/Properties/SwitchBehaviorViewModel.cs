@@ -1,4 +1,5 @@
-﻿using Cockpit.Core.Common;
+﻿using Caliburn.Micro;
+using Cockpit.Core.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Core.Plugins.Plugins.Properties
 {
-    public class SwitchBehaviorViewModel : PluginProperties
+    public class SwitchBehaviorViewModel : PropertyChangedBase, IPluginProperty
     {
         private readonly IEventAggregator eventAggregator;
 

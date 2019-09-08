@@ -89,9 +89,6 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="Visiblox.Charts">
-      <HintPath>..\Lib\Visiblox\Visiblox.Charts.dll</HintPath>
-    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -137,27 +134,6 @@
     <Compile Include="Common\Converters\EnumDisplayEntry.cs" />
     <Compile Include="Common\Converters\MyConverter.cs" />
     <Compile Include="Common\Converters\MyMultiConverter.cs" />
-    <Compile Include="Common\CustomControls\FolderPicker\FolderPickerView.xaml.cs">
-      <DependentUpon>FolderPickerView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Common\CustomControls\FontPicker\FontChooserDialogView.xaml.cs">
-      <DependentUpon>FontChooserDialogView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Common\CustomControls\FontPicker\FontFamilyListItem.cs" />
-    <Compile Include="Common\CustomControls\FontPicker\FontPickerView.xaml.cs">
-      <DependentUpon>FontPickerView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Common\CustomControls\FontPicker\TextDecorations.cs" />
-    <Compile Include="Common\CustomControls\FontPicker\TextFormat.cs" />
-    <Compile Include="Common\CustomControls\FontPicker\TextHorizontalAlignment.cs" />
-    <Compile Include="Common\CustomControls\FontPicker\TextVerticalAlignment.cs" />
-    <Compile Include="Common\CustomControls\FontPicker\TypefaceListItem.cs" />
-    <Compile Include="Common\CustomControls\ImagePicker\ImagePickerView.xaml.cs">
-      <DependentUpon>ImagePickerView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Common\CustomControls\IPropertyNotification.cs" />
-    <Compile Include="Common\CustomControls\NotificationObject.cs" />
-    <Compile Include="Common\CustomControls\PropertyNotificationEventArgs.cs" />
     <Compile Include="Common\NativeMethods\DisplayOrientation.cs" />
     <Compile Include="Common\NativeMethods\NativeMethods.cs" />
     <Compile Include="Common\Resources\ResourceHelper.cs" />
@@ -176,7 +152,6 @@
     <Compile Include="Events\MonitorViewStartedEvent.cs" />
     <Compile Include="Events\RemovePanelEvent.cs" />
     <Compile Include="Events\PropertyMonitorEvent.cs" />
-    <Compile Include="Events\VisibilityPanelEvent.cs" />
     <Compile Include="Events\WindowStateChangedEvent.cs" />
     <Compile Include="Events\ProfileStateChangedEvent.cs" />
     <Compile Include="Events\ProfileUpdatedEvent.cs" />
@@ -263,22 +238,6 @@
     <Compile Include="Views\Profile\MonitorViewModel.cs" />
     <Compile Include="Views\Profile\ToolBoxGroup.cs" />
     <Compile Include="Views\Profile\ToolBoxItem.cs" />
-    <Page Include="Common\CustomControls\FolderPicker\FolderPickerView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Common\CustomControls\FontPicker\FontChooserDialogView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Common\CustomControls\FontPicker\FontPickerView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Common\CustomControls\ImagePicker\ImagePickerView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Plugins\Panel_View.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -390,6 +349,14 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Cockpit.Common.Properties.ViewModels\Cockpit.Common.Properties.ViewModels.csproj">
+      <Project>{B15A5E68-F972-4071-918C-CA230D2AD6D3}</Project>
+      <Name>Cockpit.Common.Properties.ViewModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cockpit.Common.Properties.Views\Cockpit.Common.Properties.Views.csproj">
+      <Project>{4df5328c-2f8d-4b8a-861f-2e71fa983975}</Project>
+      <Name>Cockpit.Common.Properties.Views</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Cockpit.Core.Common\Cockpit.Core.Common.csproj">
       <Project>{07EC4990-A61F-4F76-A555-75B1CB0C7182}</Project>
       <Name>Cockpit.Core.Common</Name>
@@ -401,6 +368,7 @@
     <ProjectReference Include="..\Cockpit.Core.Plugins\Cockpit.Core.Plugins.csproj">
       <Project>{10b49d6c-3de3-49b2-8107-2c963e472ff7}</Project>
       <Name>Cockpit.Core.Plugins</Name>
+      <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\Cockpit.Core\Cockpit.Core.csproj">
       <Project>{BCF7160F-9CB9-46E5-91CA-EE15E1D5ED54}</Project>
@@ -525,8 +493,33 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>echo ================= $(ConfigurationName) ===============
+
+echo copy "$(TargetDir)Cockpit.Common.Properties.ViewModels.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\Cockpit.Common.Properties.ViewModels.dll"
+echo copy "$(TargetDir)Cockpit.Common.Properties.Views.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\Cockpit.Common.Properties.Views.dll"
+echo copy "$(TargetDir)Cockpit.Core.Plugins.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\Cockpit.Core.Plugins.dll"
+echo copy "$(TargetDir)Cockpit.General.Properties.Views.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\Cockpit.General.Properties.Views.dll"
+echo copy "$(TargetDir)Cockpit.Plugin.A10C.ViewModels.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\Cockpit.Plugin.A10C.ViewModels.dll"
+echo copy "$(TargetDir)Cockpit.Plugin.A10C.Views.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\Cockpit.Plugin.A10C.Views.dll"
+echo copy "$(TargetPath)" "$(SolutionDir)..\Exec$(ConfigurationName)\Cockpit.exe"
+
+copy "$(TargetDir)Cockpit.Common.Properties.ViewModels.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\Cockpit.Common.Properties.ViewModels.dll" /Y
+copy "$(TargetDir)Cockpit.Common.Properties.Views.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\Cockpit.Common.Properties.Views.dll" /Y
+copy "$(TargetDir)Cockpit.Core.Plugins.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\Cockpit.Core.Plugins.dll" /Y
+copy "$(TargetDir)Cockpit.General.Properties.Views.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\Cockpit.General.Properties.Views.dll" /Y
+copy "$(TargetDir)Cockpit.Plugin.A10C.ViewModels.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\Cockpit.Plugin.A10C.ViewModels.dll" /Y
+copy "$(TargetDir)Cockpit.Plugin.A10C.Views.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\Cockpit.Plugin.A10C.Views.dll" /Y
+copy "$(TargetPath)" "$(SolutionDir)..\Exec$(ConfigurationName)\Cockpit.exe" /Y
+
+echo copy "$(TargetDir)Cockpit.Core.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Cockpit.Core.dll"
+echo copy "$(TargetDir)Cockpit.Core.Common.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Cockpit.Core.Common.dll"
+echo copy "$(TargetDir)Cockpit.Core.Contracts.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Cockpit.Core.Contracts.dll"
+
+copy "$(TargetDir)Cockpit.Core.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Cockpit.Core.dll" /Y
+copy "$(TargetDir)Cockpit.Core.Common.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Cockpit.Core.Common.dll" /Y
+copy "$(TargetDir)Cockpit.Core.Contracts.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Cockpit.Core.Contracts.dll" /Y
+
+echo ================= $(ConfigurationName) ===============</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -535,6 +528,12 @@
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
+  <PropertyGroup>
+    <PreBuildEvent>echo ======DEB Compilation $(ConfigurationName) ==Cockpit.Common.Properties.Views==
+"$(DevEnvDir)devenv" "$(SolutionPath)" /ReBuild $(configuration) /project "$(SolutionDir)Cockpit.Common.Properties.Views\Cockpit.Common.Properties.Views.csproj"
+echo "$(DevEnvDir)devenv" "$(SolutionPath)" /ReBuild $(configuration) /project "$(SolutionDir)Cockpit.Common.Properties.Views\Cockpit.Common.Properties.Views.csproj"
+echo ======END Compilation $(ConfigurationName) ==Cockpit.Common.Properties.Views==</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

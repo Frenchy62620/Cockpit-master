@@ -1,4 +1,5 @@
-﻿using Cockpit.Core.Common;
+﻿using Caliburn.Micro;
+using Cockpit.Core.Contracts;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +10,7 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.GUI.Plugins.Properties
 {
-    public class PanelAppearanceViewModel:PluginProperties /*, Core.Common.Events.IHandle<PropertyMonitorEvent>*/
+    public class PanelAppearanceViewModel: PropertyChangedBase, IPluginProperty
     {
 
         private readonly Panel_ViewModel PanelViewModel;

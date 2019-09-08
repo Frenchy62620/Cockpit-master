@@ -1,13 +1,15 @@
-﻿using Cockpit.Core.Common;
-using Cockpit.Core.Plugins.Events;
+﻿using Caliburn.Micro;
+using Cockpit.Core.Common;
+using Cockpit.Core.Contracts;
+using Cockpit.Core.Model.Events;
 using System;
 using System.Windows.Controls;
 
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
-namespace Cockpit.Core.Plugins.Plugins.Properties
+namespace Cockpit.Common.Properties.ViewModels
 {
-    public class LayoutPropertyViewModel:PluginProperties, Core.Common.Events.IHandle<RenameUCEvent>
+    public class LayoutPropertyViewModel: PropertyChangedBase, IPluginProperty, Core.Common.Events.IHandle<RenameUCEvent>
     {
         private readonly IEventAggregator eventAggregator;
    
@@ -116,6 +118,28 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
                     if (Linked) Width = Math.Round(value / Factor, 0, MidpointRounding.ToEven);
                     NotifyOfPropertyChange(() => Height);
                 }
+            }
+        }
+
+        private double scalex;
+        public double ScaleX
+        {
+            get => scalex;
+            set
+            {
+                scalex = value;
+                NotifyOfPropertyChange(() => ScaleX);
+            }
+        }
+
+        private double scaley;
+        public double ScaleY
+        {
+            get => scaley;
+            set
+            {
+                scaley = value;
+                NotifyOfPropertyChange(() => ScaleY);
             }
         }
 

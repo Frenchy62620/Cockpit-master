@@ -139,6 +139,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Cockpit.Common.Properties.ViewModels\Cockpit.Common.Properties.ViewModels.csproj">
+      <Project>{B15A5E68-F972-4071-918C-CA230D2AD6D3}</Project>
+      <Name>Cockpit.Common.Properties.ViewModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cockpit.Core.Common\Cockpit.Core.Common.csproj">
+      <Project>{07EC4990-A61F-4F76-A555-75B1CB0C7182}</Project>
+      <Name>Cockpit.Core.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Cockpit.Core.Plugins\Cockpit.Core.Plugins.csproj">
       <Project>{10B49D6C-3DE3-49B2-8107-2C963E472FF7}</Project>
       <Name>Cockpit.Core.Plugins</Name>

@@ -52,9 +52,9 @@ namespace Cockpit.GUI.Views.Profile.Panels
                 foreach (string file in Directory.GetFiles(subdir))
                 {
                     string shortImageName;
-                    if (groupname.Equals("RotarySwitch"))
+                    if (groupname.Equals("RotarySwitch") || groupname.Equals("A10C"))
                     {
-                        shortImageName = file.Split('\\').Last();
+                        shortImageName = file.Split('\\').Last().Replace(".png", "");
                     }
                     else
                     {

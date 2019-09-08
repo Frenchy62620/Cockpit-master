@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using Cockpit.Core.Common;
+using Cockpit.Core.Contracts;
 using Cockpit.GUI.Events;
 using Cockpit.GUI.Views.Profile;
 using System;
@@ -47,8 +48,8 @@ namespace Cockpit.GUI.Views.Main.ToolBar
 
         public void cmdAlign(int id)
         {
-            var reference = MonitorViewModel.FirstSelected.DataContext as PluginModel;
-            var list = MonitorViewModel.DictContentcontrol.Where(item => item.Value).Select(item => item.Key.DataContext as PluginModel);
+            var reference = MonitorViewModel.FirstSelected.DataContext as IPluginModel;
+            var list = MonitorViewModel.DictContentcontrol.Where(item => item.Value).Select(item => item.Key.DataContext as IPluginModel);
 
 
             if (id == 2)    //AlignTop

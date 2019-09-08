@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Markup;
 
-namespace Cockpit.General.Properties.Views
+namespace Cockpit.Common.Properties.Views
 {
     public class EnumBindingSourceExtension : MarkupExtension
     {

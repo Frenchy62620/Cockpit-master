@@ -1,5 +1,7 @@
 ﻿using Caliburn.Micro;
-using Cockpit.Core.Common;
+using Cockpit.Common.Properties.ViewModels;
+using Cockpit.Core.Contracts;
+using Cockpit.Core.Model.Events;
 using Cockpit.Core.Plugins.Plugins.Properties;
 using Cockpit.GUI.Events;
 using Cockpit.GUI.Plugins.Properties;
@@ -19,7 +21,8 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.GUI.Plugins
 {
-    public class Panel_ViewModel : PluginModel, IDropTarget, Core.Common.Events.IHandle<Core.Plugins.Events.VisibilityPanelEvent>
+    [Identity(GroupName = "Panel", Name = "", Type = typeof(Panel_ViewModel))]
+    public class Panel_ViewModel : PropertyChangedBase, IPluginModel, IDropTarget, Core.Common.Events.IHandle<VisibilityPanelEvent>
     {
         private readonly IEventAggregator eventAggregator;
         private readonly IResolutionRoot resolutionRoot;
@@ -42,7 +45,7 @@ namespace Cockpit.GUI.Plugins
             Layout = new LayoutPropertyViewModel(eventAggregator, settings);
             Appearance = new PanelAppearanceViewModel(eventAggregator, this, settings);
 
-            MyCockpitViewModels = new BindableCollection<PluginModel>();
+            MyCockpitViewModels = new BindableCollection<IPluginModel>();
 
             //RenderO = (int)Appearance.SelectedApparition < 2 ? "1.0, 1.0" : "0.0, 0.0";//ToLeft/ToTop or ToRight/ToBottom
             //ScaleXX = (int)Appearance.SelectedApparition % 2 == 0; //ToLeft or ToRight? or ToUp or ToBottom?
@@ -61,7 +64,7 @@ namespace Cockpit.GUI.Plugins
         {
             System.Diagnostics.Debug.WriteLine($"sortie panel {NameUC}");
         }
-        public BindableCollection<PluginModel> MyCockpitViewModels { get; set; }
+        public BindableCollection<IPluginModel> MyCockpitViewModels { get; set; }
 
         private bool isvisible;
         public bool IsVisible
@@ -98,32 +101,66 @@ namespace Cockpit.GUI.Plugins
             }
         }
 
-        public override double Left
+        #region PluginModel
+        private string nameUC;
+        public string NameUC
+        {
+            get => nameUC;
+            set
+            {
+                nameUC = value;
+                NotifyOfPropertyChange(() => NameUC);
+            }
+        }
+
+        private double zoomfactorfrompluginmodel;
+        public double ZoomFactorFromPluginModel
+        {
+            get => zoomfactorfrompluginmodel;
+            set
+            {
+                zoomfactorfrompluginmodel = value;
+                NotifyOfPropertyChange(() => ZoomFactorFromPluginModel);
+            }
+        }
+
+        public double ScaleX
+        {
+            get => Layout.ScaleX;
+            set => Layout.ScaleX = value;
+        }
+        public double ScaleY
+        {
+            get => Layout.ScaleY;
+            set => Layout.ScaleY = value;
+        }
+
+        public double Left
         {
             get => Layout.UCLeft;
             set => Layout.UCLeft = value;
         }
-        public override double Top
+        public double Top
         {
             get => Layout.UCTop;
             set => Layout.UCTop = value;
         }
-        public override double Width
+        public double Width
         {
             get => Layout.Width;
             set => Layout.Width = value;
         }
-        public override double Height
+        public double Height
         {
             get => Layout.Height;
             set => Layout.Height = value;
         }
 
-
-        public override PluginProperties[] GetProperties()
+        public IPluginProperty[] GetProperties()
         {
-            return new PluginProperties[] { Layout, Appearance };
+            return new IPluginProperty[] { Layout, Appearance/*, Behavior*/ };
         }
+        #endregion
 
 
         //public void KeyTest(object sender, KeyEventArgs e)
@@ -175,7 +212,7 @@ namespace Cockpit.GUI.Plugins
 
         }
 
-        public void MouseLeftButtonDownOnContentControl(ContentControl cc, PluginModel pm, MouseEventArgs e)
+        public void MouseLeftButtonDownOnContentControl(ContentControl cc, IPluginModel pm, MouseEventArgs e)
         {
             e.Handled = true;
 
@@ -199,7 +236,7 @@ namespace Cockpit.GUI.Plugins
             }
 
             if (mv.AdornersSelectedList.Count() == 0)
-                eventAggregator.Publish(new DisplayPropertiesEvent(new[] { (PluginProperties)mv.LayoutMonitor }));
+                eventAggregator.Publish(new DisplayPropertiesEvent(new[] { (IPluginProperty)mv.LayoutMonitor }));
             else
                 eventAggregator.Publish(new DisplayPropertiesEvent(mv.SortedDico[mv.AdornersSelectedList.ElementAt(0)].pm.GetProperties()));
 
@@ -215,16 +252,16 @@ namespace Cockpit.GUI.Plugins
 
 
         #region Scale, rotation, XY translation usercontrol
-        private double _scalex;
-        public double ScaleX
-        {
-            get { return _scalex; }
-            set
-            {
-                _scalex = value;
-                NotifyOfPropertyChange(() => ScaleX);
-            }
-        }
+        //private double _scalex;
+        //public double ScaleX
+        //{
+        //    get { return _scalex; }
+        //    set
+        //    {
+        //        _scalex = value;
+        //        NotifyOfPropertyChange(() => ScaleX);
+        //    }
+        //}
         private double _angleRotation;
         public double AngleRotation
         {
@@ -235,26 +272,26 @@ namespace Cockpit.GUI.Plugins
                 NotifyOfPropertyChange(() => AngleRotation);
             }
         }
-        private double _ucleft;
-        public double UCLeft
-        {
-            get { return _ucleft; }
-            set
-            {
-                _ucleft = value;
-                NotifyOfPropertyChange(() => UCLeft);
-            }
-        }
-        private double _uctop;
-        public double UCTop
-        {
-            get { return _uctop; }
-            set
-            {
-                _uctop = value;
-                NotifyOfPropertyChange(() => UCTop);
-            }
-        }
+        //private double _ucleft;
+        //public double UCLeft
+        //{
+        //    get { return _ucleft; }
+        //    set
+        //    {
+        //        _ucleft = value;
+        //        NotifyOfPropertyChange(() => UCLeft);
+        //    }
+        //}
+        //private double _uctop;
+        //public double UCTop
+        //{
+        //    get { return _uctop; }
+        //    set
+        //    {
+        //        _uctop = value;
+        //        NotifyOfPropertyChange(() => UCTop);
+        //    }
+        //}
         #endregion
 
         #region ToolTip
@@ -271,7 +308,7 @@ namespace Cockpit.GUI.Plugins
         #endregion
 
 
-        public void ContentControlLoaded(ContentControl cc, PluginModel pm)
+        public void ContentControlLoaded(ContentControl cc, IPluginModel pm)
         {
             if (mv.SortedDico.ContainsKey(pm.NameUC))
                 return;
@@ -285,7 +322,7 @@ namespace Cockpit.GUI.Plugins
 
         }
 
-        private void RemoveAdorner(ContentControl cc, PluginModel pm)
+        private void RemoveAdorner(ContentControl cc, IPluginModel pm)
         {
             mv.RemoveAdorner(cc, pm);
         }
@@ -295,7 +332,7 @@ namespace Cockpit.GUI.Plugins
             mv.RemoveAdorners();
         }
 
-        private void AddNewAdorner(ContentControl cc, PluginModel pm, int color = 0)
+        private void AddNewAdorner(ContentControl cc, IPluginModel pm, int color = 0)
         {
             mv.AddNewAdorner(cc, pm, color);
         }
@@ -461,11 +498,11 @@ namespace Cockpit.GUI.Plugins
             //ViewModelBinder.Bind(viewmodel, view, null);
             //var v = viewmodel as PluginModel;
             //v.ZoomFactorFromPluginModel = ZoomFactorFromMonitorViewModel;
-            MyCockpitViewModels.Add((PluginModel)viewmodel);
+            MyCockpitViewModels.Add((IPluginModel)viewmodel);
         }
 
         #endregion
-        public void Handle(Core.Plugins.Events.VisibilityPanelEvent message)
+        public void Handle(VisibilityPanelEvent message)
         {
             if (!NameUC.Equals(message.PanelName)) return;
 

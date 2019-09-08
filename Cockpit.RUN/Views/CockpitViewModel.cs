@@ -1,13 +1,6 @@
 ﻿using Caliburn.Micro;
-using Cockpit.Core.Common.Events;
-using Cockpit.Core.Plugins.Plugins;
+using Cockpit.Core.Common;
 using Ninject.Syntax;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.RUN.Views

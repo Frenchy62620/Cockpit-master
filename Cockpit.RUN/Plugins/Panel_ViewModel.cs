@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
-using Cockpit.Core.Plugins.Events;
+using Cockpit.Common.Properties.ViewModels;
+using Cockpit.Core.Model.Events;
 using Cockpit.Core.Plugins.Plugins.Properties;
 using Cockpit.RUN.Common;
 using Cockpit.RUN.Plugins.Properties;

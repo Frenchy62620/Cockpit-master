@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using Caliburn.Micro;
+using Cockpit.Core.Common;
 using Cockpit.Core.Services;
 using Cockpit.GUI.Common.AvalonDock;
 using Cockpit.GUI.Common.CommandLine;
@@ -16,13 +18,57 @@ using Cockpit.GUI.Views.Profile.Panels;
 using Ninject;
 using Xceed.Wpf.Toolkit;
 using ILog = Cockpit.Core.Common.ILog;
+//using ILog = Caliburn.Micro.ILog;
 using Parser = Cockpit.GUI.Common.CommandLine.Parser;
 
 namespace Cockpit.GUI.Bootstrap
 {
+    public class Log : Caliburn.Micro.ILog
+    {
+        #region Fields
+        private readonly Type _type;
+        #endregion
+
+        #region Constructors
+        public Log(Type type)
+        {
+            _type = type;
+        }
+        #endregion
+
+        #region Helper Methods
+        private string CreateLogMessage(string format, params object[] args)
+        {
+            return string.Format("[{0}] {1}",
+                DateTime.Now.ToString("o"),
+            string.Format(format, args));
+        }
+        #endregion
+
+        #region ILog Members
+        public void Error(Exception exception)
+        {
+            Debug.WriteLine(CreateLogMessage(exception.ToString()), "ERROR");
+        }
+
+        public void Info(string format, params object[] args)
+        {
+            Debug.WriteLine(CreateLogMessage(format, args), "INFO");
+        }
+
+        public void Warn(string format, params object[] args)
+        {
+            Debug.WriteLine(CreateLogMessage(format, args), "WARN");
+        }
+        #endregion
+    }
     public class Bootstrapper : BootstrapperBase
     {
         private IKernel kernel;
+        static Bootstrapper()
+        {
+            LogManager.GetLog = type => new Log(type);
+        }
 
         public Bootstrapper()
         {
@@ -38,6 +84,7 @@ namespace Cockpit.GUI.Bootstrap
             kernel.Bind<IParser>().To<Parser>();
             kernel.Bind<MainShellViewModel>().ToSelf().InSingletonScope();
             kernel.Bind<TrayIconViewModel>().ToSelf().InSingletonScope();
+
             ConfigurePanels();
 
             SetupCustomConvention();
@@ -67,7 +114,10 @@ namespace Cockpit.GUI.Bootstrap
             //ViewLocator.NameTransformer.AddRule(@"ViewModel", @"ViewX");
             ViewLocator.AddNamespaceMapping("Cockpit.Core.Plugins.Plugins.Properties", "Cockpit.General.Properties.Views");
             DisplayRootViewFor<TrayIconViewModel>();
-            DisplayRootViewFor<MainShellViewModel>();
+
+            //Dictionary<string, object> window_settings = new Dictionary<string, object>();
+            //window_settings.Add("Assemblies", ass);
+            DisplayRootViewFor<MainShellViewModel>(/*window_settings*/);
         }
 
         protected override object GetInstance(Type service, string key)
@@ -80,6 +130,8 @@ namespace Cockpit.GUI.Bootstrap
             return kernel.GetAll(service);
         }
 
+
+
         protected override IEnumerable<Assembly> SelectAssemblies()
         {
 
@@ -87,16 +139,38 @@ namespace Cockpit.GUI.Bootstrap
             assemblies.AddRange(base.SelectAssemblies());
             //Load new ViewModels here
             //string[] fileEntries = Directory.GetFiles(Directory.GetCurrentDirectory());
-
+            var directory = Directory.GetCurrentDirectory();
+            var dirplugins = Path.Combine(directory, "Plugins");
             //assemblies.AddRange(from fileName in fileEntries
             //                    where fileName.EndsWith("Cockpit.Core.Plugins.dll")
             //                    select Assembly.LoadFile(fileName));
             //assemblies.AddRange(from fileName in fileEntries
             //                    where fileName.Contains("ViewsX.dll")
             //                    select Assembly.LoadFile(fileName));
-
-            assemblies.Add(Assembly.LoadFile(@"J:\ProjetC#\Cockpit-master\Cockpit.GUI\bin\Debug\Cockpit.Core.Plugins.dll"));
-            assemblies.Add(Assembly.LoadFile(@"J:\ProjetC#\Cockpit-master\Cockpit.GUI\bin\Debug\Cockpit.General.Properties.Views.dll"));
+            if (File.Exists(Path.Combine(@"J:\ProjetC#\ExecDebug\Plugins", "Cockpit.Core.Plugins.dll")))
+            {
+                assemblies.Add(Assembly.LoadFile(Path.Combine(@"J:\ProjetC#\ExecDebug\Plugins", "Cockpit.Core.Plugins.dll")));
+                assemblies.Add(Assembly.LoadFile(Path.Combine(@"J:\ProjetC#\ExecDebug\Plugins", "Cockpit.General.Properties.Views.dll")));
+                assemblies.Add(Assembly.LoadFile(Path.Combine(@"J:\ProjetC#\ExecDebug\Plugins", "Cockpit.Common.Properties.Views.dll")));
+                assemblies.Add(Assembly.LoadFile(Path.Combine(@"J:\ProjetC#\ExecDebug\Plugins", "Cockpit.Common.Properties.ViewModels.dll")));
+                // others
+                assemblies.Add(Assembly.LoadFile(Path.Combine(@"J:\ProjetC#\ExecDebug\Plugins", "Cockpit.Plugin.A10C.ViewModels.dll")));
+                assemblies.Add(Assembly.LoadFile(Path.Combine(@"J:\ProjetC#\ExecDebug\Plugins", "Cockpit.Plugin.A10C.Views.dll")));
+            }
+            else if (File.Exists(Path.Combine(dirplugins, "Cockpit.Core.Plugins.dll")))
+            {
+                assemblies.Add(Assembly.LoadFile(Path.Combine(dirplugins, "Cockpit.Core.Plugins.dll")));
+                assemblies.Add(Assembly.LoadFile(Path.Combine(dirplugins, "Cockpit.General.Properties.Views.dll")));
+                assemblies.Add(Assembly.LoadFile(Path.Combine(dirplugins, "Cockpit.Common.Properties.Views.dll")));
+                assemblies.Add(Assembly.LoadFile(Path.Combine(dirplugins, "Cockpit.Common.Properties.ViewModels.dll")));
+            }
+            else if (File.Exists(Path.Combine(directory, "Cockpit.Core.Plugins.dll")))
+            {
+                assemblies.Add(Assembly.LoadFile(Path.Combine(directory, "Cockpit.Core.Plugins.dll")));
+                assemblies.Add(Assembly.LoadFile(Path.Combine(directory, "Cockpit.General.Properties.Views.dll")));
+                assemblies.Add(Assembly.LoadFile(Path.Combine(directory, "Cockpit.Common.Properties.Views.dll")));
+                assemblies.Add(Assembly.LoadFile(Path.Combine(directory, "Cockpit.Common.Properties.ViewModels.dll")));
+            }
 
             return assemblies;
 

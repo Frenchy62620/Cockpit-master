@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Windows.Markup;
 
-namespace Cockpit.Core.Plugins.Plugins.Properties
+namespace Cockpit.Common.Properties.ViewModels
 {
     public class EnumBindingSourceExtension : MarkupExtension
     {
