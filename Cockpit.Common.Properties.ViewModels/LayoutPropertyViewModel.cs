@@ -47,6 +47,7 @@ namespace Cockpit.Common.Properties.ViewModels
                 eventAggregator.Subscribe(this);
             }
             Linked = true;
+            PxPct = true;
             Name = "Layout";
             ScaleX = 1;
             ScaleY = 1;
@@ -183,11 +184,26 @@ namespace Cockpit.Common.Properties.ViewModels
             }
         }
 
-        public void ChangeLockUnlock()
+        private bool pxpct;
+        public bool PxPct
         {
-            //l
-            Linked = !Linked;
-            if (Linked) Factor = Height / Width;
+            get => pxpct;
+            set
+            {
+                pxpct = value;
+                NotifyOfPropertyChange(() => PxPct);
+            }
+        }
+
+        public void ChangeImage(bool IsLinked)
+        {
+            if (IsLinked)
+            {
+                Linked = !Linked;
+                if (Linked) Factor = Height / Width;
+            }
+            else
+                PxPct = !PxPct;
         }
 
         public void GotFocus(object sender, System.EventArgs e)

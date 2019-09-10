@@ -136,10 +136,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>echo ======== $(ProjectName) [$(ConfigurationName)] ===============
-echo copy "$(TargetPath)" "$(SolutionDir)Cockpit.GUI\$(OutDir)$(ProjectName)"
-copy "$(TargetPath)" "$(SolutionDir)Cockpit.GUI\$(OutDir)$(ProjectName)" /Y
-echo copy "$(TargetPath)" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\$(ProjectName)"
-copy "$(TargetPath)" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\$(ProjectName)" /Y</PostBuildEvent>
+    <PostBuildEvent>echo ======== $(TargetFileName) [$(ConfigurationName)] ===============
+echo copy "$(TargetPath)" "$(SolutionDir)Cockpit.GUI\$(OutDir)$(TargetFileName)"
+copy "$(TargetPath)" "$(SolutionDir)Cockpit.GUI\$(OutDir)$(TargetFileName)" /Y
+echo copy "$(TargetPath)" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\$(TargetFileName)"
+copy "$(TargetPath)" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\$(TargetFileName)" /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>

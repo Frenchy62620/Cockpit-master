@@ -56,8 +56,8 @@
         <Label Grid.Column="0" Grid.Row="2" FontSize="10" HorizontalAlignment="Right" Content="Top"/>
         <xctk:IntegerUpDown Grid.Column="1" Grid.Row="2" FontSize="10" Value="{Binding Path=UCTop, Mode=TwoWay}" Margin="2" TextAlignment="Left"/>
         <DockPanel Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" >
-            <Grid DockPanel.Dock="Left" Width="25" Height="30" cal:Message.Attach="[Event MouseLeftButtonDown] = [Action ChangeImage('True')]">
-                <Image x:Name="ImageUnlocker" Source="{StaticResource Unlocker}" Stretch="Uniform" >
+            <Grid DockPanel.Dock="Left" Width="25" Height="30" cal:Message.Attach="[Event MouseLeftButtonDown] = [Action ChangeLockUnlock()]">
+                <Image x:Name="SwitchUp" Source="{StaticResource Unlocker}" Stretch="Uniform" >
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
                             <Setter Property="Visibility" Value="Hidden" />
@@ -71,7 +71,7 @@
                     </Image.Style>
                 </Image>
 
-                <Image x:Name="ImageLocker" Source="{StaticResource Locker}" Stretch="Uniform">
+                <Image x:Name="SwitchMiddle" Source="{StaticResource Locker}" Stretch="Uniform">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
                             <Setter Property="Visibility" Value="Hidden" />
@@ -85,56 +85,30 @@
                     </Image.Style>
                 </Image>
             </Grid>
-            <Grid DockPanel.Dock="Right" Width="25" Height="30" cal:Message.Attach="[Event MouseLeftButtonDown] = [Action ChangeImage('False')]">
-                <Image x:Name="Pixel" Source="{StaticResource Px128x128}" Stretch="Uniform">
-                    <Image.Style>
-                        <Style TargetType="{x:Type Image}">
-                            <Setter Property="Visibility" Value="Hidden" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding PxPct}" Value="True">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                    <Setter Property="ToolTip" Value="Values in Pixels"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Image.Style>
-                </Image>
-                <Image x:Name="Pourcent" Source="{StaticResource Pct128x128}" Stretch="Uniform" >
-                    <Image.Style>
-                        <Style TargetType="{x:Type Image}">
-                            <Setter Property="Visibility" Value="Hidden" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding PxPct}" Value="False">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                    <Setter Property="ToolTip" Value="Values in Percent"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Image.Style>
-                </Image>
-            </Grid>
+            
             <StackPanel>
-                <Label  FontSize="10"  Content="Width"/>
-                <Label FontSize="10" Content="Height"/>
+                <Label  FontSize="10"  Content="Width/ScaleX"/>
+                <Label FontSize="10" Content="Height/ScaleY"/>
             </StackPanel >
-            <Grid>
-                <StackPanel x:Name="Px">
-                    <xctk:IntegerUpDown x:Name="WidthPx" Value="{Binding Path=Width,Mode=TwoWay}" Margin="2" TextAlignment="Left"
-                                    Minimum="0" FontSize="10"
+
+            <StackPanel>
+                <xctk:IntegerUpDown FontSize="10" Value="{Binding Path=Width,Mode=TwoWay}" Margin="2" TextAlignment="Left"
+                                    Minimum="0"
                                     cal:Message.Attach = "[Event LostFocus] = [Action WHHaveFocus($source)];[Event ValueChanged]=[Action ValueChanged(0, $eventArgs)]" />
-                    <xctk:IntegerUpDown x:Name="HeightPx" Value="{Binding Path=Height,Mode=TwoWay}" Margin="2" TextAlignment="Left"
-                                    Minimum="0" FontSize="10"
+                <xctk:IntegerUpDown FontSize="10" Value="{Binding Path=Height,Mode=TwoWay}" Margin="2" TextAlignment="Left"
+                                    Minimum="0" 
                                     cal:Message.Attach = "[Event LostFocus] = [Action WHHaveFocus($source)];[Event ValueChanged]=[Action ValueChanged(2, $eventArgs)]" />
-                </StackPanel>
-            <StackPanel x:Name="Pct">
-                    <xctk:DoubleUpDown x:Name="WidthPct" Value="{Binding Path=ScaleX,Mode=TwoWay}" Margin="2" TextAlignment="Left" Increment="0.01" FormatString="F2"
-                                   Minimum="0" FontSize="10" Visibility="{Binding ElementName=Pourcent, Path=Visibility}"
+
+            </StackPanel>
+            <StackPanel>
+                <xctk:DoubleUpDown FontSize="10" Value="{Binding Path=ScaleX,Mode=TwoWay}" Margin="2" TextAlignment="Left" Increment="0.01" FormatString="F2"
+                                   Minimum="0"
                                    cal:Message.Attach = "[Event LostFocus] = [Action WHHaveFocus($source)];[Event ValueChanged]=[Action ValueChanged(1, $eventArgs)]" />
-                    <xctk:DoubleUpDown x:Name="HeightPct" Value="{Binding Path=ScaleY,Mode=TwoWay}" Margin="2" TextAlignment="Left" Increment="0.01" FormatString="F2"
-                                   Minimum="0" FontSize="10" Visibility="{Binding ElementName=Pourcent, Path=Visibility}"
+                <xctk:DoubleUpDown FontSize="10" Value="{Binding Path=ScaleY,Mode=TwoWay}" Margin="2" TextAlignment="Left" Increment="0.01" FormatString="F2"
+                                   Minimum="0" 
                                    cal:Message.Attach = "[Event LostFocus] = [Action WHHaveFocus($source)];[Event ValueChanged]=[Action ValueChanged(3, $eventArgs)]" />
             </StackPanel>
-            </Grid>
+
 
         </DockPanel>
         <Label Grid.Column="0" Grid.Row="6" FontSize="10" HorizontalAlignment="Right" Content="Rotation">

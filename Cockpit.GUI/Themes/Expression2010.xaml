@@ -26,7 +26,9 @@
     <BitmapImage x:Key="IconPrev" UriSource="../Resources/Menu/prev-16.png" />
     <BitmapImage x:Key="IconNext" UriSource="../Resources/Menu/next-16.png" />
     <BitmapImage x:Key="IconClose" UriSource="../Resources/Menu/close-16.png" />
-    
+
+    <BitmapImage x:Key="Px128x128" UriSource="../Resources/ToolBar/px128x128.png" />
+    <BitmapImage x:Key="Pct128x128" UriSource="../Resources/ToolBar/percent128x128.png" />
     <BitmapImage x:Key="SendBackIcon" UriSource="../Resources/ToolBar/SendBackIcon.png" />
     <BitmapImage x:Key="BringForwardIcon" UriSource="../Resources/ToolBar/BringForwardIcon.png" />
     <BitmapImage x:Key="AlignTop" UriSource="../Resources/ToolBar/AlignTop.png" />

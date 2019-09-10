@@ -457,7 +457,9 @@
   <ItemGroup>
     <Resource Include="Resources\Menu\close-16.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\ToolBar\px128x128.png" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\ToolBar\AlignBottom.png" />
     <Resource Include="Resources\ToolBar\AlignHCenter.png" />
@@ -491,6 +493,9 @@
     <Resource Include="Resources\ToolBar\UnLockedIcon.png" />
     <Resource Include="Resources\ToolBar\Unlocker.png" />
     <Resource Include="Resources\ToolBar\VisibleIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\ToolBar\percent128x128.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
