@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:gg="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
              xmlns:cal="http://www.caliburnproject.org"
-             mc:Ignorable="d"  d:DesignHeight="450" d:DesignWidth="800" 
+             mc:Ignorable="d"  d:DesignHeight="450" d:DesignWidth="800" UseLayoutRounding="True"
              Background="Transparent" cal:Message.Attach="[Event MouseMove] = [Action PreviewMouseMoveOnMonitorView($source, $mousepoint, $eventArgs)];
                                                           [Event PreviewKeyDown] = [Action KeyTest($pressedKey, $eventargs)]" 
                                                           >
@@ -16,12 +16,12 @@
             <Grid x:Name="Over">
 
                 <Rectangle Width="{Binding SelectedToolBoxItem.ImageWidth}" 
-                       Height="{Binding SelectedToolBoxItem.ImageHeight}" 
-                       StrokeThickness="4" Stroke="Green" />
-                <Image  Source="{Binding SelectedToolBoxItem.FullImageName}" 
-                            Width="{Binding SelectedToolBoxItem.ImageWidth}" 
-                            Height="{Binding SelectedToolBoxItem.ImageHeight}" HorizontalAlignment="Center"
-                            />
+                           Height="{Binding SelectedToolBoxItem.ImageHeight}" 
+                          StrokeThickness="4" Stroke="Green" />
+                <Image Source="{Binding SelectedToolBoxItem.FullImageName}" 
+                       Width="{Binding SelectedToolBoxItem.ImageWidth}" 
+                       Height="{Binding SelectedToolBoxItem.ImageHeight}" HorizontalAlignment="Center" />
+                <!--<TextBlock Text="{Binding Coords}" HorizontalAlignment="Center" Foreground="AliceBlue" Background="Black" Width="{Binding ElementName=Over, Path=Width}"/>-->
                 <!--, diag:PresentationTraceSources.TraceLevel=High-->
                 <!--<TextBlock Text="{Binding FullName}" HorizontalAlignment="Center"/>-->
 
@@ -85,7 +85,7 @@
                                     <ContentControl.RenderTransform>
                                         <TransformGroup>
                                             <RotateTransform Angle="{Binding Layout.AngleRotation}" />
-                                            <ScaleTransform ScaleX="1" ScaleY="1"  />
+                                            <ScaleTransform ScaleX="{Binding Layout.ScaleX}" ScaleY="{Binding Layout.ScaleY}"  />
                                         </TransformGroup>
                                     </ContentControl.RenderTransform>
                                 </ContentControl>

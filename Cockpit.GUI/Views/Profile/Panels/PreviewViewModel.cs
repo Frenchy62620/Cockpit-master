@@ -247,6 +247,15 @@ namespace Cockpit.GUI.Views.Profile.Panels
             PreviewHeight = ZoomFactor * Monitor.Height;
         }
 
+        public void PreviewViewEnter()
+        {
+            eventAggregator.Publish(new PreviewViewEvent(true));
+        }
+        public void PreviewViewLeave()
+        {
+            eventAggregator.Publish(new PreviewViewEvent(false));
+        }
+
         public void SetZoomFactor(double value)
         {
             if (MonitorViewModel == null) return;

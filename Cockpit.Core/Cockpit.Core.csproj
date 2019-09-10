@@ -76,6 +76,7 @@
     <Compile Include="Model\Events\TrayNotificationEvent.cs" />
     <Compile Include="Model\Events\VisibilityPanelEvent.cs" />
     <Compile Include="Model\Events\WatchEvent.cs" />
+    <Compile Include="Model\Events\ScalingPanelEvent.cs" />
     <Compile Include="Model\Settings.cs" />
     <Compile Include="Persistence\Paths\IPaths.cs" />
     <Compile Include="Persistence\IPersistanceManager.cs" />

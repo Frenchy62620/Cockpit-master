@@ -145,6 +145,7 @@
     <Compile Include="Events\Command\RunEvent.cs" />
     <Compile Include="Events\Command\TrayEvent.cs" />
     <Compile Include="Events\DisplayPropertiesEvent.cs" />
+    <Compile Include="Events\PreviewViewEvent.cs" />
     <Compile Include="Events\ProfileDocumentAddedEvent.cs" />
     <Compile Include="Events\ExitingEvent.cs" />
     <Compile Include="Events\PanelLoadingViewEvent.cs" />
@@ -495,28 +496,13 @@
   <PropertyGroup>
     <PostBuildEvent>echo ================= $(ConfigurationName) ===============
 
-echo copy "$(TargetDir)Cockpit.Common.Properties.ViewModels.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\Cockpit.Common.Properties.ViewModels.dll"
-echo copy "$(TargetDir)Cockpit.Common.Properties.Views.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\Cockpit.Common.Properties.Views.dll"
-echo copy "$(TargetDir)Cockpit.Core.Plugins.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\Cockpit.Core.Plugins.dll"
-echo copy "$(TargetDir)Cockpit.General.Properties.Views.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\Cockpit.General.Properties.Views.dll"
-echo copy "$(TargetDir)Cockpit.Plugin.A10C.ViewModels.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\Cockpit.Plugin.A10C.ViewModels.dll"
-echo copy "$(TargetDir)Cockpit.Plugin.A10C.Views.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\Cockpit.Plugin.A10C.Views.dll"
 echo copy "$(TargetPath)" "$(SolutionDir)..\Exec$(ConfigurationName)\Cockpit.exe"
-
-copy "$(TargetDir)Cockpit.Common.Properties.ViewModels.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\Cockpit.Common.Properties.ViewModels.dll" /Y
-copy "$(TargetDir)Cockpit.Common.Properties.Views.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\Cockpit.Common.Properties.Views.dll" /Y
-copy "$(TargetDir)Cockpit.Core.Plugins.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\Cockpit.Core.Plugins.dll" /Y
-copy "$(TargetDir)Cockpit.General.Properties.Views.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\Cockpit.General.Properties.Views.dll" /Y
-copy "$(TargetDir)Cockpit.Plugin.A10C.ViewModels.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\Cockpit.Plugin.A10C.ViewModels.dll" /Y
-copy "$(TargetDir)Cockpit.Plugin.A10C.Views.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Plugins\Cockpit.Plugin.A10C.Views.dll" /Y
 copy "$(TargetPath)" "$(SolutionDir)..\Exec$(ConfigurationName)\Cockpit.exe" /Y
-
 echo copy "$(TargetDir)Cockpit.Core.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Cockpit.Core.dll"
-echo copy "$(TargetDir)Cockpit.Core.Common.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Cockpit.Core.Common.dll"
-echo copy "$(TargetDir)Cockpit.Core.Contracts.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Cockpit.Core.Contracts.dll"
-
 copy "$(TargetDir)Cockpit.Core.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Cockpit.Core.dll" /Y
+echo copy "$(TargetDir)Cockpit.Core.Common.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Cockpit.Core.Common.dll"
 copy "$(TargetDir)Cockpit.Core.Common.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Cockpit.Core.Common.dll" /Y
+echo copy "$(TargetDir)Cockpit.Core.Contracts.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Cockpit.Core.Contracts.dll"
 copy "$(TargetDir)Cockpit.Core.Contracts.dll" "$(SolutionDir)..\Exec$(ConfigurationName)\Cockpit.Core.Contracts.dll" /Y
 
 echo ================= $(ConfigurationName) ===============</PostBuildEvent>
@@ -529,10 +515,10 @@ echo ================= $(ConfigurationName) ===============</PostBuildEvent>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
   <PropertyGroup>
-    <PreBuildEvent>echo ======DEB Compilation $(ConfigurationName) ==Cockpit.Common.Properties.Views==
-"$(DevEnvDir)devenv" "$(SolutionPath)" /ReBuild $(configuration) /project "$(SolutionDir)Cockpit.Common.Properties.Views\Cockpit.Common.Properties.Views.csproj"
-echo "$(DevEnvDir)devenv" "$(SolutionPath)" /ReBuild $(configuration) /project "$(SolutionDir)Cockpit.Common.Properties.Views\Cockpit.Common.Properties.Views.csproj"
-echo ======END Compilation $(ConfigurationName) ==Cockpit.Common.Properties.Views==</PreBuildEvent>
+    <PreBuildEvent>REM echo ======DEB Compilation $(ConfigurationName) ==Cockpit.Common.Properties.Views==
+REM "$(DevEnvDir)devenv" "$(SolutionPath)" /ReBuild $(configuration) /project "$(SolutionDir)Cockpit.Common.Properties.Views\Cockpit.Common.Properties.Views.csproj"
+REM echo "$(DevEnvDir)devenv" "$(SolutionPath)" /ReBuild $(configuration) /project "$(SolutionDir)Cockpit.Common.Properties.Views\Cockpit.Common.Properties.Views.csproj"
+REM echo ======END Compilation $(ConfigurationName) ==Cockpit.Common.Properties.Views==</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

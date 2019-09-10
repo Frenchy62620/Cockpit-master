@@ -9,7 +9,7 @@
     mc:Ignorable="d" d:DesignHeight="150" d:DesignWidth="70" ToolTip="{Binding ToolTip}"    Style="{DynamicResource ResourceKey=PanelAnimation1}"
     VerticalAlignment = "Top" HorizontalAlignment = "Left" ClipToBounds="True" Background="Transparent"
     cal:Message.Attach="[Event MouseDown] = [Action MouseLeftButtonDownOnPanelView($source, $mousepoint, $eventArgs)];
-                        [Event IsVisibleChanged] = [Action Ichanged($source, $eventArgs)]"  >
+                        [Event SizeChanged] = [Action Ichanged($source, $eventArgs)]"  >
     <!--cal:Message.Attach="[Event MouseEnter] = [Action MouseEnter($eventArgs)];
                         [Event MouseDoubleClick] = [Action MouseDoubleClickOnPanel($dataContext, $eventArgs)]"-->
     <UserControl.Resources>
@@ -172,6 +172,7 @@
                             <ContentControl.RenderTransform>
                                 <TransformGroup>
                                     <RotateTransform Angle="{Binding Layout.AngleRotation}" />
+                                    <ScaleTransform ScaleX="{Binding Layout.ScaleX}" ScaleY="{Binding Layout.ScaleY}"  />
                                 </TransformGroup>
                             </ContentControl.RenderTransform>
                         </ContentControl>

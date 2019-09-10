@@ -11,7 +11,6 @@ using Ninject;
 using Ninject.Parameters;
 using Ninject.Syntax;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,7 +21,8 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 namespace Cockpit.GUI.Plugins
 {
     [Identity(GroupName = "Panel", Name = "", Type = typeof(Panel_ViewModel))]
-    public class Panel_ViewModel : PropertyChangedBase, IPluginModel, IDropTarget, Core.Common.Events.IHandle<VisibilityPanelEvent>
+    public class Panel_ViewModel : PropertyChangedBase, IPluginModel, IDropTarget, Core.Common.Events.IHandle<VisibilityPanelEvent>,
+                                                                                   Core.Common.Events.IHandle<PreviewViewEvent>
     {
         private readonly IEventAggregator eventAggregator;
         private readonly IResolutionRoot resolutionRoot;
@@ -30,7 +30,7 @@ namespace Cockpit.GUI.Plugins
         public PanelAppearanceViewModel Appearance { get; private set; }
         public LayoutPropertyViewModel Layout { get; private set; }
 
-        public Dictionary<ContentControl, bool> DictContentcontrol = new Dictionary<ContentControl, bool>();
+        private bool IsFromPreviewView = false;
 
         public string lastNameUC = "";
         private MonitorViewModel mv { get; set; }
@@ -199,22 +199,52 @@ namespace Cockpit.GUI.Plugins
         //{
         //    //ToolTip = $"({UCLeft}, {UCTop})\n({ScaleX:0.##}, {(ScaleX * ImageSize[0]):0.##}, {(ScaleX * ImageSize[1]):0.##})";
         //}
-        public void Ichanged(object sender, DependencyPropertyChangedEventArgs e)
+        public void Ichanged(object sender, System.Windows.SizeChangedEventArgs e)
         {
-            if ((bool)e.NewValue)
-            {
+            
+            //ProcessElement((DependencyObject)view);
+            //void ProcessElement(DependencyObject element)
+            //{
+            //    for (int i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
+            //    {
 
-            }
-            else
-            {
+            //        Visual childVisual = (Visual)VisualTreeHelper.GetChild(element, i);
+            //        var t = childVisual.GetType().Name;
+            //        System.Diagnostics.Debug.WriteLine($"{i} -> {t} ");
+            //        if (t.Contains("ScrollViewer"))
+            //        {
+            //            sv = childVisual as ScrollViewer;
+            //            return;
+            //        }
 
-            }
+            //        ////System.Diagnostics.Debug.WriteLine($"{i} -> {t}");
+            //        //var childContentVisual = childVisual as ContentControl;
+            //        //if (childContentVisual != null)
+            //        //{
+            //        //    var content = childContentVisual.Content;
+            //        //}
+            //        ProcessElement(childVisual);
+            //    }
+            //}
 
         }
+        public  T FindAncestor<T>(DependencyObject dependencyObject)
+            where T : DependencyObject
+        {
+            var parent = VisualTreeHelper.GetParent(dependencyObject);
 
+            if (parent == null) return null;
+
+            var parentT = parent as T;
+            return parentT ?? FindAncestor<T>(parent);
+        }
         public void MouseLeftButtonDownOnContentControl(ContentControl cc, IPluginModel pm, MouseEventArgs e)
         {
             e.Handled = true;
+
+            if (IsFromPreviewView) return;
+
+            //if (FindAncestor<MonitorView>(cc) == null) return;
 
             var CtrlDown = (Keyboard.Modifiers & ModifierKeys.Control) != 0;
             if (!CtrlDown || mv.AdornersSelectedList.Count == 0 || !MyCockpitViewModels.Any(t => t.NameUC.Equals(mv.AdornersSelectedList.ElementAt(0))))
@@ -342,14 +372,15 @@ namespace Cockpit.GUI.Plugins
             mv.UpdateFirstAdorner();
         }
 
-
+        
 
         #region DragOver & Drop
         void IDropTarget.DragOver(IDropInfo dropInfo)
         {
-            if (dropInfo.Data is ToolBoxGroup)
+            if (dropInfo.Data is ToolBoxGroup && !IsFromPreviewView)
             {
                 var tbg = dropInfo.Data as ToolBoxGroup;
+                mv.Title = $"Dragging << X = {dropInfo.DropPosition.X:###0} / Y = {dropInfo.DropPosition.Y:###0} >>";
                 var FullImage = tbg.SelectedToolBoxItem.FullImageName;
                 tbg.AnchorMouse = new Point(0.0, 0.0);
                 dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
@@ -359,6 +390,7 @@ namespace Cockpit.GUI.Plugins
 
         void IDropTarget.Drop(IDropInfo dropInfo)
         {
+            mv.Title = "Monitor1";
             var tbg = dropInfo.Data as ToolBoxGroup;
             var selected = tbg.SelectedToolBoxItem;
             int left = (int)dropInfo.DropPosition.X;
@@ -366,26 +398,30 @@ namespace Cockpit.GUI.Plugins
             var FullImage = (dropInfo.Data as ToolBoxGroup).SelectedToolBoxItem.FullImageName;
             var groupname = (dropInfo.Data as ToolBoxGroup).GroupName;
 
-            var num = MyCockpitViewModels.Count;
-            var nameUC = tbg.SelectedToolBoxItem.ShortImageName;
+            //var num = MyCockpitViewModels.Count;
+            //var nameUC = tbg.SelectedToolBoxItem.ShortImageName;
 
             //var nbr = MyCockpitViewModels.Select(t => t.NameUC.Equals(nameUC)).Count();
             //if (nbr > 0)
             //{
             //    nameUC = $"{nameUC}_{nbr}";
             //}
+            var key = groupname + tbg.SelectedToolBoxItem.ShortImageName;
+            string model = "";
+            if (mv.Identities.ContainsKey(key))
+                model = mv.Identities[key].Type.ToString();
+            else if (mv.Identities.ContainsKey(groupname))
+                model = mv.Identities[groupname].Type.ToString();
+            else
+                throw new ArgumentException($" problem on GroupName : {groupname}, ImageName : {FullImage} / {tbg.SelectedToolBoxItem.ShortImageName}");
 
-            if (mv.SortedDico.ContainsKey(nameUC))
-            {
-                var nbr = mv.SortedDico.Count(t => t.Key.StartsWith(nameUC));
-                nameUC = $"{nameUC}_{nbr}";
-            }
+            var nameUC = mv.GiveName(tbg.SelectedToolBoxItem.ShortImageName);
 
-            Ninject.Parameters.Parameter[] param;
+            Ninject.Parameters.Parameter[] param = null;
 
-            Ninject.Parameters.Parameter[][] paramproperties = null;
-            string[] properties;
-            string model;
+            //Ninject.Parameters.Parameter[][] paramproperties = null;
+            //string[] properties;
+
             var AngleSwitch = 90;
             if (groupname.StartsWith("PushButton"))
             {
@@ -408,45 +444,45 @@ namespace Cockpit.GUI.Plugins
                                                                         }, true)
                 };
 
-                model = "Cockpit.Core.Plugins.Plugins.PushButton_ViewModel, Cockpit.Core.Plugins";
+                //model = "Cockpit.Core.Plugins.Plugins.PushButton_ViewModel, Cockpit.Core.Plugins";
                 //properties = new string[] { "Cockpit.GUI.Plugins.Properties.LayoutPropertyViewModel",
                 //                            "Cockpit.GUI.Plugins.Properties.PushButtonAppearanceViewModel",
                 //                            "Cockpit.GUI.Plugins.Properties.PushButtonBehaviorViewModel"};
 
 
-                paramproperties = new Ninject.Parameters.Parameter[][]
-                {
-                    new Ninject.Parameters.Parameter[]
-                    {
-                        // Layout
-                        new ConstructorArgument("settings", new object[]{
-                            true, this,                                                                                         //0  In Mode Editor?
-                            $"{nameUC}",                                                                                        //2  name of UC
-                            new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, 0 } //3  [Left, Top, Width, Height, Angle]
-                        }, true)
-                    },
-                        // Appearance
-                    new Ninject.Parameters.Parameter[]
-                    {
-                        new ConstructorArgument("settings", new object[]{
-                            true, mv,                                                                                         //0  In Mode Editor?
-                            $"{nameUC}",                                                                                        //2  name of UC
-                            new string[]{ FullImage, FullImage1 }, 0,                                                           //3  images, start image position
-                            2d, 0.8d, (PushButtonGlyph)0, Colors.White,                                                         //5  Glyph: Thickness, Scale, Type, Color
-                            "Hello", "1,1", "Franklin Gothic", "Normal", "Normal",                                              //9  Text, TextPushOffset, Family, Style, Weight
-                            12d, new double[] { 0d, 0d, 0d, 0d },                                                               //14 Size, [padding L,T,R,B]
-                            new int[] { 1, 1 },  Colors.White                                                                   //16 [TextAlign H,V], TextColor
-                        }, true)
-                    },
-                        // Behavior
-                    new Ninject.Parameters.Parameter[]
-                    {
-                        new ConstructorArgument("settings", new object[]{
-                            true, this,                                                                                               //0  In Mode Editor?
-                            $"{nameUC}",                                                                                        //1  name of UC
-                            1                                                                                                   //2 Button Type
-                        }, true)}
-                    };
+                //paramproperties = new Ninject.Parameters.Parameter[][]
+                //{
+                //    new Ninject.Parameters.Parameter[]
+                //    {
+                //        // Layout
+                //        new ConstructorArgument("settings", new object[]{
+                //            true, this,                                                                                         //0  In Mode Editor?
+                //            $"{nameUC}",                                                                                        //2  name of UC
+                //            new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, 0 } //3  [Left, Top, Width, Height, Angle]
+                //        }, true)
+                //    },
+                //        // Appearance
+                //    new Ninject.Parameters.Parameter[]
+                //    {
+                //        new ConstructorArgument("settings", new object[]{
+                //            true, mv,                                                                                         //0  In Mode Editor?
+                //            $"{nameUC}",                                                                                        //2  name of UC
+                //            new string[]{ FullImage, FullImage1 }, 0,                                                           //3  images, start image position
+                //            2d, 0.8d, (PushButtonGlyph)0, Colors.White,                                                         //5  Glyph: Thickness, Scale, Type, Color
+                //            "Hello", "1,1", "Franklin Gothic", "Normal", "Normal",                                              //9  Text, TextPushOffset, Family, Style, Weight
+                //            12d, new double[] { 0d, 0d, 0d, 0d },                                                               //14 Size, [padding L,T,R,B]
+                //            new int[] { 1, 1 },  Colors.White                                                                   //16 [TextAlign H,V], TextColor
+                //        }, true)
+                //    },
+                //        // Behavior
+                //    new Ninject.Parameters.Parameter[]
+                //    {
+                //        new ConstructorArgument("settings", new object[]{
+                //            true, this,                                                                                               //0  In Mode Editor?
+                //            $"{nameUC}",                                                                                        //1  name of UC
+                //            1                                                                                                   //2 Button Type
+                //        }, true)}
+                //    };
 
 
             }
@@ -465,11 +501,11 @@ namespace Cockpit.GUI.Plugins
                             2, 1d, 2, 3 }, true)
                 };
 
-                model = "Cockpit.GUI.Plugins.Panel_ViewModel";
+                //model = "Cockpit.GUI.Plugins.Panel_ViewModel";
                 //properties = new string[] { "Cockpit.GUI.Plugins.Properties.LayoutPropertyViewModel",
                 //                            "Cockpit.GUI.Plugins.Properties.PanelAppearanceViewModel"};
             }
-            else
+            else if (groupname.StartsWith("Switch"))
             {
                 var FullImage1 = FullImage.Replace("_0.png", "_1.png");
                 var FullImage2 = FullImage.Replace("_0.png", "_2.png");
@@ -486,11 +522,69 @@ namespace Cockpit.GUI.Plugins
                             2, 1d, 2, 3 }, true)
                 };
 
-                model = "Cockpit.Core.Plugins.Plugins.Switch_ViewModel, Cockpit.Core.Plugins";
+                //model = "Cockpit.Core.Plugins.Plugins.Switch_ViewModel, Cockpit.Core.Plugins";
+                //model = "Cockpit.Core.Plugins.Plugins.Switch_ViewModel";
                 //properties = new string[] { "", "", "" };
             }
+            else if (groupname.StartsWith("RotarySwitch"))
+            {
+                AngleSwitch = 0;
+                param = new Ninject.Parameters.Parameter[]
+                {
+                        new ConstructorArgument("settings", new object[]{                                                   //Switch Button
+                            true, this,                                                                                         //0 is in Mode Editor?
+                            $"{nameUC}",                                                                                        //2 name of UC
+                            new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, AngleSwitch },//3 [Left, Top, Width, Height, Angle]
 
-            var typeClass = Type.GetType(model);
+                            FullImage,                                                                                           //4 [images]
+                     
+                             2,                                                                                                 //5  nbr points
+                             "Franklin Gothic", "Normal", "Normal",                                                             //6  Family, Style, Weight
+                            12d, new double[] { 0d, 0d, 0d, 0d },                                                               //9 Size, [padding L,T,R,B]
+                            new int[] { 1, 1 },  Colors.Red, 1d,                                                                 //11 [TextAlign H,V], TextColor, %distance
+
+                            4d, Colors.Black, 0.9d, 0d,                                                                         //14 line thickness, line color, line length, Angle
+
+                            new string[] {"Hello1","hel2" },
+
+
+                            2, 1d, 2, 3 }, true)
+                };
+
+                //model = "Cockpit.Core.Plugins.Plugins.RotarySwitch_ViewModel, Cockpit.Core.Plugins";
+                //model = "Cockpit.Core.Plugins.Plugins.RotarySwitch_ViewModel";
+                //properties = new string[] { "", "", "" };
+            }
+            else if (groupname.StartsWith("A10C"))
+            {
+                AngleSwitch = 0;
+                param = new Ninject.Parameters.Parameter[]
+                {
+                        new ConstructorArgument("settings", new object[]{                                                   //Switch Button
+                            true, this,                                                                                         //0 is in Mode Editor?
+                            $"{nameUC}",                                                                                        //2 name of UC
+                            new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, AngleSwitch },//3 [Left, Top, Width, Height, Angle]
+
+                            FullImage,                                                                                           //4 [images]
+                     
+                             2,                                                                                                 //5  nbr points
+                             "Franklin Gothic", "Normal", "Normal",                                                             //6  Family, Style, Weight
+                            12d, new double[] { 0d, 0d, 0d, 0d },                                                               //9 Size, [padding L,T,R,B]
+                            new int[] { 1, 1 },  Colors.Red, 1d,                                                                 //11 [TextAlign H,V], TextColor, %distance
+
+                            4d, Colors.Black, 0.9d, 0d,                                                                         //14 line thickness, line color, line length, Angle
+
+                            new string[] {"Hello1","hel2" },
+
+
+                            2, 1d, 2, 3 }, true)
+                };
+
+                //model = "Cockpit.Plugin.A10C.ViewModels.A10Alt_ViewModel";
+                //properties = new string[] { "", "", "" };
+            }
+            var typeClass = mv.GetType(model);
+            //var typeClass = Type.GetType(model);
             //var viewmodel = Activator.CreateInstance(typeClass);
             var viewmodel = resolutionRoot.TryGet(typeClass, param);
             //var view = ViewLocator.LocateForModel(viewmodel, null, null);
@@ -503,6 +597,14 @@ namespace Cockpit.GUI.Plugins
 
         #endregion
         public void Handle(VisibilityPanelEvent message)
+        {
+            if (!NameUC.Equals(message.PanelName)) return;
+
+            IsVisible = !IsVisible;
+        }
+        public void Handle(PreviewViewEvent message) => IsFromPreviewView = message.IsEnter;
+
+        public void Handle(ScalingPanelEvent message)
         {
             if (!NameUC.Equals(message.PanelName)) return;
 

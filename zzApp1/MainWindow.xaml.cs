@@ -23,6 +23,16 @@ namespace zzApp1
         public MainWindow()
         {
             InitializeComponent();
+            var d = 1;
+            var a = 1.2d;
+            var b = 1.5d;
+            var c = 1.6d;
+
+            var e = d / a;
+            var a1 = Math.Round(a, 0, MidpointRounding.ToEven);
+            var b1 = Math.Round(b, 0, MidpointRounding.ToEven);
+            var c1 = Math.Round(c, 0, MidpointRounding.ToEven);
+
         }
     }
 }

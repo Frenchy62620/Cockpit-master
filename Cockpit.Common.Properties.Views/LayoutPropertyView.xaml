@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:pe="clr-namespace:Cockpit.Common.Properties.Views"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     xmlns:cal="http://www.caliburnproject.org"             
@@ -55,7 +56,7 @@
         <Label Grid.Column="0" Grid.Row="2" FontSize="10" HorizontalAlignment="Right" Content="Top"/>
         <xctk:IntegerUpDown Grid.Column="1" Grid.Row="2" FontSize="10" Value="{Binding Path=UCTop, Mode=TwoWay}" Margin="2" TextAlignment="Left"/>
         <DockPanel Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" >
-            <Grid DockPanel.Dock="Left" Width="25" Height="30" cal:Message.Attach="[Event MouseLeftButtonDown] = [Action ChangeLockUnlock()]"> 
+            <Grid DockPanel.Dock="Left" Width="25" Height="30" cal:Message.Attach="[Event MouseLeftButtonDown] = [Action ChangeLockUnlock()]">
                 <Image x:Name="SwitchUp" Source="{StaticResource Unlocker}" Stretch="Uniform" >
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
@@ -84,37 +85,30 @@
                     </Image.Style>
                 </Image>
             </Grid>
-            <!--<Rectangle Width="25" Height="35" DockPanel.Dock="Left">
-                
-            </Rectangle>-->
-            <!--<ToggleButton x:Name="Link" DockPanel.Dock="Left" FontSize="10" HorizontalAlignment="Left" VerticalAlignment="Center" Height="35" Width="25"  BorderBrush="Transparent" 
-                IsChecked="{Binding IsLocked}" >
-                <Image Stretch="Uniform" >
-                    <Image.Style>
-                        <Style TargetType="Image">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding ElementName=Link, Path=IsChecked}" Value="False">
-                                    <Setter Property="Source"  Value="{StaticResource Unlocker}" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding ElementName=Link,Path=IsChecked}" Value="True">
-                                    <Setter Property="Source" Value="{StaticResource Locker}" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Image.Style>
-                </Image>
-            </ToggleButton>-->
+            
             <StackPanel>
-                <Label  FontSize="10"  Content="Width"/>
-                <Label FontSize="10" Content="Height"/>
+                <Label  FontSize="10"  Content="Width/ScaleX"/>
+                <Label FontSize="10" Content="Height/ScaleY"/>
             </StackPanel >
 
-            <StackPanel >
-                <xctk:IntegerUpDown DockPanel.Dock="Right"   FontSize="10" Value="{Binding Path=Width,Mode=TwoWay}" Margin="2" TextAlignment="Left"
-                                    Minimum="0" cal:Message.Attach = "[Event LostFocus] = [Action WHHaveFocus($source)]"/>
-                <xctk:IntegerUpDown DockPanel.Dock="Right"   FontSize="10" Value="{Binding Path=Height,Mode=TwoWay}" Margin="2" TextAlignment="Left"
-                                    Minimum="0" cal:Message.Attach = "[Event LostFocus] = [Action WHHaveFocus($source)]"/>
-            </StackPanel >
+            <StackPanel>
+                <xctk:IntegerUpDown FontSize="10" Value="{Binding Path=Width,Mode=TwoWay}" Margin="2" TextAlignment="Left"
+                                    Minimum="0"
+                                    cal:Message.Attach = "[Event LostFocus] = [Action WHHaveFocus($source)];[Event ValueChanged]=[Action ValueChanged(0, $eventArgs)]" />
+                <xctk:IntegerUpDown FontSize="10" Value="{Binding Path=Height,Mode=TwoWay}" Margin="2" TextAlignment="Left"
+                                    Minimum="0" 
+                                    cal:Message.Attach = "[Event LostFocus] = [Action WHHaveFocus($source)];[Event ValueChanged]=[Action ValueChanged(2, $eventArgs)]" />
+
+            </StackPanel>
+            <StackPanel>
+                <xctk:DoubleUpDown FontSize="10" Value="{Binding Path=ScaleX,Mode=TwoWay}" Margin="2" TextAlignment="Left" Increment="0.01" FormatString="F2"
+                                   Minimum="0"
+                                   cal:Message.Attach = "[Event LostFocus] = [Action WHHaveFocus($source)];[Event ValueChanged]=[Action ValueChanged(1, $eventArgs)]" />
+                <xctk:DoubleUpDown FontSize="10" Value="{Binding Path=ScaleY,Mode=TwoWay}" Margin="2" TextAlignment="Left" Increment="0.01" FormatString="F2"
+                                   Minimum="0" 
+                                   cal:Message.Attach = "[Event LostFocus] = [Action WHHaveFocus($source)];[Event ValueChanged]=[Action ValueChanged(3, $eventArgs)]" />
+            </StackPanel>
+
 
         </DockPanel>
         <Label Grid.Column="0" Grid.Row="6" FontSize="10" HorizontalAlignment="Right" Content="Rotation">

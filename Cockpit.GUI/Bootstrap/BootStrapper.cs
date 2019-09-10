@@ -53,6 +53,8 @@ namespace Cockpit.GUI.Bootstrap
 
         public void Info(string format, params object[] args)
         {
+            if (Array.FindIndex(args, t => t.ToString().Contains("PreviewMouseMoveOnMonitorView")) >= 0)
+                return;
             Debug.WriteLine(CreateLogMessage(format, args), "INFO");
         }
 

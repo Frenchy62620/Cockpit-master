@@ -12,10 +12,11 @@ namespace Cockpit.Common.Properties.ViewModels
     public class LayoutPropertyViewModel: PropertyChangedBase, IPluginProperty, Core.Common.Events.IHandle<RenameUCEvent>
     {
         private readonly IEventAggregator eventAggregator;
-   
+    
         //public bool Linked = false;
         public double Factor;
-
+        public int WidthOriginal;
+        public int HeightOriginal;
         public LayoutPropertyViewModel(IEventAggregator eventAggregator, params object[] settings)
         {
 
@@ -34,6 +35,9 @@ namespace Cockpit.Common.Properties.ViewModels
 
             Width = width;
             Height = height;
+            WidthOriginal = (int)width;
+            HeightOriginal = (int)height;
+
 
             this.eventAggregator = eventAggregator;
 
@@ -42,8 +46,10 @@ namespace Cockpit.Common.Properties.ViewModels
             {
                 eventAggregator.Subscribe(this);
             }
-
+            Linked = true;
             Name = "Layout";
+            ScaleX = 1;
+            ScaleY = 1;
         }
 
 
@@ -97,10 +103,9 @@ namespace Cockpit.Common.Properties.ViewModels
             get => width;
             set
             {
-                if (value != Width)
+                if (value != width)
                 {
                     width = value;
-                    if (Linked) Height = Math.Round(value * Factor, 0, MidpointRounding.ToEven);
                     NotifyOfPropertyChange(() => Width);
                 }
             }
@@ -112,10 +117,9 @@ namespace Cockpit.Common.Properties.ViewModels
             get => height;
             set
             {
-                if (value != Height)
+                if (value != height)
                 {
                     height = value;
-                    if (Linked) Width = Math.Round(value / Factor, 0, MidpointRounding.ToEven);
                     NotifyOfPropertyChange(() => Height);
                 }
             }
@@ -127,6 +131,7 @@ namespace Cockpit.Common.Properties.ViewModels
             get => scalex;
             set
             {
+                if (Math.Round(scalex, 2, MidpointRounding.ToEven)  == Math.Round(value, 2, MidpointRounding.ToEven)) return;
                 scalex = value;
                 NotifyOfPropertyChange(() => ScaleX);
             }
@@ -138,6 +143,7 @@ namespace Cockpit.Common.Properties.ViewModels
             get => scaley;
             set
             {
+                if (Math.Round(scaley, 2, MidpointRounding.ToEven) == Math.Round(value, 2, MidpointRounding.ToEven)) return;
                 scaley = value;
                 NotifyOfPropertyChange(() => ScaleY);
             }
@@ -179,6 +185,7 @@ namespace Cockpit.Common.Properties.ViewModels
 
         public void ChangeLockUnlock()
         {
+            //l
             Linked = !Linked;
             if (Linked) Factor = Height / Width;
         }
@@ -195,12 +202,46 @@ namespace Cockpit.Common.Properties.ViewModels
         }
 
 
-        //public bool AskModifyFromControl = false;
-        //public void WHHaveFocus(object sender)
-        //{
-        //    AskModifyFromControl = true;
-        //}
+        public bool AskModifyFromControl = false;
+        public void WHHaveFocus(object sender)
+        {
+            AskModifyFromControl = true;
+        }
+        public void ValueChanged(int id, System.Windows.RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (e.NewValue == null) return;
+            switch (id)
+            {
+                case 0://Width
+                case 1://ScaleX
+                    if (e.NewValue is int)
+                        ScaleX = (double)(int)e.NewValue / WidthOriginal;
+                    else
+                        Width = Math.Round((double)e.NewValue * WidthOriginal, 0, MidpointRounding.ToEven);
 
+                    if (linked)
+                    {
+                        Height = Math.Round(Width * Factor, 0, MidpointRounding.ToEven);
+                        ScaleY = Height / HeightOriginal;
+                    }
+                    break;
+
+                case 2://Height
+                case 3://ScaleY
+                    if (e.NewValue is int)
+                        ScaleY = (double)(int)e.NewValue / HeightOriginal;
+                    else
+                        Height = Math.Round((double)e.NewValue * HeightOriginal, 0, MidpointRounding.ToEven);
+
+                    if (linked)
+                    {
+                        Width = Math.Round(Height / Factor, 0, MidpointRounding.ToEven);
+                        ScaleX = Width / WidthOriginal;
+                    }
+                    break;
+            }
+
+        }
         public void Handle(RenameUCEvent message)
         {
             if (string.IsNullOrEmpty(NewText) || !message.Reponse) return;

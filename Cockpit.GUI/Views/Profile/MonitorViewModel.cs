@@ -54,7 +54,7 @@ namespace Cockpit.GUI.Views.Profile
     public class MonitorViewModel : PanelViewModel, IDropTarget, Core.Common.Events.IHandle<RenameUCEvent>
     {
         private Dictionary<Assembly, List<Type>> pluginTypes;
-        private Dictionary<string, Identity> Identities;
+        public Dictionary<string, Identity> Identities;
 
         public double ZoomFactorFromMonitorViewModel;
         public Dictionary<ContentControl, bool> DictContentcontrol = new Dictionary<ContentControl, bool>();
@@ -126,15 +126,17 @@ namespace Cockpit.GUI.Views.Profile
             if (dropInfo.Data is ToolBoxGroup)
             {
                 var tbg = dropInfo.Data as ToolBoxGroup;
+                Title = $"Dragging << X = {dropInfo.DropPosition.X:###0} / Y = {dropInfo.DropPosition.Y:###0} >>";
                 var FullImage = tbg.SelectedToolBoxItem.FullImageName;
                 tbg.AnchorMouse = new Point(0.0, 0.0);
                 dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
-                dropInfo.Effects = DragDropEffects.Move;
+                dropInfo.Effects = DragDropEffects.Copy;
             }
         }
 
         void IDropTarget.Drop(IDropInfo dropInfo)
         {
+            Title = "Monitor1";
             var tbg = dropInfo.Data as ToolBoxGroup;
             var selected = tbg.SelectedToolBoxItem;
             int left = (int)dropInfo.DropPosition.X;
@@ -156,7 +158,7 @@ namespace Cockpit.GUI.Views.Profile
  
             Ninject.Parameters.Parameter[] param = null;
 
-            Ninject.Parameters.Parameter[][] paramproperties = null;
+            //Ninject.Parameters.Parameter[][] paramproperties = null;
             //string[] properties;
             //string model="";
             var AngleSwitch = 90;
@@ -240,7 +242,7 @@ namespace Cockpit.GUI.Views.Profile
                             2, 1d, 2, 3 }, true)
                 };
 
-                model = "Cockpit.GUI.Plugins.Panel_ViewModel";
+                //model = "Cockpit.GUI.Plugins.Panel_ViewModel";
                 //properties = new string[] { "Cockpit.Core.Plugins.Plugins.Properties.LayoutPropertyViewModel",
                 //                            "Cockpit.GUI.Plugins.Properties.PanelAppearanceViewModel"};
             }
@@ -261,8 +263,8 @@ namespace Cockpit.GUI.Views.Profile
                             2, 1d, 2, 3 }, true)
                 };
 
-                model = "Cockpit.Core.Plugins.Plugins.Switch_ViewModel, Cockpit.Core.Plugins";
-                model = "Cockpit.Core.Plugins.Plugins.Switch_ViewModel";
+                //model = "Cockpit.Core.Plugins.Plugins.Switch_ViewModel, Cockpit.Core.Plugins";
+                //model = "Cockpit.Core.Plugins.Plugins.Switch_ViewModel";
                 //properties = new string[] { "", "", "" };
             }
             else if (groupname.StartsWith("RotarySwitch"))
@@ -290,8 +292,8 @@ namespace Cockpit.GUI.Views.Profile
                             2, 1d, 2, 3 }, true)
                 };
 
-                model = "Cockpit.Core.Plugins.Plugins.RotarySwitch_ViewModel, Cockpit.Core.Plugins";
-                model = "Cockpit.Core.Plugins.Plugins.RotarySwitch_ViewModel";
+                //model = "Cockpit.Core.Plugins.Plugins.RotarySwitch_ViewModel, Cockpit.Core.Plugins";
+                //model = "Cockpit.Core.Plugins.Plugins.RotarySwitch_ViewModel";
                 //properties = new string[] { "", "", "" };
             }
             else if (groupname.StartsWith("A10C"))
@@ -399,7 +401,6 @@ namespace Cockpit.GUI.Views.Profile
             this.MonitorHeight = panel.Layout.Height;
             this.MonitorWidth = panel.Layout.Width;
             this.LayoutMonitor.BackgroundImage = panel.Appearance.BackgroundImage;
-            //this.LayoutMonitor.SelectedAlignmentType = ImageAlignment.Centered;
 
             this.Title = panel.Layout.NameUC;
             return this;
@@ -782,7 +783,7 @@ namespace Cockpit.GUI.Views.Profile
             }
         }
 
-        private string GiveName(string nameUC)
+        public string GiveName(string nameUC)
         {
             var list = GetAllNameUC(MyCockpitViewModels);
             var newname = nameUC;

@@ -53,6 +53,17 @@ namespace Cockpit.GUI.Views.Profile
             }
         }
 
+        private string coords;
+        public string Coords
+        {
+            get => coords;
+            set
+            {
+                coords = value;
+                NotifyOfPropertyChange(() => Coords);
+            }
+        }
+
 
         private Point translation;
         public Point Translation
