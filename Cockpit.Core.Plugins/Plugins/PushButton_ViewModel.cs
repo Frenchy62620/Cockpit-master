@@ -20,7 +20,7 @@ namespace Cockpit.Core.Plugins.Plugins
 
         public PushButton_ViewModel(IEventAggregator eventAggregator, params object[] settings)
         {
-            Layout = new LayoutPropertyViewModel(eventAggregator, settings);
+            Layout = new LayoutPropertyViewModel(eventAggregator: eventAggregator, settings: settings);
             Appearance = new PushButtonAppearanceViewModel(settings);
             Behavior = new PushButtonBehaviorViewModel(settings);
 
@@ -52,7 +52,16 @@ namespace Cockpit.Core.Plugins.Plugins
                 NotifyOfPropertyChange(() => ZoomFactorFromPluginModel);
             }
         }
-
+        public double ParentScaleX
+        {
+            get => Layout.ScaleX;
+            set => Layout.ScaleX = value;
+        }
+        public double ParentScaleY
+        {
+            get => Layout.ScaleY;
+            set => Layout.ScaleY = value;
+        }
         public double ScaleX
         {
             get => Layout.ScaleX;
@@ -66,23 +75,23 @@ namespace Cockpit.Core.Plugins.Plugins
 
         public double Left
         {
-            get => Layout.UCLeft;
-            set => Layout.UCLeft = value;
+            get => Layout.RealUCLeft;
+            set => Layout.RealUCLeft = value;
         }
         public double Top
         {
-            get => Layout.UCTop;
-            set => Layout.UCTop = value;
+            get => Layout.RealUCTop;
+            set => Layout.RealUCTop = value;
         }
         public double Width
         {
-            get => Layout.Width;
-            set => Layout.Width = value;
+            get => Layout.RealWidth;
+            set => Layout.RealWidth = value;
         }
         public double Height
         {
-            get => Layout.Height;
-            set => Layout.Height = value;
+            get => Layout.RealHeight;
+            set => Layout.RealHeight = value;
         }
 
         public IPluginProperty[] GetProperties()

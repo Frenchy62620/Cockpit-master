@@ -597,7 +597,11 @@ namespace Cockpit.GUI.Views.Profile
                     {
                         foreach (var k in list)
                         {
-                            k.Left = k.Left - step;
+                            var parentscale = GetProperty("Layout.ParentScaleX", k);
+                            var value = GetProperty("Layout.RealUCLeft", k);
+                            SetProperty("Layout.RealUCLeft", k, value - step);
+                            SetProperty("Layout.UCLeft", k, (value - step) / parentscale);
+                            //k.Left = k.Left - step;
                         }
                     }
                     break;
@@ -605,7 +609,11 @@ namespace Cockpit.GUI.Views.Profile
                     {
                         foreach (var k in list)
                         {
-                            k.Left = k.Left + step;
+                            var parentscale = GetProperty("Layout.ParentScaleX", k);
+                            var value = GetProperty("Layout.RealUCLeft", k);
+                            SetProperty("Layout.RealUCLeft", k, value + step);
+                            SetProperty("Layout.UCLeft", k, (value + step) / parentscale);
+                            //k.Left = k.Left + step;
                         }
                     }
 
@@ -614,7 +622,11 @@ namespace Cockpit.GUI.Views.Profile
                     {
                         foreach (var k in list)
                         {
-                            k.Top = k.Top - step;
+                            var parentscale = GetProperty("Layout.ParentScaleY", k);
+                            var value = GetProperty("Layout.RealUCTop", k);
+                            SetProperty("Layout.RealUCTop", k, value - step);
+                            SetProperty("Layout.UCTop", k, (value - step) / parentscale);
+                            //k.Top = k.Top - step;
                         }
                     }
                     break;
@@ -622,7 +634,11 @@ namespace Cockpit.GUI.Views.Profile
                     {
                         foreach (var k in list)
                         {
-                            k.Top = k.Top + step;
+                            var parentscale = GetProperty("Layout.ParentScaleY", k);
+                            var value = GetProperty("Layout.RealUCTop", k);
+                            SetProperty("Layout.RealUCTop", k, value + step);
+                            SetProperty("Layout.UCTop", k, (value + step) / parentscale);
+                            //k.Top = k.Top + step;
                         }
                     }
                     break;
@@ -633,15 +649,28 @@ namespace Cockpit.GUI.Views.Profile
         {
             var ctrl = Keyboard.IsKeyDown(key: Key.LeftCtrl) || Keyboard.IsKeyDown(key: Key.RightCtrl);
             var shift = Keyboard.IsKeyDown(key: Key.LeftShift) || Keyboard.IsKeyDown(key: Key.RightShift);
-                                    
+            var h = Keyboard.IsKeyDown(key: Key.H);
             if (!ctrl && !shift) return;
 
             e.Handled = true;
             var step = (shift ? 5 : 1) * (e.Delta > 0 ? 1 : -1);
             var list = SortedDico.Where(item => AdornersSelectedList.Contains(item.Key)).Select(item => item.Value.pm);
-            foreach (var item in list)
+            foreach (var k in list)
             {
-                item.Width += step;
+                var linked = GetProperty("Layout.Linked", k);
+                var parentscale = GetProperty("Layout.ParentScaleY", k);
+                var width = GetProperty("Layout.RealWidth", k);
+                var height = GetProperty("Layout.RealHeight", k);
+                if (linked == 1d || !h)
+                {
+                    SetProperty("Layout.RealWidth", k, width + step);
+                }
+                else
+                {
+                    SetProperty("Layout.RealHeigh", k, height + step);
+                }
+
+                //k.Width += step;
             }
         }
 
@@ -908,6 +937,35 @@ namespace Cockpit.GUI.Views.Profile
                     );
                 }
             }
+        }
+
+        public void SetProperty(string compoundProperty, object target, object value)
+        {
+            string[] bits = compoundProperty.Split('.');
+            for (int i = 0; i < bits.Length - 1; i++)
+            {
+                PropertyInfo propertyToGet = target.GetType().GetProperty(bits[i]);
+                target = propertyToGet.GetValue(target, null);
+            }
+            PropertyInfo propertyToSet = target.GetType().GetProperty(bits.Last());
+            propertyToSet.SetValue(target, value, null);
+        }
+        public double GetProperty(string compoundProperty, object target)
+        {
+            string[] bits = compoundProperty.Split('.');
+            for (int i = 0; i < bits.Length - 1; i++)
+            {
+                PropertyInfo propToGet = target.GetType().GetProperty(bits[i]);
+                target = propToGet.GetValue(target, null);
+            }
+            PropertyInfo propertyToGet = target.GetType().GetProperty(bits.Last());
+
+            IConvertible convert = propertyToGet.GetValue(target) as IConvertible;
+
+            if (convert != null)
+                return convert.ToDouble(null);
+
+            return 0d;
         }
 
         public void Handle(RenameUCEvent message)

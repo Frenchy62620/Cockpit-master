@@ -233,4 +233,22 @@ namespace Cockpit.GUI.Common.Converters
             throw new NotImplementedException();
         }
     }
+
+    public class DraggingOver : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            double value = 0, scale = 0;
+            //double.TryParse(values[0].ToString(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out value);
+            //double.TryParse(values[1].ToString(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out scale);
+            double.TryParse(values[0].ToString(), out value);
+            double.TryParse(values[1].ToString(), out scale);
+            return value * scale;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

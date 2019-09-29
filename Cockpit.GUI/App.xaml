@@ -17,6 +17,7 @@
                     <converters:MyConverterMargin x:Key="MyConverterMargin" />
                     <converters:MyconverterColorToSolidColorBrush x:Key="MyconverterColorToSolidColorBrush" />
                     <converters:MyMultiConverterMargin x:Key="MyMultiConverterMargin" />
+                    <converters:DraggingOver x:Key="DraggingOver" />
                     <converters:DrawGlyphes x:Key="DrawGlyphes"/>
                     <converters:MultiplyConverter x:Key="MultiplyConverter" />
                     <converters:FormatNumber x:Key="MyFormatNumber" />

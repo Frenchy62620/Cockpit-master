@@ -23,7 +23,7 @@ namespace Cockpit.Core.Plugins.Plugins
         {
             //RotarySwitchPositions = new ObservableCollection<RotarySwitchPosition>();
 
-            Layout = new LayoutPropertyViewModel(eventAggregator, settings);
+            Layout = new LayoutPropertyViewModel(eventAggregator: eventAggregator, settings: settings);
             Appearance = new RotaryEncoderAppearanceViewModel(eventAggregator, this, settings);
             //Behavior = new RotarySwitchBehaviorViewModel(eventAggregator, this, settings);
 

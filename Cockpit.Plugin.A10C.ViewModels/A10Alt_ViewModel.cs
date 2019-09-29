@@ -13,7 +13,7 @@ namespace Cockpit.Plugin.A10C.ViewModels
 
         public A10Alt_ViewModel(IEventAggregator eventAggregator, params object[] settings)
         {
-            Layout = new LayoutPropertyViewModel(eventAggregator, settings);
+            Layout = new LayoutPropertyViewModel(eventAggregator: eventAggregator, settings: settings);
             Appearance = new A10AltAppearanceViewModel(settings);
             NameUC = (string)settings[2];
 

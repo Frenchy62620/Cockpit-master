@@ -21,7 +21,7 @@ namespace Cockpit.Core.Plugins.Plugins
 
         public Switch_ViewModel(IEventAggregator eventAggregator, params object[] settings)
         {
-            Layout = new LayoutPropertyViewModel(eventAggregator, settings);
+            Layout = new LayoutPropertyViewModel(eventAggregator: eventAggregator, settings: settings);
             Behavior = new SwitchBehaviorViewModel(eventAggregator, settings);
             Appearance = new SwitchAppearanceViewModel(eventAggregator, Behavior, settings);
 

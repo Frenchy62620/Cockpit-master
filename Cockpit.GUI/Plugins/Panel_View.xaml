@@ -9,7 +9,7 @@
     mc:Ignorable="d" d:DesignHeight="150" d:DesignWidth="70" ToolTip="{Binding ToolTip}"    Style="{DynamicResource ResourceKey=PanelAnimation1}"
     VerticalAlignment = "Top" HorizontalAlignment = "Left" ClipToBounds="True" Background="Transparent"
     cal:Message.Attach="[Event MouseDown] = [Action MouseLeftButtonDownOnPanelView($source, $mousepoint, $eventArgs)];
-                        [Event SizeChanged] = [Action Ichanged($source, $eventArgs)]"  >
+                        [Event SizeChanged] = [Action SizeChanged($source, $eventArgs)]"  >
     <!--cal:Message.Attach="[Event MouseEnter] = [Action MouseEnter($eventArgs)];
                         [Event MouseDoubleClick] = [Action MouseDoubleClickOnPanel($dataContext, $eventArgs)]"-->
     <UserControl.Resources>
@@ -121,13 +121,41 @@
         <DataTemplate x:Key="BoxDragAdorner">
             <Grid x:Name="Over">
 
-                <Rectangle Width="{Binding SelectedToolBoxItem.ImageWidth}" 
+                <!--<Rectangle Width="{Binding SelectedToolBoxItem.ImageWidth}" 
                        Height="{Binding SelectedToolBoxItem.ImageHeight}" 
-                       StrokeThickness="4" Stroke="Green" />
-                <Image  Source="{Binding SelectedToolBoxItem.FullImageName}" 
-                            Width="{Binding SelectedToolBoxItem.ImageWidth}" 
-                            Height="{Binding SelectedToolBoxItem.ImageHeight}" HorizontalAlignment="Center"
-                            />
+                       StrokeThickness="4" Stroke="Green" />-->
+                <Rectangle x:Name="Select" StrokeThickness="4" Stroke="Green" >
+                    <Rectangle.Width>
+                        <MultiBinding Converter="{StaticResource DraggingOver}">
+                            <Binding Path="SelectedToolBoxItem.ImageWidth"/>
+                            <Binding Path="SelectedToolBoxItem.Layout.RealScaleX"/>
+                        </MultiBinding>
+                    </Rectangle.Width>
+                    <Rectangle.Height>
+                        <MultiBinding Converter="{StaticResource DraggingOver}">
+                            <Binding Path="SelectedToolBoxItem.ImageHeight"/>
+                            <Binding Path="SelectedToolBoxItem.Layout.RealScaleY"/>
+                        </MultiBinding>
+                    </Rectangle.Height>
+                </Rectangle>
+                <Image  Source="{Binding SelectedToolBoxItem.FullImageName}" HorizontalAlignment="Center" 
+                        Width="{Binding ElementName=Select, Path=Width}" Height="{Binding ElementName=Select, Path=Height}" />
+        
+                <!--<Image  Source="{Binding SelectedToolBoxItem.FullImageName}" HorizontalAlignment="Center" >
+                    <Image.Width>
+                        <MultiBinding Converter="{StaticResource DraggingOver}">
+                            <Binding Path="SelectedToolBoxItem.ImageWidth"/>
+                            <Binding Path="SelectedToolBoxItem.PanelScaleX"/>
+                        </MultiBinding>
+                    </Image.Width>
+                    <Image.Height>
+                        <MultiBinding Converter="{StaticResource DraggingOver}">
+                            <Binding Path="SelectedToolBoxItem.ImageHeight"/>
+                            <Binding Path="SelectedToolBoxItem.PanelScaleY"/>
+                        </MultiBinding>
+                    </Image.Height>
+                </Image>-->
+
                 <!--, diag:PresentationTraceSources.TraceLevel=High-->
                 <!--<TextBlock Text="{Binding FullName}" HorizontalAlignment="Center"/>-->
 

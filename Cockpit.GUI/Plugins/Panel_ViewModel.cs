@@ -12,6 +12,7 @@ using Ninject.Parameters;
 using Ninject.Syntax;
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -22,7 +23,8 @@ namespace Cockpit.GUI.Plugins
 {
     [Identity(GroupName = "Panel", Name = "", Type = typeof(Panel_ViewModel))]
     public class Panel_ViewModel : PropertyChangedBase, IPluginModel, IDropTarget, Core.Common.Events.IHandle<VisibilityPanelEvent>,
-                                                                                   Core.Common.Events.IHandle<PreviewViewEvent>
+                                                                                   Core.Common.Events.IHandle<PreviewViewEvent>,
+                                                                                   Core.Common.Events.IHandle<ScalingPanelEvent>
     {
         private readonly IEventAggregator eventAggregator;
         private readonly IResolutionRoot resolutionRoot;
@@ -42,7 +44,7 @@ namespace Cockpit.GUI.Plugins
             this.eventAggregator.Subscribe(this);
 
             mv = (MonitorViewModel)settings[1];
-            Layout = new LayoutPropertyViewModel(eventAggregator, settings);
+            Layout = new LayoutPropertyViewModel(eventAggregator: eventAggregator, settings: settings, IsPanel: true);
             Appearance = new PanelAppearanceViewModel(eventAggregator, this, settings);
 
             MyCockpitViewModels = new BindableCollection<IPluginModel>();
@@ -137,13 +139,13 @@ namespace Cockpit.GUI.Plugins
 
         public double Left
         {
-            get => Layout.UCLeft;
-            set => Layout.UCLeft = value;
+            get => Layout.RealUCLeft;
+            set => Layout.RealUCLeft = value;
         }
         public double Top
         {
-            get => Layout.UCTop;
-            set => Layout.UCTop = value;
+            get => Layout.RealUCTop;
+            set => Layout.RealUCTop = value;
         }
         public double Width
         {
@@ -162,6 +164,22 @@ namespace Cockpit.GUI.Plugins
         }
         #endregion
 
+        public void test()
+        {
+            Assembly myAssembly = Assembly.GetExecutingAssembly();
+
+            PropertyInfo[] propertyInfos;
+            Type[] types = myAssembly.GetTypes().Where(t => t.ToString().EndsWith("_ViewModel")).ToArray();
+
+            //propertyInfos = typeof(MyClass).GetProperties(BindingFlags.Public |
+            //                                              BindingFlags.Static);
+
+            //PropertyInfo prop = obj.GetType().GetProperty("Name", BindingFlags.Public | BindingFlags.Instance);
+            //if (null != prop && prop.CanWrite)
+            //{
+            //    prop.SetValue(obj, "Value", null);
+            //}
+        }
 
         //public void KeyTest(object sender, KeyEventArgs e)
         //{
@@ -199,34 +217,9 @@ namespace Cockpit.GUI.Plugins
         //{
         //    //ToolTip = $"({UCLeft}, {UCTop})\n({ScaleX:0.##}, {(ScaleX * ImageSize[0]):0.##}, {(ScaleX * ImageSize[1]):0.##})";
         //}
-        public void Ichanged(object sender, System.Windows.SizeChangedEventArgs e)
+        public void SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
         {
-            
-            //ProcessElement((DependencyObject)view);
-            //void ProcessElement(DependencyObject element)
-            //{
-            //    for (int i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
-            //    {
-
-            //        Visual childVisual = (Visual)VisualTreeHelper.GetChild(element, i);
-            //        var t = childVisual.GetType().Name;
-            //        System.Diagnostics.Debug.WriteLine($"{i} -> {t} ");
-            //        if (t.Contains("ScrollViewer"))
-            //        {
-            //            sv = childVisual as ScrollViewer;
-            //            return;
-            //        }
-
-            //        ////System.Diagnostics.Debug.WriteLine($"{i} -> {t}");
-            //        //var childContentVisual = childVisual as ContentControl;
-            //        //if (childContentVisual != null)
-            //        //{
-            //        //    var content = childContentVisual.Content;
-            //        //}
-            //        ProcessElement(childVisual);
-            //    }
-            //}
-
+           
         }
         public  T FindAncestor<T>(DependencyObject dependencyObject)
             where T : DependencyObject
@@ -274,6 +267,7 @@ namespace Cockpit.GUI.Plugins
 
         public void MouseLeftButtonDownOnPanelView(IInputElement elem, Point pos, MouseEventArgs e)
         {
+            test();
             //eventAggregator.Publish(new RemoveAdornerEvent());
             //RemoveAdorners();
             //eventAggregator.Publish(new DisplayPropertiesEvent(new[] { (PluginProperties)Layout, Appearance }));
@@ -351,7 +345,7 @@ namespace Cockpit.GUI.Plugins
             cc.Focus();
 
         }
-
+        #region Adorner
         private void RemoveAdorner(ContentControl cc, IPluginModel pm)
         {
             mv.RemoveAdorner(cc, pm);
@@ -371,8 +365,8 @@ namespace Cockpit.GUI.Plugins
         {
             mv.UpdateFirstAdorner();
         }
+        #endregion Adorner
 
-        
 
         #region DragOver & Drop
         void IDropTarget.DragOver(IDropInfo dropInfo)
@@ -380,9 +374,11 @@ namespace Cockpit.GUI.Plugins
             if (dropInfo.Data is ToolBoxGroup && !IsFromPreviewView)
             {
                 var tbg = dropInfo.Data as ToolBoxGroup;
-                mv.Title = $"Dragging << X = {dropInfo.DropPosition.X:###0} / Y = {dropInfo.DropPosition.Y:###0} >>";
+                mv.Title = $"Dragging inside {NameUC} << X = {dropInfo.DropPosition.X * ScaleX:###0} / Y = {dropInfo.DropPosition.Y * ScaleY:###0} >>";
                 var FullImage = tbg.SelectedToolBoxItem.FullImageName;
                 tbg.AnchorMouse = new Point(0.0, 0.0);
+                tbg.SelectedToolBoxItem.Layout = Layout;
+
                 dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
                 dropInfo.Effects = DragDropEffects.Move;
             }
@@ -588,13 +584,55 @@ namespace Cockpit.GUI.Plugins
             //var viewmodel = Activator.CreateInstance(typeClass);
             var viewmodel = resolutionRoot.TryGet(typeClass, param);
             //var view = ViewLocator.LocateForModel(viewmodel, null, null);
-            
-            //ViewModelBinder.Bind(viewmodel, view, null);
-            //var v = viewmodel as PluginModel;
-            //v.ZoomFactorFromPluginModel = ZoomFactorFromMonitorViewModel;
+
+            Type tModelType = viewmodel.GetType();
+
+            //We will be defining a PropertyInfo Object which contains details about the class property 
+            PropertyInfo[] arrayPropertyInfos = tModelType.GetProperties();
+
+            //Now we will loop in all properties one by one to get value
+            //foreach (PropertyInfo property in arrayPropertyInfos)
+            //{
+            //    Console.WriteLine("Name of Property is\t:\t" + property.Name);
+            //    if (property.Name.Equals("ToolTip"))
+            //    {
+            //        var s = 1;
+            //    }
+            //    Console.WriteLine("Value of Property is\t:\t" + (property.GetValue(viewmodel) == null ? "null" : property.GetValue(viewmodel).ToString()));
+            //    Console.WriteLine(Environment.NewLine);
+            //}
+
+
             MyCockpitViewModels.Add((IPluginModel)viewmodel);
         }
+        //public void SetProperty(string compoundProperty, object target, object value)
+        //{
+        //    string[] bits = compoundProperty.Split('.');
+        //    for (int i = 0; i < bits.Length - 1; i++)
+        //    {
+        //        PropertyInfo propertyToGet = target.GetType().GetProperty(bits[i]);
+        //        target = propertyToGet.GetValue(target, null);
+        //    }
+        //    PropertyInfo propertyToSet = target.GetType().GetProperty(bits.Last());
+        //    propertyToSet.SetValue(target, value, null);
+        //}
+        //public double GetProperty(string compoundProperty, object target)
+        //{
+        //    string[] bits = compoundProperty.Split('.');
+        //    for (int i = 0; i < bits.Length - 1; i++)
+        //    {
+        //        PropertyInfo propToGet = target.GetType().GetProperty(bits[i]);
+        //        target = propToGet.GetValue(target, null);
+        //    }
+        //    PropertyInfo propertyToGet = target.GetType().GetProperty(bits.Last());
 
+        //    IConvertible convert = propertyToGet.GetValue(target) as IConvertible;
+
+        //    if (convert != null)
+        //        return convert.ToDouble(null);
+
+        //    return 0d;
+        //}
         #endregion
         public void Handle(VisibilityPanelEvent message)
         {
@@ -606,9 +644,23 @@ namespace Cockpit.GUI.Plugins
 
         public void Handle(ScalingPanelEvent message)
         {
-            if (!NameUC.Equals(message.PanelName)) return;
+            if (string.IsNullOrEmpty(NameUC) ||!NameUC.Equals(message.PanelName)) return;
+            if (message.ScaleX >= 0)
+            {
+                foreach (var v in MyCockpitViewModels)
+                {
+                    mv.SetProperty("Layout.ParentScaleX", v, message.ScaleX);
+                }
+            }
+            if (message.ScaleY >= 0)
+            {
+                foreach (var v in MyCockpitViewModels)
+                {
+                    mv.SetProperty("Layout.ParentScaleY", v, message.ScaleY);
+                }
+            }
 
-            IsVisible = !IsVisible;
+
         }
     }
 }

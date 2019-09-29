@@ -69,7 +69,7 @@ namespace Cockpit.GUI.Bootstrap
         private IKernel kernel;
         static Bootstrapper()
         {
-            LogManager.GetLog = type => new Log(type);
+            //LogManager.GetLog = type => new Log(type);
         }
 
         public Bootstrapper()

@@ -47,14 +47,14 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Label Grid.Column="0" Grid.Row="0" FontSize="10" HorizontalAlignment="Right" Content="Name"/>
+        <Label Grid.Column="0" Grid.Row="0" FontSize="10" HorizontalAlignment="Right" Content="Name" />
         <TextBox Grid.Column="1" Grid.Row="0" FontSize="10" Margin="2" Text="{Binding NameUC, ValidatesOnDataErrors=True}" 
                  cal:Message.Attach="[Event GotFocus]=[Action GotFocus($source, $eventArgs)];[Event LostFocus]=[Action LostFocus($source, $eventArgs)]" />
         <Label Grid.Column="0" Grid.Row="1" FontSize="10" HorizontalAlignment="Right" Content="Left"/>
-        <xctk:IntegerUpDown Grid.Column="1" Grid.Row="1" FontSize="10" Value="{Binding Path=UCLeft, Mode=TwoWay}" Margin="2" TextAlignment="Left"/>
+        <xctk:IntegerUpDown Grid.Column="1" Grid.Row="1" FontSize="10" Value="{Binding Path=RealUCLeft, Mode=TwoWay}" Margin="2" TextAlignment="Left"/>
         <!--Text="{Binding Path=UCLeft, Mode=TwoWay}"-->
         <Label Grid.Column="0" Grid.Row="2" FontSize="10" HorizontalAlignment="Right" Content="Top"/>
-        <xctk:IntegerUpDown Grid.Column="1" Grid.Row="2" FontSize="10" Value="{Binding Path=UCTop, Mode=TwoWay}" Margin="2" TextAlignment="Left"/>
+        <xctk:IntegerUpDown Grid.Column="1" Grid.Row="2" FontSize="10" Value="{Binding Path=RealUCTop, Mode=TwoWay}" Margin="2" TextAlignment="Left"/>
         <DockPanel Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" >
             <Grid DockPanel.Dock="Left" Width="25" Height="30" cal:Message.Attach="[Event MouseLeftButtonDown] = [Action ChangeImage('True')]">
                 <Image x:Name="ImageUnlocker" Source="{StaticResource Unlocker}" Stretch="Uniform" >
@@ -119,18 +119,18 @@
             </StackPanel >
             <Grid>
                 <StackPanel x:Name="Px">
-                    <xctk:IntegerUpDown x:Name="WidthPx" Value="{Binding Path=Width,Mode=TwoWay}" Margin="2" TextAlignment="Left"
+                    <xctk:IntegerUpDown x:Name="WidthPx" Value="{Binding Path=RealWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="2" TextAlignment="Left"
                                     Minimum="0" FontSize="10"
                                     cal:Message.Attach = "[Event LostFocus] = [Action WHHaveFocus($source)];[Event ValueChanged]=[Action ValueChanged(0, $eventArgs)]" />
-                    <xctk:IntegerUpDown x:Name="HeightPx" Value="{Binding Path=Height,Mode=TwoWay}" Margin="2" TextAlignment="Left"
+                    <xctk:IntegerUpDown x:Name="HeightPx" Value="{Binding Path=RealHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="2" TextAlignment="Left"
                                     Minimum="0" FontSize="10"
                                     cal:Message.Attach = "[Event LostFocus] = [Action WHHaveFocus($source)];[Event ValueChanged]=[Action ValueChanged(2, $eventArgs)]" />
                 </StackPanel>
             <StackPanel x:Name="Pct">
-                    <xctk:DoubleUpDown x:Name="WidthPct" Value="{Binding Path=ScaleX,Mode=TwoWay}" Margin="2" TextAlignment="Left" Increment="0.01" FormatString="F2"
+                    <xctk:DoubleUpDown x:Name="WidthPct" Value="{Binding Path=RealScaleX, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="2" TextAlignment="Left" Increment="0.01" FormatString="P0"
                                    Minimum="0" FontSize="10" Visibility="{Binding ElementName=Pourcent, Path=Visibility}"
                                    cal:Message.Attach = "[Event LostFocus] = [Action WHHaveFocus($source)];[Event ValueChanged]=[Action ValueChanged(1, $eventArgs)]" />
-                    <xctk:DoubleUpDown x:Name="HeightPct" Value="{Binding Path=ScaleY,Mode=TwoWay}" Margin="2" TextAlignment="Left" Increment="0.01" FormatString="F2"
+                    <xctk:DoubleUpDown x:Name="HeightPct" Value="{Binding Path=RealScaleY, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="2" TextAlignment="Left" Increment="0.01" FormatString="P0"
                                    Minimum="0" FontSize="10" Visibility="{Binding ElementName=Pourcent, Path=Visibility}"
                                    cal:Message.Attach = "[Event LostFocus] = [Action WHHaveFocus($source)];[Event ValueChanged]=[Action ValueChanged(3, $eventArgs)]" />
             </StackPanel>

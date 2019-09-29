@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using Cockpit.Common.Properties.ViewModels;
 
 namespace Cockpit.GUI.Views.Profile
 {
@@ -6,11 +7,7 @@ namespace Cockpit.GUI.Views.Profile
     {
         public ToolBoxItem(/*string imageName*/)
         {
-            //ShortImageName = imageName;
-            //Name = imageName.Split('\\').Last().Split('_')[0];
-            //System.Drawing.Image img = System.Drawing.Image.FromFile(ShortImageName);
-            //ImageHeight = img.Height;
-            //ImageWidth = img.Width;
+
         }
 
 
@@ -25,6 +22,36 @@ namespace Cockpit.GUI.Views.Profile
             }
         }
 
+        private LayoutPropertyViewModel layout;
+        public LayoutPropertyViewModel Layout
+        {
+            get => layout;
+            set
+            {
+                layout = value;
+                NotifyOfPropertyChange(() => Layout);
+            }
+        }
+        //private double _panelscalex;
+        //public double PanelScaleX
+        //{
+        //    get => _panelscalex;
+        //    set
+        //    {
+        //        _panelscalex = value;
+        //        NotifyOfPropertyChange(() => PanelScaleX);
+        //    }
+        //}
+        //private double _panelscaley;
+        //public double PanelScaleY
+        //{
+        //    get => _panelscaley;
+        //    set
+        //    {
+        //        _panelscaley = value;
+        //        NotifyOfPropertyChange(() => PanelScaleY);
+        //    }
+        //}
         private int _imageHeight;
         public int ImageHeight
         {
@@ -63,9 +90,8 @@ namespace Cockpit.GUI.Views.Profile
         }
 
 
+
         private bool isbeingdragged;
-
-
         public bool IsBeingDragged
         {
             get { return isbeingdragged;}

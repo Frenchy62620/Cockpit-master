@@ -61,7 +61,7 @@ namespace Cockpit.GUI.Views.Profile.Panels
 
                     Visual childVisual = (Visual)VisualTreeHelper.GetChild(element, i);
                     var t = childVisual.GetType().Name;
-                    System.Diagnostics.Debug.WriteLine($"{i} -> {t} ");
+                    System.Diagnostics.Debug.WriteLine($"{this}:{i} -> {t} ");
                     if (t.Contains("ScrollViewer"))
                     {
                         sv = childVisual as ScrollViewer;

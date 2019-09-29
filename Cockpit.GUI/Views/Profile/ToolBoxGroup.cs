@@ -1,12 +1,8 @@
 ﻿using Caliburn.Micro;
 using GongSolutions.Wpf.DragDrop;
 using System;
-using System.Collections;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Data;
-using System.Windows.Input;
 
 namespace Cockpit.GUI.Views.Profile
 {

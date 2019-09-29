@@ -101,32 +101,13 @@
                     </ItemsControl.ItemsPanel>
 
                     <!-- Set position of each element in the canvas -->
-                    <!--<ItemsControl.ItemContainerStyle>
+                    <ItemsControl.ItemContainerStyle>
                         <Style TargetType="{x:Type ContentPresenter}">
                             <Setter Property="Canvas.Left" Value="{Binding Layout.UCLeft}" />
                             <Setter Property="Canvas.Top" Value="{Binding Layout.UCTop}" />
                         </Style>
-                    </ItemsControl.ItemContainerStyle>-->
-                    <ItemsControl.ItemContainerStyle>
-                        <Style TargetType="{x:Type ContentPresenter}">
-                            <Setter Property="Canvas.Left" >
-                                <Setter.Value>
-                                    <MultiBinding Converter="{StaticResource MultiplyConverter}">
-                                        <Binding Path="Layout.UCLeft" />
-                                        <Binding Path="Layout.ParentScaleX" />
-                                    </MultiBinding>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="Canvas.Top">
-                                <Setter.Value>
-                                    <MultiBinding Converter="{StaticResource MultiplyConverter}">
-                                        <Binding Path="Layout.UCTop" />
-                                        <Binding Path="Layout.ParentScaleY" />
-                                    </MultiBinding>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
                     </ItemsControl.ItemContainerStyle>
+
                 </ItemsControl>
                 <!--<Image Source="/CockpitBuilder;component/Resources/ToolBar/AlignTop.png" Width="50" Height="50" Margin="100,100,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />-->
             </Grid>
