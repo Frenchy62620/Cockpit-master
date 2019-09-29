@@ -32,26 +32,7 @@ namespace Cockpit.GUI.Views.Profile
                 NotifyOfPropertyChange(() => Layout);
             }
         }
-        //private double _panelscalex;
-        //public double PanelScaleX
-        //{
-        //    get => _panelscalex;
-        //    set
-        //    {
-        //        _panelscalex = value;
-        //        NotifyOfPropertyChange(() => PanelScaleX);
-        //    }
-        //}
-        //private double _panelscaley;
-        //public double PanelScaleY
-        //{
-        //    get => _panelscaley;
-        //    set
-        //    {
-        //        _panelscaley = value;
-        //        NotifyOfPropertyChange(() => PanelScaleY);
-        //    }
-        //}
+
         private int _imageHeight;
         public int ImageHeight
         {
