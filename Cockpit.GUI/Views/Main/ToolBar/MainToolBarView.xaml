@@ -21,7 +21,7 @@
 
     <Grid>
         <ToolBarTray IsLocked="True" Background="Transparent">
-            <ToolBar Height="28" Background="Transparent" IsEnabled="{Binding EnableIcons}"  >
+            <ToolBar Height="28" Background="Transparent" IsEnabled="{Binding EnableToolbar}"  >
                 <!--<Button x:Name="MoveForward" Command="{Binding MoveForward}">
                     <Image Source="{StaticResource BringForwardIcon}"IsEnabled="{Binding MonitorViewModel.EnableIcons, Mode=TwoWay, diag:PresentationTraceSources.TraceLevel=High}" />
                     <Button.ToolTip>Bring control forward so it displays on top of other controls.</Button.ToolTip>
@@ -56,20 +56,20 @@
                     <Button.ToolTip>Align selected controls to the horizontal center of the first selected control.</Button.ToolTip>
                 </Button>
                 <Separator />
-                <Button Command="{Binding DistributeHorizontalCenter}">
+                <Button Command="{Binding DistributeHorizontalCenter}" IsEnabled="{Binding EnableDistribute}">
                     <Image Source="{StaticResource DistributeHorizontal}" />
                     <Button.ToolTip>Distribute horizontally selected controls evenly spaced on center.</Button.ToolTip>
                 </Button>
-                <Button Command="{Binding DistributeVerticalCenter}">
+                <Button Command="{Binding DistributeVerticalCenter}" IsEnabled="{Binding EnableDistribute}">
                     <Image Source="{StaticResource DistributeVertical}" />
                     <Button.ToolTip>Distribute vertically selected controls evenly spaced on center.</Button.ToolTip>
                 </Button>
                 <Separator />
-                <Button Command="{Binding SpaceHorizontal}">
+                <Button Command="{Binding SpaceHorizontal}" IsEnabled="{Binding EnableDistribute}">
                     <Image Source="{StaticResource SpaceHorizontal}" />
                     <Button.ToolTip>Space evenly selected controls horizontaly.</Button.ToolTip>
                 </Button>
-                <Button Command="{Binding SpaceVertical}">
+                <Button Command="{Binding SpaceVertical}" IsEnabled="{Binding EnableDistribute}">
                     <Image Source="{StaticResource SpaceVertical}" />
                     <Button.ToolTip>Space evenly selected controls verticaly.</Button.ToolTip>
                 </Button>

@@ -405,7 +405,7 @@ namespace Cockpit.GUI.Views.Profile
             set
             {
                 nbrSelected = value;
-                eventAggregator.Publish(new ToolBarEvent(value > 1));
+                eventAggregator.Publish(new ToolBarEvent(value > 1, value > 2));
             }
         }
 

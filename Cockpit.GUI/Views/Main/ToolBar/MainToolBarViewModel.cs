@@ -43,25 +43,35 @@ namespace Cockpit.GUI.Views.Main.ToolBar
             DistributeVerticalCenter = new RelayCommand(o => cmdAlign(9), o => true);
             SpaceHorizontal = new RelayCommand(o => cmdAlign(10), o => true);
             SpaceVertical = new RelayCommand(o => cmdAlign(11), o => true);
-            EnableIcons = false;
+            EnableToolbar = false;
             eventAggregator.Subscribe(this);
         }
 
-        private bool enableIcons;
-        public bool EnableIcons
+        private bool enableToolbar;
+        public bool EnableToolbar
         {
-            get => enableIcons;
+            get => enableToolbar;
             set
             {
-                enableIcons = value;
-                NotifyOfPropertyChange(() => EnableIcons);
+                enableToolbar = value;
+                NotifyOfPropertyChange(() => EnableToolbar);
+            }
+        }
+        private bool enableDistribute;
+        public bool EnableDistribute
+        {
+            get => enableDistribute;
+            set
+            {
+                enableDistribute = value;
+                NotifyOfPropertyChange(() => EnableDistribute);
             }
         }
 
         public void cmdAlign(int id)
         {
             var reference = MonitorViewModel.SortedDico[MonitorViewModel.AdornersSelectedList.ElementAt(0)].pm;
-            var list = MonitorViewModel.SortedDico.Where(item => MonitorViewModel.AdornersSelectedList.Contains(item.Key)).Select(item => item.Value.pm );
+            var list = MonitorViewModel.SortedDico.Where(item => MonitorViewModel.AdornersSelectedList.Contains(item.Key)).Select(item => item.Value.pm);
 
             var reftop = MonitorViewModel.GetProperty("Layout.RealUCTop", reference);
             var refleft = MonitorViewModel.GetProperty("Layout.RealUCLeft", reference);
@@ -208,7 +218,7 @@ namespace Cockpit.GUI.Views.Main.ToolBar
                 var rightControl = listsorted[listsorted.Count - 1];
 
                 //var totalWidth = rightControl.Left + rightControl.Width - leftControl.Left;
-                var totalWidth = MonitorViewModel.GetProperty("Layout.RealUCLeft", rightControl) + 
+                var totalWidth = MonitorViewModel.GetProperty("Layout.RealUCLeft", rightControl) +
                                  MonitorViewModel.GetProperty("Layout.RealWidth", rightControl) - MonitorViewModel.GetProperty("Layout.RealUCLeft", leftControl);
 
                 var controlsWidth = 0d;
@@ -242,7 +252,7 @@ namespace Cockpit.GUI.Views.Main.ToolBar
                 var bottomControl = listsorted[listsorted.Count - 1];
 
                 //var totalHeight = bottomControl.Top + bottomControl.Height - topControl.Top;
-                var totalHeight = MonitorViewModel.GetProperty("Layout.RealUCTop", bottomControl) + 
+                var totalHeight = MonitorViewModel.GetProperty("Layout.RealUCTop", bottomControl) +
                                   MonitorViewModel.GetProperty("Layout.RealHeight", bottomControl) - MonitorViewModel.GetProperty("Layout.RealUCTop", topControl);
 
                 var controlsHeight = 0d;
@@ -275,7 +285,8 @@ namespace Cockpit.GUI.Views.Main.ToolBar
         }
         public void Handle(ToolBarEvent message)
         {
-           EnableIcons = message.EnableIcons;
+            EnableToolbar = message.EnableToolbar;
+            EnableDistribute = message.EnableDistribute;
         }
     }
 

@@ -2,11 +2,12 @@
 {
     public class ToolBarEvent
     {
-        public bool EnableIcons;
-
-        public ToolBarEvent(bool EnableIcons)
+        public bool EnableToolbar;
+        public bool EnableDistribute;
+        public ToolBarEvent(bool EnableToolbar, bool EnableDistribute)
         {
-            this.EnableIcons = EnableIcons;
+            this.EnableToolbar = EnableToolbar;
+            this.EnableDistribute = EnableDistribute;
         }
     }
 }
