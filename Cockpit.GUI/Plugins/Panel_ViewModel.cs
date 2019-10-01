@@ -139,13 +139,13 @@ namespace Cockpit.GUI.Plugins
 
         public double Left
         {
-            get => Layout.RealUCLeft;
-            set => Layout.RealUCLeft = value;
+            get => Layout.UCLeft;
+            set => Layout.UCLeft = value;
         }
         public double Top
         {
-            get => Layout.RealUCTop;
-            set => Layout.RealUCTop = value;
+            get => Layout.UCTop;
+            set => Layout.UCTop = value;
         }
         public double Width
         {
@@ -429,8 +429,8 @@ namespace Cockpit.GUI.Plugins
                             true, this,                                                                                         //0  is in Mode Editor?
                             $"{nameUC}",                                                                                        //2  name of UC
                             new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, 0 },//3  [Left, Top, Width, Height, Angle]
-
-                            new string[]{ FullImage, FullImage1 }, 0,                                                           //4  [images] & startimageposition
+                            new double[] {Layout.ScaleX, Layout.ScaleY},                                                        //4  [ParentScaleX, ParentScaleY]
+                            new string[]{ FullImage, FullImage1 }, 0,                                                           //5  [images] & startimageposition
                             2d, 0.8d, (PushButtonGlyph)0, Colors.White,                                                         //6  Glyph: Thickness, Scale, Type, Color
                             "Hello", "1,1", "Franklin Gothic", "Normal", "Normal",                                              //10 Text, TextPushOffset, Family, Style, Weight
                             12d, new double[] { 0d, 0d, 0d, 0d },                                                               //15 Size, [padding L,T,R,B]
@@ -491,8 +491,8 @@ namespace Cockpit.GUI.Plugins
                             true, mv,                                                                                         //0 is in Mode Editor?
                             $"{nameUC}",                                                                                        //2 name of UC
                             new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, 0 },//3 [Left, Top, Width, Height, Angle]
-
-                            FullImage,                                                                                          //4 [images] 
+                            new double[] {Layout.ScaleX, Layout.ScaleY},                                                        //4  [ParentScaleX, ParentScaleY]
+                            FullImage,                                                                                          //5 [images] 
 
                             2, 1d, 2, 3 }, true)
                 };
@@ -512,8 +512,8 @@ namespace Cockpit.GUI.Plugins
                             true, this,                                                                                         //0 is in Mode Editor?
                             $"{nameUC}",                                                                                        //2 name of UC
                             new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, AngleSwitch },//3 [Left, Top, Width, Height, Angle]
-
-                            new string[]{ FullImage, FullImage1, FullImage2 , "", "", "" }, 0,                                  //4 [images] & startimageposition
+                            new double[] {Layout.ScaleX, Layout.ScaleY},                                                        //4  [ParentScaleX, ParentScaleY]
+                            new string[]{ FullImage, FullImage1, FullImage2 , "", "", "" }, 0,                                  //5 [images] & startimageposition
 
                             2, 1d, 2, 3 }, true)
                 };
@@ -531,8 +531,8 @@ namespace Cockpit.GUI.Plugins
                             true, this,                                                                                         //0 is in Mode Editor?
                             $"{nameUC}",                                                                                        //2 name of UC
                             new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, AngleSwitch },//3 [Left, Top, Width, Height, Angle]
-
-                            FullImage,                                                                                           //4 [images]
+                            new double[] {Layout.ScaleX, Layout.ScaleY},                                                        //4  [ParentScaleX, ParentScaleY]
+                            FullImage,                                                                                          //5 [images]
                      
                              2,                                                                                                 //5  nbr points
                              "Franklin Gothic", "Normal", "Normal",                                                             //6  Family, Style, Weight
@@ -560,8 +560,8 @@ namespace Cockpit.GUI.Plugins
                             true, this,                                                                                         //0 is in Mode Editor?
                             $"{nameUC}",                                                                                        //2 name of UC
                             new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, AngleSwitch },//3 [Left, Top, Width, Height, Angle]
-
-                            FullImage,                                                                                           //4 [images]
+                            new double[] {Layout.ScaleX, Layout.ScaleY},                                                        //4  [ParentScaleX, ParentScaleY]
+                            FullImage,                                                                                           //5 [images]
                      
                              2,                                                                                                 //5  nbr points
                              "Franklin Gothic", "Normal", "Normal",                                                             //6  Family, Style, Weight

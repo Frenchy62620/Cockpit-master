@@ -5,14 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:local="clr-namespace:Cockpit.GUI.Views.Main.ToolBar"
+             xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
              mc:Ignorable="d" 
              d:DesignHeight="30" d:DesignWidth="800">
     <UserControl.Resources>
-        <Style x:Key="tbChanged" TargetType="{x:Type Button}">
-            <Setter Property="IsEnabled" Value="True" />
+        <Style x:Key="tbChanged" TargetType="{x:Type ToolBar}">
+            <Setter Property="IsEnabled" Value="False" />
             <Style.Triggers>
-                <DataTrigger Binding ="{Binding MonitorViewModel.EnableIcons}" Value ="False">
-                    <Setter Property="IsEnabled" Value="False"/>
+                <DataTrigger Binding ="{Binding MonitorViewModel.EnableIcons}" Value ="True">
+                    <Setter Property="IsEnabled" Value="True"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -20,9 +21,9 @@
 
     <Grid>
         <ToolBarTray IsLocked="True" Background="Transparent">
-            <ToolBar Height="28" Background="Transparent" IsEnabled="{Binding MonitorViewModel.EnableIcons}"  >
+            <ToolBar Height="28" Background="Transparent" IsEnabled="{Binding EnableIcons}"  >
                 <!--<Button x:Name="MoveForward" Command="{Binding MoveForward}">
-                    <Image Source="{StaticResource BringForwardIcon}" />
+                    <Image Source="{StaticResource BringForwardIcon}"IsEnabled="{Binding MonitorViewModel.EnableIcons, Mode=TwoWay, diag:PresentationTraceSources.TraceLevel=High}" />
                     <Button.ToolTip>Bring control forward so it displays on top of other controls.</Button.ToolTip>
                 </Button>
                 <Button x:Name="MoveBack" Command="{Binding MoveBack}">

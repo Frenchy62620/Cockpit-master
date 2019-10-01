@@ -75,13 +75,13 @@ namespace Cockpit.Core.Plugins.Plugins
 
         public double Left
         {
-            get => Layout.RealUCLeft;
-            set => Layout.RealUCLeft = value;
+            get => Layout.UCLeft;
+            set => Layout.UCLeft = value;
         }
         public double Top
         {
-            get => Layout.RealUCTop;
-            set => Layout.RealUCTop = value;
+            get => Layout.UCTop;
+            set => Layout.UCTop = value;
         }
         public double Width
         {

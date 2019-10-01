@@ -33,7 +33,7 @@ namespace Cockpit.GUI.Plugins.Properties
 
             SelectedApparition = PanelSideApparition.FromLeft;
 
-            var index = 4;
+            var index = 5;
             BackgroundImage = (string)settings[index];
             this.eventAggregator = eventAggregator;
 

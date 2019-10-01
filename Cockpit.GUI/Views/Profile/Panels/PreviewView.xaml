@@ -40,7 +40,7 @@
                         <DrawingBrush Viewport="0,0,10,10" ViewportUnits="Absolute" TileMode="Tile">
                             <DrawingBrush.Drawing>
                                 <DrawingGroup>
-                                    <GeometryDrawing Geometry="M0,0 L10,0 10,10, 0,10Z" Brush="{Binding MonitorViewModel.LayoutMonitor.BackgroundColor1, diag:PresentationTraceSources.TraceLevel=High}" />
+                                    <GeometryDrawing Geometry="M0,0 L10,0 10,10, 0,10Z" Brush="{Binding MonitorViewModel.LayoutMonitor.BackgroundColor1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                     <GeometryDrawing Geometry="M0,5 L10,5 10,10, 5,10 5,0 0,0Z" Brush="{Binding MonitorViewModel.LayoutMonitor.BackgroundColor2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                 </DrawingGroup>
                             </DrawingBrush.Drawing>

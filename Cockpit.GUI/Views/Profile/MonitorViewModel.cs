@@ -37,27 +37,13 @@ namespace Cockpit.GUI.Views.Profile
         }
     }
 
-    //public class Elt: PropertyChangedBase
-    //{
-    //    public ContentControl cc;
-    //    public PluginModel pm;
-    //    public int selected = 0;
-
-    //    public Elt(ContentControl cc, PluginModel pm, int selected = -1)
-    //    {
-    //        this.cc = cc;
-    //        this.pm = pm;
-    //        this.selected = selected;
-    //    }
-    //}
-
     public class MonitorViewModel : PanelViewModel, IDropTarget, Core.Common.Events.IHandle<RenameUCEvent>
     {
         private Dictionary<Assembly, List<Type>> pluginTypes;
         public Dictionary<string, Identity> Identities;
 
         public double ZoomFactorFromMonitorViewModel;
-        public Dictionary<ContentControl, bool> DictContentcontrol = new Dictionary<ContentControl, bool>();
+        //public Dictionary<ContentControl, bool> DictContentcontrol = new Dictionary<ContentControl, bool>();
 
         public SortedDictionary<string, Elements> SortedDico = new SortedDictionary<string, Elements>();
         
@@ -72,7 +58,7 @@ namespace Cockpit.GUI.Views.Profile
         public ContentControl FirstSelected { get; set; } = null;
 
         public List<Key> MoveKeys = new List<Key> { Key.Left, Key.Right , Key.Down, Key.Up};
-        public bool keepAdorner = false;
+        //public bool keepAdorner = false;
 
         public MonitorViewModel(IEventAggregator eventAggregator, IResolutionRoot resolutionRoot, FileSystem fileSystem, DisplayManager displayManager)
         {
@@ -172,8 +158,8 @@ namespace Cockpit.GUI.Views.Profile
                             true, this,                                                                                         //0  is in Mode Editor?
                             $"{nameUC}",                                                                                        //2  name of UC
                             new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, 0 },//3  [Left, Top, Width, Height, Angle]
-
-                            new string[]{ FullImage, FullImage1 }, 0,                                                           //4  [images] & startimageposition
+                            new double[] {1d, 1d},                                                                              //4  [ParentScaleX, ParentScaleY]
+                            new string[]{ FullImage, FullImage1 }, 0,                                                           //5  [images] & startimageposition
                             2d, 0.8d, (PushButtonGlyph)1, Colors.White,                                                         //6  Glyph: Thickness, Scale, Type, Color
                             "Hello", "1,1", "Franklin Gothic", "Normal", "Normal",                                              //10 Text, TextPushOffset, Family, Style, Weight
                             12d, new double[] { 0d, 0d, 0d, 0d },                                                               //15 Size, [padding L,T,R,B]
@@ -236,8 +222,8 @@ namespace Cockpit.GUI.Views.Profile
                             true, this,                                                                                         //0 is in Mode Editor?
                             $"{nameUC}",                                                                                        //2 name of UC
                             new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, 0 },//3 [Left, Top, Width, Height, Angle]
-
-                            FullImage,                                                                                          //4 image
+                            new double[] {1d, 1d},                                                                              //4  [ParentScaleX, ParentScaleY]
+                            FullImage,                                                                                          //5 image
 
                             2, 1d, 2, 3 }, true)
                 };
@@ -257,8 +243,8 @@ namespace Cockpit.GUI.Views.Profile
                             true, this,                                                                                         //0 is in Mode Editor?
                             $"{nameUC}",                                                                                        //2 name of UC
                             new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, AngleSwitch },//3 [Left, Top, Width, Height, Angle]
-
-                            new string[]{ FullImage, FullImage1, FullImage2 , "", "", "" }, 0,                                  //4 [images] & startimageposition
+                            new double[] {1d, 1d},                                                                              //4  [ParentScaleX, ParentScaleY]
+                            new string[]{ FullImage, FullImage1, FullImage2 , "", "", "" }, 0,                                  //5 [images] & startimageposition
 
                             2, 1d, 2, 3 }, true)
                 };
@@ -276,8 +262,8 @@ namespace Cockpit.GUI.Views.Profile
                             true, this,                                                                                         //0 is in Mode Editor?
                             $"{nameUC}",                                                                                        //2 name of UC
                             new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, AngleSwitch },//3 [Left, Top, Width, Height, Angle]
-
-                            FullImage,                                                                                           //4 [images]
+                            new double[] {1d, 1d},                                                                              //4  [ParentScaleX, ParentScaleY]
+                            FullImage,                                                                                           //5 [images]
                      
                              2,                                                                                                 //5  nbr points
                              "Franklin Gothic", "Normal", "Normal",                                                             //6  Family, Style, Weight
@@ -305,8 +291,8 @@ namespace Cockpit.GUI.Views.Profile
                             true, this,                                                                                         //0 is in Mode Editor?
                             $"{nameUC}",                                                                                        //2 name of UC
                             new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, AngleSwitch },//3 [Left, Top, Width, Height, Angle]
-
-                            FullImage,                                                                                           //4 [images]
+                            new double[] {1d, 1d},                                                                              //4  [ParentScaleX, ParentScaleY]
+                            FullImage,                                                                                           //5 [images]
                      
                              2,                                                                                                 //5  nbr points
                              "Franklin Gothic", "Normal", "Normal",                                                             //6  Family, Style, Weight
@@ -351,15 +337,9 @@ namespace Cockpit.GUI.Views.Profile
             var identity = GetAttribute<Identity>(pluginType);
             return identity.GroupName + identity.Name;
         }
-        public Identity GetIdentity(Type pluginType)
-        //public IEnumerable<MemberInfo> GetGlobalMembers(Type pluginType)
-        {
-            return  GetAttribute<Identity>(pluginType);
-        }
-        private  T GetAttribute<T>(Type type) where T : Attribute
-        {
-            return type.GetCustomAttributes(typeof(T), false).FirstOrDefault() as T;
-        }
+
+        public Identity GetIdentity(Type pluginType) => GetAttribute<Identity>(pluginType);
+        private T GetAttribute<T>(Type type) where T : Attribute => type.GetCustomAttributes(typeof(T), false).FirstOrDefault() as T;
 
         public Type GetType(string typeName)
         {
@@ -424,23 +404,8 @@ namespace Cockpit.GUI.Views.Profile
             get => nbrSelected;
             set
             {
-                if (NbrSelected != value)
-                {
-                    nbrSelected = value;
-                    EnableIcons = value > 1;
-                }
-            }
-        }
-
-        private bool nbrSelectedsupa2;
-        public bool EnableIcons
-        {
-            get => nbrSelectedsupa2;
-            set
-            {
-                if (nbrSelectedsupa2 == value) return;
-                nbrSelectedsupa2 = value;
-                NotifyOfPropertyChange(() => EnableIcons);
+                nbrSelected = value;
+                eventAggregator.Publish(new ToolBarEvent(value > 1));
             }
         }
 
@@ -597,10 +562,8 @@ namespace Cockpit.GUI.Views.Profile
                     {
                         foreach (var k in list)
                         {
-                            var parentscale = GetProperty("Layout.ParentScaleX", k);
                             var value = GetProperty("Layout.RealUCLeft", k);
                             SetProperty("Layout.RealUCLeft", k, value - step);
-                            SetProperty("Layout.UCLeft", k, (value - step) / parentscale);
                             //k.Left = k.Left - step;
                         }
                     }
@@ -609,10 +572,8 @@ namespace Cockpit.GUI.Views.Profile
                     {
                         foreach (var k in list)
                         {
-                            var parentscale = GetProperty("Layout.ParentScaleX", k);
                             var value = GetProperty("Layout.RealUCLeft", k);
                             SetProperty("Layout.RealUCLeft", k, value + step);
-                            SetProperty("Layout.UCLeft", k, (value + step) / parentscale);
                             //k.Left = k.Left + step;
                         }
                     }
@@ -622,10 +583,8 @@ namespace Cockpit.GUI.Views.Profile
                     {
                         foreach (var k in list)
                         {
-                            var parentscale = GetProperty("Layout.ParentScaleY", k);
                             var value = GetProperty("Layout.RealUCTop", k);
                             SetProperty("Layout.RealUCTop", k, value - step);
-                            SetProperty("Layout.UCTop", k, (value - step) / parentscale);
                             //k.Top = k.Top - step;
                         }
                     }
@@ -634,10 +593,8 @@ namespace Cockpit.GUI.Views.Profile
                     {
                         foreach (var k in list)
                         {
-                            var parentscale = GetProperty("Layout.ParentScaleY", k);
                             var value = GetProperty("Layout.RealUCTop", k);
                             SetProperty("Layout.RealUCTop", k, value + step);
-                            SetProperty("Layout.UCTop", k, (value + step) / parentscale);
                             //k.Top = k.Top + step;
                         }
                     }
@@ -687,7 +644,6 @@ namespace Cockpit.GUI.Views.Profile
         {
             RemoveAdorners();
             eventAggregator.Publish(new DisplayPropertiesEvent(new[] { LayoutMonitor }));
-            //eventAggregator.Publish(new VisibilityPanelEvent("A10-CDU-Panel"));
         }
 
         public void MouseDoubleClickOnContentControl(ContentControl s, MouseEventArgs e)
@@ -760,6 +716,7 @@ namespace Cockpit.GUI.Views.Profile
                             adornerLayer.Remove(adorner);
             }
             AdornersSelectedList.Remove(pm.NameUC);
+            NbrSelected = AdornersSelectedList.Count();
         }
 
         public void RemoveAdorners()
@@ -778,6 +735,7 @@ namespace Cockpit.GUI.Views.Profile
                 }
             }
             AdornersSelectedList.Clear();
+            NbrSelected = 0;
         }
 
         public void AddNewAdorner(ContentControl cc, IPluginModel pm, int color = 0)
@@ -790,6 +748,7 @@ namespace Cockpit.GUI.Views.Profile
                 AdornersSelectedList.Add(pm.NameUC);
                 cc.Focus();
             }
+            NbrSelected = AdornersSelectedList.Count();
         }
 
         public void UpdateFirstAdorner()

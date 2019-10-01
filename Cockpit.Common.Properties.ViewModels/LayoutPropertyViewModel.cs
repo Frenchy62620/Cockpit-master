@@ -43,8 +43,9 @@ namespace Cockpit.Common.Properties.ViewModels
 
             RealWidth = width;
             RealHeight = height;
-            RealUCLeft = UCLeft;
-            RealUCTop = UCTop;
+            UCLeftOriginal = UCLeft;
+            UCTopOriginal = UCTop;
+
 
 
             this.eventAggregator = eventAggregator;
@@ -57,13 +58,17 @@ namespace Cockpit.Common.Properties.ViewModels
             Linked = true;
             PxPct = true;
             Name = "Layout";
+
             ScaleX = 1;
             ScaleY = 1;
             Factor = RealHeight / RealWidth;
             ScaleFactor = ScaleY / ScaleX;
-            ParentScaleX = 1;
-            ParentScaleY = 1;
 
+            ParentScaleX = ((double[])settings[4])[0];
+            ParentScaleY = ((double[])settings[4])[1];
+
+            RealUCLeft = UCLeft * ParentScaleX;
+            RealUCTop = UCTop * ParentScaleY;
         }
 
 
@@ -72,10 +77,50 @@ namespace Cockpit.Common.Properties.ViewModels
             System.Diagnostics.Debug.WriteLine("sortie Layout");
         }
 
-        public double UCLeft { get; set; }
-        public double UCTop { get; set; }
-        public double Width { get; set; }
-        public double Height { get; set; }
+        public double UCTopOriginal { get; set; }
+        public double UCLeftOriginal { get; set; }
+
+        private double _uCLeft;
+        public double UCLeft
+        {
+            get => _uCLeft;
+            set
+            {
+                _uCLeft = value;
+                NotifyOfPropertyChange(() => UCLeft);
+            }
+        }
+        private double _uCTop;
+        public double UCTop
+        {
+            get => _uCTop;
+            set
+            {
+                _uCTop = value;
+                NotifyOfPropertyChange(() => UCTop);
+            }
+        }
+
+        private double _width;
+        public double Width
+        {
+            get => _width;
+            set
+            {
+                _width = value;
+                NotifyOfPropertyChange(() => Width);
+            }
+        }
+        private double _height;
+        public double Height
+        {
+            get => _height;
+            set
+            {
+                _height = value;
+                NotifyOfPropertyChange(() => Height);
+            }
+        }
 
         private string OldText;
         private string NewText;
@@ -101,6 +146,7 @@ namespace Cockpit.Common.Properties.ViewModels
             set
             {
                 realucleft = value;
+                UCLeft = value / ParentScaleX;
                 NotifyOfPropertyChange(() => RealUCLeft);
             }
         }
@@ -111,6 +157,7 @@ namespace Cockpit.Common.Properties.ViewModels
             set
             {
                 realuctop = value;
+                UCTop = value / ParentScaleY;
                 NotifyOfPropertyChange(() => RealUCTop);
             }
         }
@@ -151,7 +198,6 @@ namespace Cockpit.Common.Properties.ViewModels
             get => realScaleX;
             set
             {
-                //if (Math.Round(realscalex, 2, MidpointRounding.ToEven) == Math.Round(value, 2, MidpointRounding.ToEven)) return;
                 if (realScaleX == value) return;
                 realScaleX = value;
                 NotifyOfPropertyChange(() => RealScaleX);
@@ -163,7 +209,6 @@ namespace Cockpit.Common.Properties.ViewModels
             get => realScaleY;
             set
             {
-                //if (Math.Round(realscaley, 2, MidpointRounding.ToEven) == Math.Round(value, 2, MidpointRounding.ToEven)) return;
                 if (realScaleY == value) return;
                 realScaleY = value;
                 NotifyOfPropertyChange(() => RealScaleY);
@@ -176,12 +221,9 @@ namespace Cockpit.Common.Properties.ViewModels
             get => scaleX;
             set
             {
-                //if (Math.Round(scalex, 2, MidpointRounding.ToEven) == Math.Round(value, 2, MidpointRounding.ToEven)) return;
                 if (scaleX == value) return;
                 scaleX = value;
                 NotifyOfPropertyChange(() => ScaleX);
-                //if (IsPanel)
-                //    eventAggregator.Publish(new ScalingPanelEvent(PanelName: NameUC, ScaleX: ScaleX));
             }
         }
         private double scaleY;
@@ -190,12 +232,9 @@ namespace Cockpit.Common.Properties.ViewModels
             get => scaleY;
             set
             {
-                //if (Math.Round(scaley, 2, MidpointRounding.ToEven) == Math.Round(value, 2, MidpointRounding.ToEven)) return;
                 if (scaleY == value) return;
                 scaleY = value;
                 NotifyOfPropertyChange(() => ScaleY);
-                //if (IsPanel)
-                //    eventAggregator.Publish(new ScalingPanelEvent(PanelName: NameUC, ScaleY: ScaleY));
             }
         }
 
@@ -209,7 +248,7 @@ namespace Cockpit.Common.Properties.ViewModels
                 BeingChanged = true;
                 RealScaleX = value * ScaleX;
                 RealWidth = Math.Round(RealScaleX * WidthOriginal, 0, MidpointRounding.ToEven);
-                RealUCLeft = value * UCLeft;
+                RealUCLeft = UCLeft * value ;
                 BeingChanged = false;
                 System.Diagnostics.Debug.WriteLine($"ParentScaleX/ScaleX = {ParentScaleX} / {ScaleX} RealScaleX = {RealScaleX} RealWidth = {RealWidth}");
             }
@@ -310,6 +349,8 @@ namespace Cockpit.Common.Properties.ViewModels
         }
 
         private bool BeingChanged;
+
+
         public void ValueChanged(int id, System.Windows.RoutedPropertyChangedEventArgs<object> e)
         {
             if (e.NewValue == null) return;

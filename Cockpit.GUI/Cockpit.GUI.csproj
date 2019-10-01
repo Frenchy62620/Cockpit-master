@@ -145,6 +145,7 @@
     <Compile Include="Events\Command\RunEvent.cs" />
     <Compile Include="Events\Command\TrayEvent.cs" />
     <Compile Include="Events\DisplayPropertiesEvent.cs" />
+    <Compile Include="Events\ToolBarEvent.cs" />
     <Compile Include="Events\PreviewViewEvent.cs" />
     <Compile Include="Events\ProfileDocumentAddedEvent.cs" />
     <Compile Include="Events\ExitingEvent.cs" />

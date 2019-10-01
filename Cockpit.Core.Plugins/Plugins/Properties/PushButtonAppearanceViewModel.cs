@@ -31,7 +31,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             HAlignTypes = Enum.GetValues(typeof(HorizontalAlignment)).Cast<HorizontalAlignment>().Take(3).ToList();
             VAlignTypes = Enum.GetValues(typeof(VerticalAlignment)).Cast<VerticalAlignment>().Take(3).ToList();
 
-            var index = 4;
+            var index = 5;
             Image = ((string[])settings[index])[0];
             PushedImage = ((string[])settings[index++])[1];
             IndexImage = (int)settings[index++];

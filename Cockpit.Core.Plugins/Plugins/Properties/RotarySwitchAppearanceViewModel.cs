@@ -25,7 +25,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             }
             NameUC = (string)settings[2];
 
-            var index = 4;
+            var index = 5;
 
             Image = (string)settings[index++];
             

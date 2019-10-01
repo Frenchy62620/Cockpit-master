@@ -13,7 +13,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         public PushButtonBehaviorViewModel(params object[] settings)
         {
             PushButtonTypes = Enum.GetValues(typeof(PushButtonType)).Cast<PushButtonType>().ToList();
-            SelectedPushButtonType = (PushButtonType)(int)settings[19];
+            SelectedPushButtonType = (PushButtonType)(int)settings[20];
 
             NameOfPanel = "Bonour";
 
