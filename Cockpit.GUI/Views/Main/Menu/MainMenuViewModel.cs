@@ -26,7 +26,7 @@ namespace Cockpit.GUI.Views.Main.Menu
         Core.Common.Events.IHandle<ExitingEvent>,
         Core.Common.Events.IHandle<ActiveProfileDocumentChangedEvent>,
         Core.Common.Events.IHandle<ScriptErrorEvent>,
-        Core.Common.Events.IHandle<PanelLoadingViewEvent>,
+        //Core.Common.Events.IHandle<PanelLoadingViewEvent>,
         Core.Common.Events.IHandle<FileEvent>
     {
         private readonly IResultFactory resultFactory;
@@ -103,15 +103,15 @@ namespace Cockpit.GUI.Views.Main.Menu
             eventAggregator.Publish(new ProfileDocumentAddedEvent(document));
         }
 
-        public void CreatePanelViewModel(Panel_ViewModel panel)
-        {
+        //public void CreatePanelViewModel(Panel_ViewModel panel)
+        //{
 
-            var document = profileEditorFactory()
-                .ConfigurePanel(panel);
+        //    var document = profileEditorFactory()
+        //        .ConfigurePanel(panel);
 
 
-            eventAggregator.Publish(new ProfileDocumentAddedEvent(document));
-        }
+        //    eventAggregator.Publish(new ProfileDocumentAddedEvent(document));
+        //}
 
         public IEnumerable<IResult> SaveScript()
         {
@@ -269,9 +269,9 @@ namespace Cockpit.GUI.Views.Main.Menu
 
 
 
-        public void Handle(PanelLoadingViewEvent message)
-        {
-            CreatePanelViewModel(message.Profile);
-        }
+        //public void Handle(PanelLoadingViewEvent message)
+        //{
+        //    CreatePanelViewModel(message.Profile);
+        //}
     }
 }

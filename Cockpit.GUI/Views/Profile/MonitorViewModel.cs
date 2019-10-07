@@ -72,7 +72,7 @@ namespace Cockpit.GUI.Views.Profile
             this.eventAggregator = eventAggregator;
             this.eventAggregator.Subscribe(this);
 
-            Title = "Monitor1";
+            //Title = "Monitor1";
             IconName = "console-16.png";
             Enabled = true;
  
@@ -104,11 +104,11 @@ namespace Cockpit.GUI.Views.Profile
 
         public void ViewLoaded()
         {
-            if (Title.StartsWith("Monitor1"))
-            {
+            //if (Title.StartsWith("Monitor1"))
+            //{
                 eventAggregator.Publish(new MonitorViewStartedEvent(this));
                 eventAggregator.Publish(new DisplayPropertiesEvent(new[] { LayoutMonitor }));
-            }
+            //}
         }
 
         private int CockpitFileHash;
@@ -142,7 +142,7 @@ namespace Cockpit.GUI.Views.Profile
             if (dropInfo.Data is ToolBoxGroup)
             {
                 var tbg = dropInfo.Data as ToolBoxGroup;
-                Title = $"Dragging << X = {dropInfo.DropPosition.X:###0} / Y = {dropInfo.DropPosition.Y:###0} >>";
+                TitleTemp = $"Dragging << X = {dropInfo.DropPosition.X:###0} / Y = {dropInfo.DropPosition.Y:###0} >>";
                 var FullImage = tbg.SelectedToolBoxItem.FullImageName;
                 tbg.AnchorMouse = new Point(0.0, 0.0);
                 dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
@@ -152,7 +152,7 @@ namespace Cockpit.GUI.Views.Profile
 
         void IDropTarget.Drop(IDropInfo dropInfo)
         {
-            Title = "Monitor1";
+            TitleTemp = null;
             var tbg = dropInfo.Data as ToolBoxGroup;
             var selected = tbg.SelectedToolBoxItem;
             int left = (int)dropInfo.DropPosition.X;
@@ -406,15 +406,15 @@ namespace Cockpit.GUI.Views.Profile
             //if (panel) Title = FilePath;
             return this;
         }
-        public MonitorViewModel ConfigurePanel(Panel_ViewModel panel)
-        {
-            this.MonitorHeight = panel.Layout.Height;
-            this.MonitorWidth = panel.Layout.Width;
-            this.LayoutMonitor.BackgroundImage = panel.Appearance.BackgroundImage;
+        //public MonitorViewModel ConfigurePanel(Panel_ViewModel panel)
+        //{
+        //    this.MonitorHeight = panel.Layout.Height;
+        //    this.MonitorWidth = panel.Layout.Width;
+        //    this.LayoutMonitor.BackgroundImage = panel.Appearance.BackgroundImage;
 
-            this.Title = panel.Layout.NameUC;
-            return this;
-        }
+        //    this.Title = panel.Layout.NameUC;
+        //    return this;
+        //}
 
         public override string Filename
         {
@@ -428,12 +428,25 @@ namespace Cockpit.GUI.Views.Profile
                 return string.Format("Untitled{0}.py", untitledPostfix);
             }
         }
+        public int MyProperty { get; set; }
+
+        private string _titletemp;
+        public string TitleTemp
+        {
+            get => _titletemp;
+            set
+            {
+                _titletemp = value;
+                NotifyOfPropertyChange(() => Title);
+            }
+        }
+
 
         public override string Title
         {
             get
             {
-                return Filename;
+                return TitleTemp ?? Filename;
             }
         }
 
@@ -441,7 +454,19 @@ namespace Cockpit.GUI.Views.Profile
         {
             get { return FilePath ?? Filename; }
         }
-
+        public override string FilePath
+        {
+            get
+            {
+                return base.FilePath;
+            }
+            set
+            {
+                base.FilePath = value;
+                NotifyOfPropertyChange(() => Title);
+                NotifyOfPropertyChange(() => ContentId);
+            }
+        }
         private bool enabled;
         [DataMember]
         public bool Enabled

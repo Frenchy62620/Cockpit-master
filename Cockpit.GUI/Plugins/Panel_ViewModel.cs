@@ -381,7 +381,7 @@ namespace Cockpit.GUI.Plugins
             if (dropInfo.Data is ToolBoxGroup && !IsFromPreviewView)
             {
                 var tbg = dropInfo.Data as ToolBoxGroup;
-                mv.Title = $"Dragging inside {NameUC} << X = {dropInfo.DropPosition.X * ScaleX:###0} / Y = {dropInfo.DropPosition.Y * ScaleY:###0} >>";
+                mv.TitleTemp = $"Dragging inside {NameUC} << X = {dropInfo.DropPosition.X * ScaleX:###0} / Y = {dropInfo.DropPosition.Y * ScaleY:###0} >>";
                 var FullImage = tbg.SelectedToolBoxItem.FullImageName;
                 tbg.AnchorMouse = new Point(0.0, 0.0);
                 tbg.SelectedToolBoxItem.Layout = Layout;
@@ -393,7 +393,7 @@ namespace Cockpit.GUI.Plugins
 
         void IDropTarget.Drop(IDropInfo dropInfo)
         {
-            mv.Title = "Monitor1";
+            mv.TitleTemp = null;
             var tbg = dropInfo.Data as ToolBoxGroup;
             var selected = tbg.SelectedToolBoxItem;
             int left = (int)dropInfo.DropPosition.X;

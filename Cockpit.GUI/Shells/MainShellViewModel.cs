@@ -11,7 +11,6 @@ using Cockpit.GUI.Views.Main;
 using Cockpit.GUI.Views.Main.Menu;
 using Cockpit.GUI.Views.Main.ToolBar;
 using Cockpit.GUI.Views.Profile;
-using Cockpit.GUI.Views.Profile.Panels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
