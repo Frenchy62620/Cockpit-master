@@ -1,10 +1,12 @@
 ﻿using Caliburn.Micro;
 using Cockpit.GUI.Common.Resources;
+using System.Runtime.Serialization;
 using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Cockpit.GUI.Views.Main
 {
+    [DataContract]
     public abstract class PanelViewModel : PropertyChangedBase
     {
         private string title;

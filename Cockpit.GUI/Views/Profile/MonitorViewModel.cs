@@ -40,7 +40,8 @@ namespace Cockpit.GUI.Views.Profile
             this.pm = pm;
         }
     }
- 
+
+    [DataContract]
     public class MonitorViewModel : PanelViewModel, IDropTarget, Core.Common.Events.IHandle<RenameUCEvent>
     {
         public Dictionary<Assembly, List<Type>> pluginTypes;
@@ -58,6 +59,7 @@ namespace Cockpit.GUI.Views.Profile
         private readonly FileSystem fileSystem;
         private readonly DisplayManager DisplayManager;
 
+        [DataMember]
         public MonitorPropertyViewModel LayoutMonitor { get; set; }
         public ContentControl FirstSelected { get; set; } = null;
 
@@ -109,25 +111,17 @@ namespace Cockpit.GUI.Views.Profile
             }
         }
 
-        //protected override void OnViewAttached(object view, object context)
-        //{
-        //    if (Title.StartsWith("Monitor1"))
-        //    {
-        //        eventAggregator.Publish(new MonitorViewStartedEvent(this));
-        //        eventAggregator.Publish(new DisplayPropertiesEvent(new[] { LayoutMonitor }));
-        //    }
-        //}
         private int CockpitFileHash;
         public string BuildXmlBuffer()
         {
             string buffer;
             var types = pluginTypes.Values.SelectMany(x => x).ToArray();
             var serialize = new Serialize(this);
-            DataContractSerializer dcs = new DataContractSerializer(typeof(Serialize), types);
-
+            //DataContractSerializer dcs = new DataContractSerializer(typeof(Serialize), types);
+            DataContractSerializer dcs = new DataContractSerializer(typeof(MonitorViewModel), types);
             using (var memStream = new MemoryStream())
             {
-                dcs.WriteObject(memStream, serialize);
+                dcs.WriteObject(memStream, this);
                 //var buffer = Encoding.Default.GetString(memStream.GetBuffer());
                 buffer = Encoding.ASCII.GetString(memStream.GetBuffer()).TrimEnd('\0');
                 //var buffer1 = Encoding.GetEncoding("ASCII").GetString(memStream.GetBuffer());
@@ -397,7 +391,7 @@ namespace Cockpit.GUI.Views.Profile
             return null;
         }
 
-
+        [DataMember]
         public BindableCollection<IPluginModel> MyCockpitViewModels { get; set; }
 
         private static int untitledIndex;
@@ -409,7 +403,7 @@ namespace Cockpit.GUI.Views.Profile
             {
                 untitledId = untitledIndex++;
             }
-            if (panel) Title = FilePath;
+            //if (panel) Title = FilePath;
             return this;
         }
         public MonitorViewModel ConfigurePanel(Panel_ViewModel panel)
@@ -422,6 +416,31 @@ namespace Cockpit.GUI.Views.Profile
             return this;
         }
 
+        public override string Filename
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(FilePath))
+                    return fileSystem.GetFilename(FilePath);
+
+                var untitledPostfix = untitledId > 0 ? string.Format("-{0}", untitledId) : null;
+
+                return string.Format("Untitled{0}.py", untitledPostfix);
+            }
+        }
+
+        public override string Title
+        {
+            get
+            {
+                return Filename;
+            }
+        }
+
+        public override string ContentId
+        {
+            get { return FilePath ?? Filename; }
+        }
 
         private bool enabled;
         [DataMember]
