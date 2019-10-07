@@ -44,14 +44,13 @@ namespace Cockpit.GUI.Views.Profile.Panels
             Title = "Preview";
             IconName = "console-16.png";
             IsVisible = false;
-        }
 
-        protected override void OnViewLoaded(object view)
+            //ZoomPanelVisibility = Visibility.Collapsed;
+
+        }
+        public void ViewLoaded(object view)
         {
-            base.OnViewLoaded(view);
-            //var d = GetView() as PreviewTabView;
             ZoomPanelVisibility = Visibility.Collapsed;
-            
 
             ProcessElement((DependencyObject)view);
             void ProcessElement(DependencyObject element)
@@ -61,7 +60,7 @@ namespace Cockpit.GUI.Views.Profile.Panels
 
                     Visual childVisual = (Visual)VisualTreeHelper.GetChild(element, i);
                     var t = childVisual.GetType().Name;
-                    System.Diagnostics.Debug.WriteLine($"{this}:{i} -> {t} ");
+                    //System.Diagnostics.Debug.WriteLine($"{this}:{i} -> {t} ");
                     if (t.Contains("ScrollViewer"))
                     {
                         sv = childVisual as ScrollViewer;
@@ -78,6 +77,38 @@ namespace Cockpit.GUI.Views.Profile.Panels
                 }
             }
         }
+        //protected override void OnViewLoaded(object view)
+        //{
+        //    //base.OnViewLoaded(view);
+        //    //var d = GetView() as PreviewTabView;
+        //    ZoomPanelVisibility = Visibility.Collapsed;
+        //    //return;
+
+        //    ProcessElement((DependencyObject)view);
+        //    void ProcessElement(DependencyObject element)
+        //    {
+        //        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
+        //        {
+
+        //            Visual childVisual = (Visual)VisualTreeHelper.GetChild(element, i);
+        //            var t = childVisual.GetType().Name;
+        //            System.Diagnostics.Debug.WriteLine($"{this}:{i} -> {t} ");
+        //            if (t.Contains("ScrollViewer"))
+        //            {
+        //                sv = childVisual as ScrollViewer;
+        //                return;
+        //            }
+
+        //            ////System.Diagnostics.Debug.WriteLine($"{i} -> {t}");
+        //            //var childContentVisual = childVisual as ContentControl;
+        //            //if (childContentVisual != null)
+        //            //{
+        //            //    var content = childContentVisual.Content;
+        //            //}
+        //            ProcessElement(childVisual);
+        //        }
+        //    }
+        //}
 
         private bool fullSize;
         public bool FullSize

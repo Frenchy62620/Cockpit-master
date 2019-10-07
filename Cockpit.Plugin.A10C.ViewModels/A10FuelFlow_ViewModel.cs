@@ -1,14 +1,17 @@
 ﻿using Caliburn.Micro;
 using Cockpit.Common.Properties.ViewModels;
 using Cockpit.Core.Contracts;
+using System.Runtime.Serialization;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Plugin.A10C.ViewModels
 {
     [Identity(GroupName = "A10C", Name = "FuelFlow", Type = typeof(A10FuelFlow_ViewModel))]
+    [DataContract]
     public class A10FuelFlow_ViewModel: PropertyChangedBase, IPluginModel
     {
-        public LayoutPropertyViewModel Layout { get; }
+        [DataMember] public LayoutPropertyViewModel Layout { get; set; }
+
         private readonly IEventAggregator eventAggregator;
 
         public A10FuelFlow_ViewModel(IEventAggregator eventAggregator, params object[] settings)

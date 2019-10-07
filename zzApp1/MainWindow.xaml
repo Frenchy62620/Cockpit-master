@@ -10,45 +10,6 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
 
-        <xctk:PropertyGrid x:Name="_propertyGrid1" Width="450" Margin="10">
-            <xctk:PropertyGrid.EditorDefinitions>
-                <xctk:EditorDefinition TargetType="{x:Type HorizontalAlignment}">
-                    <xctk:EditorDefinition.EditorTemplate>
-                        <DataTemplate>
-                    <TextBox Background="Green" Text="{Binding Value}" />
-                </DataTemplate>
-                    </xctk:EditorDefinition.EditorTemplate>
-                </xctk:EditorDefinition>
-
-                <!--This EditorDefinition will provide a TextBlock to any property that has any of the defined property names, replacing the default editor.-->
-                <xctk:EditorDefinition>
-                    <xctk:EditorDefinition.PropertiesDefinitions>
-                        <xctk:PropertyDefinition Name="Age" />
-                        <xctk:PropertyDefinition Name="WritingFont" />
-                        <xctk:PropertyDefinition Name="Spouse" />
-                    </xctk:EditorDefinition.PropertiesDefinitions>
-                    <xctk:EditorDefinition.EditorTemplate>
-                        <DataTemplate>
-                            <TextBlock Background="Yellow" Text="{Binding Value}" />
-                        </DataTemplate>
-                    </xctk:EditorDefinition.EditorTemplate>
-                </xctk:EditorDefinition>
-
-                <!--This EditorDefinition will provide a TextBox to any property that is of type Boolean and that has any of the defined property names, replacing the default editor.-->
-                <xctk:EditorDefinition TargetType="{x:Type sys:Boolean}">
-                    <xctk:EditorDefinition.PropertiesDefinitions>
-                        <xctk:PropertyDefinition Name="DateOfBirth" />
-                        <xctk:PropertyDefinition Name="LastName" />
-                    </xctk:EditorDefinition.PropertiesDefinitions>
-                    <xctk:EditorDefinition.EditorTemplate>
-                        <DataTemplate>
-                            <TextBox Background="Red" Text="{Binding Value}" />
-                        </DataTemplate>
-                    </xctk:EditorDefinition.EditorTemplate>
-                </xctk:EditorDefinition>
-
-            </xctk:PropertyGrid.EditorDefinitions>
-        </xctk:PropertyGrid>
 
     </Grid>
 </Window>

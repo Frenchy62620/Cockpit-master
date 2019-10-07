@@ -4,12 +4,14 @@ using Cockpit.Core.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Windows.Media;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.GUI.Plugins.Properties
 {
-    public class MonitorPropertyViewModel :Screen, IPluginProperty /*, Core.Common.Events.IHandle<PropertyMonitorEvent>*/
+    [DataContract]
+    public class MonitorPropertyViewModel :PropertyChangedBase, IPluginProperty /*, Core.Common.Events.IHandle<PropertyMonitorEvent>*/
     {
         private readonly SolidColorBrush color1 = new SolidColorBrush(Colors.White);
         private readonly SolidColorBrush color2 = new SolidColorBrush(Colors.LightGray);
@@ -51,6 +53,7 @@ namespace Cockpit.GUI.Plugins.Properties
         }
 
         private ImageAlignment selectedAlignmentType;
+        [DataMember]
         public ImageAlignment SelectedAlignmentType
         {
             get => selectedAlignmentType;
@@ -84,6 +87,7 @@ namespace Cockpit.GUI.Plugins.Properties
         //                    break;
 
         private string backgroundImage;
+        [DataMember]
         public string BackgroundImage
         {
             get { return backgroundImage; }
@@ -95,6 +99,7 @@ namespace Cockpit.GUI.Plugins.Properties
         }
 
         private bool fillBackground;
+        [DataMember]
         public bool FillBackground
         {
             get { return fillBackground; }
@@ -108,6 +113,7 @@ namespace Cockpit.GUI.Plugins.Properties
         }
 
         private Color backgroundColor;
+        [DataMember]
         public Color BackgroundColor
         {
             get { return backgroundColor; }
@@ -142,7 +148,8 @@ namespace Cockpit.GUI.Plugins.Properties
             }
         }
 
-
+        //public Color Color1 { get; set; }
+        //public Color Color2 { get; set; }
         //public void Handle(PropertyMonitorEvent message)
         //{
         //    BackgroundImage = message.ImageBackground;

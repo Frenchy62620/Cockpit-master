@@ -3,12 +3,14 @@ using Cockpit.Core.Common.CustomControls;
 using Cockpit.Core.Contracts;
 using System;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Windows;
 using System.Windows.Media;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Core.Plugins.Plugins.Properties
 {
+    [DataContract]
     public class RotarySwitchAppearanceViewModel : PropertyChangedBase, IPluginProperty
     {
         private readonly IEventAggregator eventAggregator;
@@ -119,6 +121,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             }
         }
         private Color _labelColor;
+        [DataMember]
         public Color LabelColor
         {
             get => _labelColor;

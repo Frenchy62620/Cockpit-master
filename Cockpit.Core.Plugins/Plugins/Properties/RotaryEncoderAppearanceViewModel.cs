@@ -1,11 +1,13 @@
 ﻿using Caliburn.Micro;
 using Cockpit.Core.Common.CustomControls;
 using Cockpit.Core.Contracts;
+using System.Runtime.Serialization;
 using System.Windows.Media;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Core.Plugins.Plugins.Properties
 {
+    [DataContract]
     public class RotaryEncoderAppearanceViewModel : PropertyChangedBase, IPluginProperty
     {
         private readonly IEventAggregator eventAggregator;

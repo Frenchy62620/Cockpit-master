@@ -138,8 +138,8 @@ namespace Cockpit.GUI.Shells
 
         private IEnumerable<IResult> HandleProfileClosing(MonitorViewModel script)
         {
-            //if (script.IsDirty)
-            //{
+            if (script.IsDirty)
+            {
                 var message = Result.ShowMessageBox(script.Filename, string.Format("Do you want to save changes to {0}", script.Filename), MessageBoxButton.YesNoCancel);
                 yield return message;
 
@@ -152,7 +152,7 @@ namespace Cockpit.GUI.Shells
                     foreach (var result in profileDialogStrategy.SaveAs(script, true, path => fileSystem.WriteAllText(path, script.FileContent)))
                         yield return result;
                 }
-            //}
+            }
         } 
 
         public BindableCollection<MonitorViewModel> Profiles { get; set; }

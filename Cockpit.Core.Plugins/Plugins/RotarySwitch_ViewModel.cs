@@ -4,6 +4,7 @@ using Cockpit.Core.Common;
 using Cockpit.Core.Contracts;
 using Cockpit.Core.Plugins.Plugins.Properties;
 using System.Collections.ObjectModel;
+using System.Runtime.Serialization;
 using System.Windows;
 using System.Windows.Input;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
@@ -11,14 +12,18 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 namespace Cockpit.Core.Plugins.Plugins
 {
     [Identity(GroupName = "RotarySwitch", Name = "", Type = typeof(RotarySwitch_ViewModel))]
+    [DataContract]
+    //[KnownType(typeof(LayoutPropertyViewModel))]
+    //[KnownType(typeof(RotarySwitchAppearanceViewModel))]
+    //[KnownType(typeof(RotarySwitchBehaviorViewModel))]
     public class RotarySwitch_ViewModel : PropertyChangedBase, IPluginModel
     {
         private readonly IEventAggregator eventAggregator;
 
-        public LayoutPropertyViewModel Layout { get; }
-        public RotarySwitchAppearanceViewModel Appearance { get; }
-        public RotarySwitchBehaviorViewModel Behavior { get; }
-        public ObservableCollection<RotarySwitchPosition> RotarySwitchPositions { get; private set; }
+        [DataMember] public LayoutPropertyViewModel Layout { get; set; }
+        [DataMember] public RotarySwitchAppearanceViewModel Appearance { get; set; }
+        [DataMember] public RotarySwitchBehaviorViewModel Behavior { get; set; }
+         public ObservableCollection<RotarySwitchPosition> RotarySwitchPositions { get; private set; }
 
         public RotarySwitch_ViewModel(IEventAggregator eventAggregator, params object[] settings)
         {

@@ -1,15 +1,17 @@
 ﻿using Caliburn.Micro;
 using Cockpit.Common.Properties.ViewModels;
 using Cockpit.Core.Contracts;
+using System.Runtime.Serialization;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Plugin.A10C.ViewModels
 {
     [Identity(GroupName = "A10C", Name = "Altimeter", Type = typeof(A10Alt_ViewModel))]
+    [DataContract]
     public class A10Alt_ViewModel : PropertyChangedBase, IPluginModel
     {
-        public LayoutPropertyViewModel Layout { get; private set; }
-        public A10AltAppearanceViewModel Appearance { get; private set; }
+        [DataMember] public LayoutPropertyViewModel Layout { get; set; }
+        [DataMember] public A10AltAppearanceViewModel Appearance { get; set; }
 
         public A10Alt_ViewModel(IEventAggregator eventAggregator, params object[] settings)
         {

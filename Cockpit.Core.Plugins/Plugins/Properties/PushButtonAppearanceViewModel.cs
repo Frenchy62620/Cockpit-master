@@ -5,6 +5,7 @@ using Cockpit.Core.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -12,6 +13,7 @@ using System.Windows.Media;
 
 namespace Cockpit.Core.Plugins.Plugins.Properties
 {
+    [DataContract]
     public class PushButtonAppearanceViewModel : PropertyChangedBase, IPluginProperty
 
     {
@@ -118,6 +120,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             }
         }
         private double offsetY;
+        [DataMember]
         public double OffsetY
         {
             get => offsetY;
@@ -129,6 +132,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             }
         }
         private double offsetX;
+        [DataMember]
         public double OffsetX
         {
             get => offsetX;
@@ -140,6 +144,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             }
         }
         private VerticalAlignment selectedVAlignType;
+        [DataMember]
         public VerticalAlignment SelectedVAlignType
         {
             get => selectedVAlignType;
@@ -152,6 +157,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             }
         }
         private HorizontalAlignment selectedHAlignType;
+        [DataMember]
         public HorizontalAlignment SelectedHAlignType
         {
             get => selectedHAlignType;
@@ -198,6 +204,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         //    }
         //}
         private int glyphSelected;
+        [DataMember]
         public int GlyphSelected
         {
             get { return glyphSelected; }
@@ -209,6 +216,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         }
 
         private Color _glyphColor;
+        [DataMember]
         public Color GlyphColor
         {
             get => _glyphColor;
@@ -220,6 +228,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         }
 
         private double _glyphThickness;
+        [DataMember]
         public double GlyphThickness
         {
             get => _glyphThickness;
@@ -231,6 +240,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         }
 
         private double glyphscale;
+        [DataMember]
         public double GlyphScale
         {
             get => glyphscale;
@@ -242,6 +252,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         }
 
         private string glyphText;
+        [DataMember]
         public string GlyphText
         {
             get => glyphText;
@@ -253,6 +264,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         }
 
         private string image;
+        [DataMember]
         public string Image
         {
             get => image;
@@ -264,6 +276,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         }
 
         private string pushedimage;
+        [DataMember]
         public string PushedImage
         {
             get => pushedimage;
@@ -285,6 +298,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         }
 
         private Color _textColor;
+        [DataMember]
         public Color TextColor
         {
             get => _textColor;

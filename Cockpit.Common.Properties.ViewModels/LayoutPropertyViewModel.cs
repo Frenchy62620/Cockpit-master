@@ -3,12 +3,14 @@ using Cockpit.Core.Common;
 using Cockpit.Core.Contracts;
 using Cockpit.Core.Model.Events;
 using System;
+using System.Runtime.Serialization;
 using System.Windows.Controls;
 
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Common.Properties.ViewModels
 {
+    [DataContract]
     public class LayoutPropertyViewModel : PropertyChangedBase, IPluginProperty, Core.Common.Events.IHandle<RenameUCEvent>
     {
         private readonly IEventAggregator eventAggregator;
@@ -77,10 +79,11 @@ namespace Cockpit.Common.Properties.ViewModels
             System.Diagnostics.Debug.WriteLine("sortie Layout");
         }
 
-        public double UCTopOriginal { get; set; }
-        public double UCLeftOriginal { get; set; }
+        [DataMember]public double UCTopOriginal { get; set; }
+        [DataMember] public double UCLeftOriginal { get; set; }
 
         private double _uCLeft;
+        [DataMember]
         public double UCLeft
         {
             get => _uCLeft;
@@ -91,6 +94,7 @@ namespace Cockpit.Common.Properties.ViewModels
             }
         }
         private double _uCTop;
+        [DataMember]
         public double UCTop
         {
             get => _uCTop;
@@ -128,6 +132,7 @@ namespace Cockpit.Common.Properties.ViewModels
         public string Name { get; set; }
 
         private string nameUC = "";
+        [DataMember]
         public string NameUC
         {
             get => nameUC;

@@ -9,7 +9,7 @@ namespace Cockpit.GUI.Common.Strategies
     public class ProfileDialogStrategy
     {
         private readonly IResultFactory resultFactory;
-        private const string fileFilter = "Python scripts (*.py)|*.py|All files (*.*)|*.*";
+        private const string fileFilter = "Cockpit files (*.xml)|*.xml|All files (*.*)|*.*";
 
         public ProfileDialogStrategy(IResultFactory resultFactory)
         {
@@ -24,7 +24,7 @@ namespace Cockpit.GUI.Common.Strategies
             }
             else
             {
-                var result = resultFactory.ShowFileDialog("Save script", fileFilter, FileDialogMode.Save, document.FilePath);
+                var result = resultFactory.ShowFileDialog("Save Cockpit file", fileFilter, FileDialogMode.Save, document.FilePath);
                 yield return result;
 
                 if (!string.IsNullOrEmpty(result.File))
@@ -37,7 +37,7 @@ namespace Cockpit.GUI.Common.Strategies
 
         public IEnumerable<IResult> Open(Action<string> fileSelected)
         {
-            var result = resultFactory.ShowFileDialog("Open script", fileFilter, FileDialogMode.Open);
+            var result = resultFactory.ShowFileDialog("Open Cockpit file", fileFilter, FileDialogMode.Open);
             yield return result;
 
             if (!string.IsNullOrEmpty(result.File))

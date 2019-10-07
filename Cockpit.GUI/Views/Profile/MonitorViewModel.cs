@@ -7,6 +7,7 @@ using Cockpit.GUI.Events;
 using Cockpit.GUI.Plugins;
 using Cockpit.GUI.Plugins.Properties;
 using Cockpit.GUI.Views.Main;
+using Cockpit.GUI.Views.Main.Menu;
 using Cockpit.GUI.Views.Main.Profile;
 using GongSolutions.Wpf.DragDrop;
 using Ninject;
@@ -14,8 +15,11 @@ using Ninject.Parameters;
 using Ninject.Syntax;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -36,10 +40,10 @@ namespace Cockpit.GUI.Views.Profile
             this.pm = pm;
         }
     }
-
+ 
     public class MonitorViewModel : PanelViewModel, IDropTarget, Core.Common.Events.IHandle<RenameUCEvent>
     {
-        private Dictionary<Assembly, List<Type>> pluginTypes;
+        public Dictionary<Assembly, List<Type>> pluginTypes;
         public Dictionary<string, Identity> Identities;
 
         public double ZoomFactorFromMonitorViewModel;
@@ -84,27 +88,59 @@ namespace Cockpit.GUI.Views.Profile
             NbrSelected = 0;
 
             pluginTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes())
-                                                                 .Where( t  => typeof(IPluginModel).IsAssignableFrom(t) && t.IsClass && !t.IsAbstract)
+                                                                 .Where( t  => (typeof(IPluginModel).IsAssignableFrom(t) || typeof(IPluginProperty).IsAssignableFrom(t)) && t.IsClass && !t.IsAbstract)
                                                                  .GroupBy(x => x.Assembly).ToDictionary(d => d.Key, d => d.ToList());
 
 
-            Identities = pluginTypes.Values.SelectMany(c => c).ToDictionary(x => GetIdentityKey(x), x => GetIdentity(x));
+            //var pluginmodel = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes())
+            //                                                          .Where(t => typeof(IPluginModel).IsAssignableFrom(t) && t.IsClass && !t.IsAbstract)
+            //                                                          .GroupBy(x => x.Assembly).ToDictionary(d => d.Key, d => d.ToList());
 
+            Identities = pluginTypes.Values.SelectMany(c => c).Where(t => typeof(IPluginModel).IsAssignableFrom(t) && t.IsClass && !t.IsAbstract)
+                                                              .ToDictionary(x => GetIdentityKey(x), x => GetIdentity(x));
         }
 
-        protected override void OnViewAttached(object view, object context)
+        public void ViewLoaded()
         {
-            //if (this.ContentId.StartsWith("Monitor1"))
             if (Title.StartsWith("Monitor1"))
             {
                 eventAggregator.Publish(new MonitorViewStartedEvent(this));
                 eventAggregator.Publish(new DisplayPropertiesEvent(new[] { LayoutMonitor }));
             }
         }
-        public override bool IsFileContent
+
+        //protected override void OnViewAttached(object view, object context)
+        //{
+        //    if (Title.StartsWith("Monitor1"))
+        //    {
+        //        eventAggregator.Publish(new MonitorViewStartedEvent(this));
+        //        eventAggregator.Publish(new DisplayPropertiesEvent(new[] { LayoutMonitor }));
+        //    }
+        //}
+        private int CockpitFileHash;
+        public string BuildXmlBuffer()
         {
-            get { return true; }
+            string buffer;
+            var types = pluginTypes.Values.SelectMany(x => x).ToArray();
+            var serialize = new Serialize(this);
+            DataContractSerializer dcs = new DataContractSerializer(typeof(Serialize), types);
+
+            using (var memStream = new MemoryStream())
+            {
+                dcs.WriteObject(memStream, serialize);
+                //var buffer = Encoding.Default.GetString(memStream.GetBuffer());
+                buffer = Encoding.ASCII.GetString(memStream.GetBuffer()).TrimEnd('\0');
+                //var buffer1 = Encoding.GetEncoding("ASCII").GetString(memStream.GetBuffer());
+            }
+            return buffer;
         }
+
+
+        public bool IsDirty => BuildXmlBuffer().GetHashCode() != CockpitFileHash;
+        private void ResetDirtyFlag(int hashcode) => CockpitFileHash = hashcode;
+        public override void Saved(int hashcode) => ResetDirtyFlag(hashcode);
+
+        public override bool IsFileContent => true;
 
         #region DragOver & Drop
         void IDropTarget.DragOver(IDropInfo dropInfo)
@@ -388,6 +424,7 @@ namespace Cockpit.GUI.Views.Profile
 
 
         private bool enabled;
+        [DataMember]
         public bool Enabled
         {
             get { return enabled; }

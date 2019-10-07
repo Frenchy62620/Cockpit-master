@@ -4,10 +4,12 @@ using Cockpit.Core.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Windows;
 
 namespace Cockpit.Core.Plugins.Plugins.Properties
 {
+    [DataContract]
     public class PushButtonBehaviorViewModel : PropertyChangedBase, IPluginProperty
     {
         public PushButtonBehaviorViewModel(params object[] settings)
@@ -59,6 +61,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         }
 
         private string _NameOfPanel;
+        [DataMember]
         public string NameOfPanel
         {
             get => _NameOfPanel;

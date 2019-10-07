@@ -1,6 +1,7 @@
 ﻿using Caliburn.Micro;
 using Cockpit.Common.Properties.ViewModels;
 using Cockpit.Core.Contracts;
+using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -10,11 +11,12 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 namespace Cockpit.Plugin.A10C.ViewModels
 {
     [Identity(GroupName = "A10C", Name = "Flaps", Type = typeof(A10Flaps_ViewModel))]
+    [DataContract]
     public class A10Flaps_ViewModel : PropertyChangedBase, IPluginModel
     {
         private readonly IEventAggregator eventAggregator;
 
-        public LayoutPropertyViewModel Layout { get; private set; }
+        [DataMember] public LayoutPropertyViewModel Layout { get;  set; }
         //public A10FlapsAppearanceViewModel Appearance { get; private set; }
         //public A10FlapsBehaviorViewModel Behavior { get; private set; }
 

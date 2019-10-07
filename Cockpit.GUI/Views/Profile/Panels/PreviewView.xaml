@@ -6,7 +6,9 @@
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
              mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" 
-             cal:Message.Attach="[Event MouseEnter] = [Action PreviewViewEnter];[Event MouseLeave] = [Action PreviewViewLeave]">
+             cal:Message.Attach="[Event MouseEnter] = [Action PreviewViewEnter];
+                                 [Event MouseLeave] = [Action PreviewViewLeave];
+                                 [Event Loaded] = [Action ViewLoaded($source)]">
              
     <Grid>
         <Grid.ColumnDefinitions>

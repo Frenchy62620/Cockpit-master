@@ -3,6 +3,7 @@ using Cockpit.Common.Properties.ViewModels;
 using Cockpit.Core.Common;
 using Cockpit.Core.Contracts;
 using Cockpit.Core.Plugins.Plugins.Properties;
+using System.Runtime.Serialization;
 using System.Windows;
 using System.Windows.Input;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
@@ -10,13 +11,17 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 namespace Cockpit.Core.Plugins.Plugins
 {
     [Identity(GroupName = "Switch", Name = "", Type = typeof(Switch_ViewModel))]
+    [DataContract]
+    //[KnownType(typeof(LayoutPropertyViewModel))]
+    //[KnownType(typeof(SwitchAppearanceViewModel))]
+    //[KnownType(typeof(SwitchBehaviorViewModel))]
     public class Switch_ViewModel : PropertyChangedBase, IPluginModel
     {
         private readonly IEventAggregator eventAggregator;
 
-        public LayoutPropertyViewModel Layout { get; }
-        public SwitchAppearanceViewModel Appearance { get; }
-        public SwitchBehaviorViewModel Behavior { get; }
+        [DataMember] public LayoutPropertyViewModel Layout { get; set; }
+        [DataMember] public SwitchAppearanceViewModel Appearance { get; set; }
+        [DataMember] public SwitchBehaviorViewModel Behavior { get; set; }
 
 
         public Switch_ViewModel(IEventAggregator eventAggregator, params object[] settings)

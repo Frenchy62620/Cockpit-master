@@ -1,10 +1,12 @@
 ﻿using Caliburn.Micro;
 using Cockpit.Core.Contracts;
 using System.Linq;
+using System.Runtime.Serialization;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Core.Plugins.Plugins.Properties
 {
+    [DataContract]
     public class RotarySwitchBehaviorViewModel : PropertyChangedBase, IPluginProperty
     {
         private readonly IEventAggregator eventAggregator;
@@ -38,6 +40,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         private int Idx;
 
         private string lineAngles;
+        [DataMember]
         public string LineAngles
         {
             get => lineAngles;

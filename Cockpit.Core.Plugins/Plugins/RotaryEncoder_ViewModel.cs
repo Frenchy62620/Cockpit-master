@@ -3,6 +3,7 @@ using Cockpit.Common.Properties.ViewModels;
 using Cockpit.Core.Common;
 using Cockpit.Core.Contracts;
 using Cockpit.Core.Plugins.Plugins.Properties;
+using System.Runtime.Serialization;
 using System.Windows;
 using System.Windows.Input;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
@@ -10,12 +11,15 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 namespace Cockpit.Core.Plugins.Plugins
 {
     [Identity(GroupName = "RotaryEncoder", Name = "", Type = typeof(RotaryEncoder_ViewModel))]
+    [DataContract]
+    //[KnownType(typeof(LayoutPropertyViewModel))]
+    //[KnownType(typeof(RotaryEncoderAppearanceViewModel))]
     public class RotaryEncoder_ViewModel : PropertyChangedBase, IPluginModel
     {
         private readonly IEventAggregator eventAggregator;
 
-        public LayoutPropertyViewModel Layout { get; }
-        public RotaryEncoderAppearanceViewModel Appearance { get; }
+        [DataMember] public LayoutPropertyViewModel Layout { get; set; }
+        [DataMember] public RotaryEncoderAppearanceViewModel Appearance { get; set; }
         //public RotarySwitchBehaviorViewModel Behavior { get; }
         //public ObservableCollection<RotarySwitchPosition> RotarySwitchPositions { get; private set; }
 
@@ -47,6 +51,7 @@ namespace Cockpit.Core.Plugins.Plugins
 
         #region PluginModel
         private string nameUC;
+        [DataMember]
         public string NameUC
         {
             get => nameUC;

@@ -1,13 +1,11 @@
 ﻿using Caliburn.Micro;
 using Cockpit.Core.Contracts;
+using System.Runtime.Serialization;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Core.Plugins.Plugins.Properties
 {
-    //,
-    //                                Core.Common.Events.IHandle<ThreeWayToggleSwitchAppearanceEvent>,
-    //                                Core.Common.Events.IHandle<PropertyHasIndicatorEvent>,
-    //                                Core.Common.Events.IHandle<PropertyHas3ImagesEvent>
+    [DataContract]
     public class SwitchAppearanceViewModel : PropertyChangedBase, IPluginProperty
     {
         private readonly IEventAggregator eventAggregator;
@@ -52,6 +50,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
 
         #region Selection Images
         private string positionImage0;
+        [DataMember]
         public string PositionImage0
         {
             get => positionImage0;
@@ -63,6 +62,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         }
 
         private string positionImage1;
+        [DataMember]
         public string PositionImage1
         {
             get => positionImage1;
@@ -74,6 +74,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         }
 
         private string positionImage2;
+        [DataMember]
         public string PositionImage2
         {
             get => positionImage2;
@@ -85,6 +86,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         }
 
         private string positionIndicatorImage0;
+        [DataMember]
         public string PositionIndicatorImage0
         {
             get => positionIndicatorImage0;
@@ -96,6 +98,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         }
 
         private string positionIndicatorImage1;
+        [DataMember]
         public string PositionIndicatorImage1
         {
             get => positionIndicatorImage1;
@@ -107,6 +110,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         }
 
         private string positionIndicatorImage2;
+        [DataMember]
         public string PositionIndicatorImage2
         {
             get => positionIndicatorImage2;
@@ -129,6 +133,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         }
 
         private bool hasIndicator;
+        [DataMember]
         public bool HasIndicator
         {
             get => hasIndicator;
@@ -139,6 +144,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             }
         }
         private bool has3Images;
+        [DataMember]
         public bool Has3Images
         {
             get => has3Images;

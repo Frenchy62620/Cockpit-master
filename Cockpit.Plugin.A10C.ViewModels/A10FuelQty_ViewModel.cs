@@ -1,15 +1,18 @@
 ﻿using Caliburn.Micro;
 using Cockpit.Common.Properties.ViewModels;
 using Cockpit.Core.Contracts;
+using System.Runtime.Serialization;
 using System.Windows.Input;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Plugin.A10C.ViewModels
 {
     [Identity(GroupName = "A10C", Name = "FuelQty", Type = typeof(A10FuelQty_ViewModel))]
+    [DataContract]
     public class A10FuelQty_ViewModel : PropertyChangedBase, IPluginModel
     {
-        public LayoutPropertyViewModel Layout { get; }
+        [DataMember] public LayoutPropertyViewModel Layout { get; set; }
+
         private readonly IEventAggregator eventAggregator;
 
         public A10FuelQty_ViewModel(IEventAggregator eventAggregator, params object[] settings)

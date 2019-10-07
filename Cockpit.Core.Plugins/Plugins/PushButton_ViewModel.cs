@@ -3,6 +3,7 @@ using Cockpit.Common.Properties.ViewModels;
 using Cockpit.Core.Contracts;
 using Cockpit.Core.Model.Events;
 using Cockpit.Core.Plugins.Plugins.Properties;
+using System.Runtime.Serialization;
 using System.Windows;
 using System.Windows.Input;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
@@ -10,13 +11,14 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 namespace Cockpit.Core.Plugins.Plugins
 {
     [Identity(GroupName = "PushButton", Name ="", Type = typeof(PushButton_ViewModel))]
+    [DataContract(Name = "Cockpit.Core.Plugins.Plugins.PushButton_ViewModel")]
     public class PushButton_ViewModel : PropertyChangedBase, IPluginModel 
     {
         private readonly IEventAggregator eventAggregator;
 
-        public PushButtonAppearanceViewModel Appearance { get; private set; }
-        public LayoutPropertyViewModel Layout { get; private set; }
-        public PushButtonBehaviorViewModel Behavior { get; private set; }
+        [DataMember] public PushButtonAppearanceViewModel Appearance { get; private set; }
+        [DataMember] public LayoutPropertyViewModel Layout { get; private set; }
+        [DataMember] public PushButtonBehaviorViewModel Behavior { get; private set; }
 
         public PushButton_ViewModel(IEventAggregator eventAggregator, params object[] settings)
         {
@@ -29,9 +31,21 @@ namespace Cockpit.Core.Plugins.Plugins
             this.eventAggregator = eventAggregator;
             System.Diagnostics.Debug.WriteLine($"entree push {NameUC} {this}");
         }
+        #region serialize
+        [OnSerializing]
+        void PrepareForSerialization(StreamingContext sc)
+        {
 
+        }
+        [OnSerialized]
+        void PrepareForSerialization1(StreamingContext sc)
+        {
+
+        }
+        #endregion
         #region PluginModel
         private string nameUC;
+        [DataMember]
         public string NameUC
         {
             get => nameUC;

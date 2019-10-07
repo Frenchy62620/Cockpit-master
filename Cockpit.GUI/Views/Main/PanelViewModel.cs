@@ -5,7 +5,7 @@ using System.Windows.Media;
 
 namespace Cockpit.GUI.Views.Main
 {
-    public abstract class PanelViewModel : Screen
+    public abstract class PanelViewModel : PropertyChangedBase
     {
         private string title;
         private bool isActive;
@@ -77,7 +77,7 @@ namespace Cockpit.GUI.Views.Main
             }
         }
 
-        public virtual void Saved()
+        public virtual void Saved(int hashcode)
         {
             
         }

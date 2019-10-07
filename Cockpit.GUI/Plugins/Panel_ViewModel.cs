@@ -13,6 +13,7 @@ using Ninject.Syntax;
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -22,6 +23,10 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 namespace Cockpit.GUI.Plugins
 {
     [Identity(GroupName = "Panel", Name = "", Type = typeof(Panel_ViewModel))]
+    [DataContract]
+    [KnownType(typeof(LayoutPropertyViewModel))]
+    [KnownType(typeof(PanelAppearanceViewModel))]
+
     public class Panel_ViewModel : PropertyChangedBase, IPluginModel, IDropTarget, Core.Common.Events.IHandle<VisibilityPanelEvent>,
                                                                                    Core.Common.Events.IHandle<PreviewViewEvent>,
                                                                                    Core.Common.Events.IHandle<ScalingPanelEvent>
@@ -29,8 +34,8 @@ namespace Cockpit.GUI.Plugins
         private readonly IEventAggregator eventAggregator;
         private readonly IResolutionRoot resolutionRoot;
 
-        public PanelAppearanceViewModel Appearance { get; private set; }
-        public LayoutPropertyViewModel Layout { get; private set; }
+        [DataMember] public PanelAppearanceViewModel Appearance { get; private set; }
+        [DataMember] public LayoutPropertyViewModel Layout { get; private set; }
 
         private bool IsFromPreviewView = false;
 
@@ -66,6 +71,8 @@ namespace Cockpit.GUI.Plugins
         {
             System.Diagnostics.Debug.WriteLine($"sortie panel {NameUC}");
         }
+
+        [DataMember]
         public BindableCollection<IPluginModel> MyCockpitViewModels { get; set; }
 
         private bool isvisible;

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Xml;
 using Caliburn.Micro;
 using Cockpit.Core.Common;
 using Cockpit.Core.Model.Events;
@@ -92,6 +95,8 @@ namespace Cockpit.GUI.Views.Main.Menu
             if (!string.IsNullOrEmpty(filePath))
             {
                 //document.LoadFileContent(fileSystem.ReadAllText(filePath));
+                
+
                 AddRecentScript(filePath);
             }
 
@@ -126,8 +131,13 @@ namespace Cockpit.GUI.Views.Main.Menu
         private void Save(PanelViewModel document, string filePath)
         {
             document.FilePath = filePath;
-            fileSystem.WriteAllText(filePath, document.FileContent);
-            document.Saved();
+
+            var mv = document as MonitorViewModel;
+
+            document.FilePath = filePath;
+            var buffer = mv.BuildXmlBuffer();
+            fileSystem.WriteAllText(filePath, buffer);
+            document.Saved(buffer.GetHashCode());
 
             AddRecentScript(filePath);
         }
