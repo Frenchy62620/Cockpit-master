@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Cockpit.Core.Contracts
 {
@@ -8,5 +9,6 @@ namespace Cockpit.Core.Contracts
         public string GroupName { get; set; }
         public string Name { get; set; }
         public Type Type { get; set; }
+        //public List<string> NameOfVar = new List<string>();
     }
 }

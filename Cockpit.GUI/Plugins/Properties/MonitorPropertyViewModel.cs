@@ -13,6 +13,8 @@ namespace Cockpit.GUI.Plugins.Properties
     [DataContract]
     public class MonitorPropertyViewModel :PropertyChangedBase, IPluginProperty /*, Core.Common.Events.IHandle<PropertyMonitorEvent>*/
     {
+        //private readonly Color xcolor1 = Colors.White;
+        //private readonly Color xcolor2 = Colors.LightGray;
         private readonly SolidColorBrush color1 = new SolidColorBrush(Colors.White);
         private readonly SolidColorBrush color2 = new SolidColorBrush(Colors.LightGray);
 

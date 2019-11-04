@@ -175,8 +175,6 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             set
             {
                 hasIndicator = value;
-                //AppearancewModel.HasIndicator = value;
-
                 NotifyOfPropertyChange(() => HasIndicator);
             }
         }
@@ -187,8 +185,6 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             set
             {
                 has3images = value;
-                //AppearancewModel.HasIndicator = value;
-
                 NotifyOfPropertyChange(() => Has3Images);
             }
         }

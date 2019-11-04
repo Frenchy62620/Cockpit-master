@@ -3,6 +3,9 @@ using Cockpit.Common.Properties.ViewModels;
 using Cockpit.Core.Common;
 using Cockpit.Core.Contracts;
 using Cockpit.Core.Plugins.Plugins.Properties;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows;
 using System.Windows.Input;
@@ -23,20 +26,24 @@ namespace Cockpit.Core.Plugins.Plugins
         [DataMember] public SwitchAppearanceViewModel Appearance { get; set; }
         [DataMember] public SwitchBehaviorViewModel Behavior { get; set; }
 
-
-        public Switch_ViewModel(IEventAggregator eventAggregator, params object[] settings)
+        public Switch_ViewModel(IEventAggregator eventAggregator, object PluginParent,
+                                                              KeyValuePair<object, Type>[] layout,
+                                                              KeyValuePair<object, Type>[] appearance,
+                                                              KeyValuePair<object, Type>[] behavior)
         {
-            Layout = new LayoutPropertyViewModel(eventAggregator: eventAggregator, settings: settings);
-            Behavior = new SwitchBehaviorViewModel(eventAggregator, settings);
-            Appearance = new SwitchAppearanceViewModel(eventAggregator, Behavior, settings);
 
-            NameUC = (string)settings[2];
+            var ctor = typeof(LayoutPropertyViewModel).GetConstructor(layout.Select(p => p.Value).ToArray());
+            Layout = (LayoutPropertyViewModel)ctor.Invoke(layout.Select(p => p.Key).ToArray());
 
-            ////ScaleX = (double)settings[10];
-            //ScaleX = 1;
+            ctor = typeof(SwitchAppearanceViewModel).GetConstructor(appearance.Select(p => p.Value).ToArray());
+            Appearance = (SwitchAppearanceViewModel)ctor.Invoke(appearance.Select(p => p.Key).ToArray());
+
+            ctor = typeof(SwitchBehaviorViewModel).GetConstructor(behavior.Select(p => p.Value).ToArray());
+            Behavior = (SwitchBehaviorViewModel)ctor.Invoke(behavior.Select(p => p.Key).ToArray());
+
+            NameUC = Layout.NameUC;
 
             this.eventAggregator = eventAggregator;
-            this.eventAggregator.Subscribe(this);
         }
 
         #region PluginModel
@@ -110,15 +117,14 @@ namespace Cockpit.Core.Plugins.Plugins
         public void MouseLeftButtonDownOnUC(IInputElement elem, Point pos, MouseEventArgs e)
         {
 
-
-            //e.Handled = true;
-            //var r = elem as Rectangle;
         //[Description("On - On")]
         //OnOn,
         //[Description("On - Mom")]
         //OnMom,
         //[Description("Mom - On")]
         //MomOn,
+        //[Description("Panel Button 2p")]
+        //PanelButton2p,
         //[Description("On - On - On")]
         //OnOnOn,
         //[Description("On - On - Mom")]
@@ -126,12 +132,16 @@ namespace Cockpit.Core.Plugins.Plugins
         //[Description("Mom - On - On")]
         //MomOnOn,
         //[Description("Mom - On - Mom")]
-        //MomOnMom
+        //MomOnMom,
+        //[Description("Panel Button 3p")]
+        //PanelButton3p,
+
             switch (Behavior.SelectedSwitchTypeIndex)
             {
                 case 0:
                 case 1:
                 case 2:
+                case 3:
                     Appearance.IndexImage = 1 - Appearance.IndexImage;
                     break;
                 default:
@@ -166,13 +176,13 @@ namespace Cockpit.Core.Plugins.Plugins
                 case 2:
                     Appearance.IndexImage = 1 - Appearance.IndexImage;
                     break;
-                case 4:
+                case 5:
                     if (Appearance.IndexImage == 2) Appearance.IndexImage = 1;
                     break;
-                case 5:
+                case 6:
                     if (Appearance.IndexImage == 0) Appearance.IndexImage = 1;
                     break;
-                case 6:
+                case 7:
                     Appearance.IndexImage = 1;
                     break;
             }

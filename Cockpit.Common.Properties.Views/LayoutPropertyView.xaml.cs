@@ -6,5 +6,11 @@ namespace Cockpit.Common.Properties.Views
         {
             InitializeComponent();
         }
+#if DEBUG
+        ~LayoutPropertyView()
+        {
+            System.Diagnostics.Debug.WriteLine($"sortie {this}");
+        }
+#endif
     }
 }

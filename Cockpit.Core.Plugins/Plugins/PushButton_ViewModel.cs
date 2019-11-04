@@ -3,9 +3,15 @@ using Cockpit.Common.Properties.ViewModels;
 using Cockpit.Core.Contracts;
 using Cockpit.Core.Model.Events;
 using Cockpit.Core.Plugins.Plugins.Properties;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 using System.Windows;
 using System.Windows.Input;
+using System.Xml;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Core.Plugins.Plugins
@@ -19,18 +25,55 @@ namespace Cockpit.Core.Plugins.Plugins
         [DataMember] public PushButtonAppearanceViewModel Appearance { get; private set; }
         [DataMember] public LayoutPropertyViewModel Layout { get; private set; }
         [DataMember] public PushButtonBehaviorViewModel Behavior { get; private set; }
-
-        public PushButton_ViewModel(IEventAggregator eventAggregator, params object[] settings)
+        //public PushButton_ViewModel(IEventAggregator eventAggregator,
+        //                            string NameUC = "", int UCLeft = 0, int UCTop = 0, int Width = 0, int Height = 0, int Angle = 0,
+        //                            double RealUCLeft = 0, double RealUCTop = 0, double RealWidth = 0, double RealHeight = 0,
+        //                            double WidthOriginal = 0, double HeightOriginal = 0, double ScaleX = 1, double ScaleY = 1,
+        //                            double ParentScaleX = 1, double ParentScaleY = 1,
+        //                            string[] Images = null, int StartImageIndex = 0)
+        //{
+        //}
+        //public PushButton_ViewModel(IEventAggregator eventAggregator, object[] layout, object[] appearance, object[] behaviour)
+        public PushButton_ViewModel(IEventAggregator eventAggregator, object[] plugin,
+                                                                      KeyValuePair<object, Type>[] layout, 
+                                                                      KeyValuePair<object, Type>[] appearance, 
+                                                                      KeyValuePair<object, Type>[] behavior)
         {
-            Layout = new LayoutPropertyViewModel(eventAggregator: eventAggregator, settings: settings);
-            Appearance = new PushButtonAppearanceViewModel(settings);
-            Behavior = new PushButtonBehaviorViewModel(settings);
 
-            NameUC = (string)settings[2];
+            var ctor = typeof(LayoutPropertyViewModel).GetConstructor(layout.Select(p => p.Value).ToArray());
+            Layout = (LayoutPropertyViewModel)ctor.Invoke(layout.Select(p => p.Key).ToArray());
+
+            ctor = typeof(PushButtonAppearanceViewModel).GetConstructor(appearance.Select(p => p.Value).ToArray());
+            Appearance = (PushButtonAppearanceViewModel)ctor.Invoke(appearance.Select(p => p.Key).ToArray());
+
+            ctor = typeof(PushButtonBehaviorViewModel).GetConstructor(behavior.Select(p => p.Value).ToArray());
+            Behavior = (PushButtonBehaviorViewModel)ctor.Invoke(behavior.Select(p => p.Key).ToArray());
+
+            NameUC = Layout.NameUC;
 
             this.eventAggregator = eventAggregator;
-            System.Diagnostics.Debug.WriteLine($"entree push {NameUC} {this}");
+#if DEBUG
+            System.Diagnostics.Debug.WriteLine($"entree {this} {NameUC}");
+            var types = new System.Type[] { typeof(LayoutPropertyViewModel), typeof(PushButtonAppearanceViewModel), typeof(PushButtonBehaviorViewModel)  };
+            DataContractSerializer dcs = new DataContractSerializer(typeof(PushButton_ViewModel), types);
+            string buffer;
+            using (var memStream = new MemoryStream())
+            {
+                dcs.WriteObject(memStream, this);
+                buffer = Encoding.ASCII.GetString(memStream.GetBuffer()).TrimEnd('\0');
+            }
+            XmlDocument docxml = new XmlDocument();
+            docxml.LoadXml(buffer);
+            using (XmlTextWriter writer = new XmlTextWriter(@"j:\test.xml", null))
+            {
+                writer.Formatting = Formatting.Indented;
+                docxml.Save(writer);
+            }
+
+#endif
         }
+
+
         #region serialize
         [OnSerializing]
         void PrepareForSerialization(StreamingContext sc)
@@ -147,10 +190,11 @@ namespace Cockpit.Core.Plugins.Plugins
             }
         }
         #endregion
-
+#if DEBUG
         ~PushButton_ViewModel()
         {
-            System.Diagnostics.Debug.WriteLine($"sortie push {NameUC}");
+            System.Diagnostics.Debug.WriteLine($"sortie {this} {NameUC}");
         }
+#endif
     }
 }

@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
-             mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" 
+             mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
              cal:Message.Attach="[Event MouseEnter] = [Action PreviewViewEnter];
                                  [Event MouseLeave] = [Action PreviewViewLeave];
                                  [Event Loaded] = [Action ViewLoaded($source)]">
@@ -37,13 +37,13 @@
             <Grid Width="{Binding PreviewWidth}" Height="{Binding PreviewHeight}">
                 <Rectangle x:Name="MainRectangle"  StrokeThickness="4" Stroke="Black" 
                            >
-
+                    <!--, diag:PresentationTraceSources.TraceLevel=High-->
                     <Rectangle.Fill>
                         <DrawingBrush Viewport="0,0,10,10" ViewportUnits="Absolute" TileMode="Tile">
                             <DrawingBrush.Drawing>
                                 <DrawingGroup>
-                                    <GeometryDrawing Geometry="M0,0 L10,0 10,10, 0,10Z" Brush="{Binding MonitorViewModel.LayoutMonitor.BackgroundColor1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                    <GeometryDrawing Geometry="M0,5 L10,5 10,10, 5,10 5,0 0,0Z" Brush="{Binding MonitorViewModel.LayoutMonitor.BackgroundColor2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <GeometryDrawing Geometry="M0,0 L10,0 10,10, 0,10Z" Brush="{Binding MonitorViewModel.LayoutMonitor.BackgroundColor1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=Black}" />
+                                    <GeometryDrawing Geometry="M0,5 L10,5 10,10, 5,10 5,0 0,0Z" Brush="{Binding MonitorViewModel.LayoutMonitor.BackgroundColor2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=Black}"/>
                                 </DrawingGroup>
                             </DrawingBrush.Drawing>
                         </DrawingBrush>
@@ -59,7 +59,7 @@
                 <ItemsControl ItemsSource="{Binding MonitorViewModel.MyCockpitViewModels}" >
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <AdornerDecorator>
+                            <!--<AdornerDecorator>-->
                             <ContentControl cal:View.Model="{Binding}"  >
                                 <ContentControl.RenderTransform>
                                     <TransformGroup >
@@ -68,7 +68,7 @@
                                     </TransformGroup>
                                 </ContentControl.RenderTransform>
                             </ContentControl>
-                            </AdornerDecorator>
+                            <!--</AdornerDecorator>-->
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                     <!-- Replace panel with a canvas -->

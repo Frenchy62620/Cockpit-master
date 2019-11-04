@@ -6,10 +6,38 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:zzApp1"
-        mc:Ignorable="d"
+        mc:Ignorable="d" Loaded="Window_Loaded"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" x:Name="global">
+            <StackPanel Orientation="Vertical" x:Name="first">
+                <Border Background="Beige" BorderThickness="1" BorderBrush="Black" Width="100" Height="50" Margin="2" x:Name="borderleft1"></Border>
 
+                <Border Background="Beige" BorderThickness="1" BorderBrush="Black" Width="100" Height="90" Margin="2" x:Name="borderleft2"></Border>
+            </StackPanel>
 
+            <Border Background="Beige" BorderThickness="1" BorderBrush="Black" Margin="2"  >
+                <StackPanel >
+                    <StackPanel Orientation="Horizontal" x:Name="buttons">
+                        <Button Content="Some"/>
+                        <Button Content="Buttons"/>
+                    </StackPanel>
+                    <Label Content="Some Label" x:Name="label"/>
+                    <ListView ScrollViewer.VerticalScrollBarVisibility="Auto"  >
+                        <ListViewItem>Item1</ListViewItem>
+                        <ListViewItem>Item2</ListViewItem>
+                        <ListViewItem>Item3</ListViewItem>
+                        <ListViewItem>Item4</ListViewItem>
+                        <ListViewItem>Item5</ListViewItem>
+                        <ListViewItem>Item6</ListViewItem>
+                        <ListViewItem>Item7</ListViewItem>
+                        <ListViewItem>Item8</ListViewItem>
+                    </ListView>
+                </StackPanel>
+            </Border>
+        </StackPanel>
     </Grid>
 </Window>

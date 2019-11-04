@@ -8,10 +8,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System;
 using System.Windows.Media;
+using Cockpit.Core.Contracts;
 
 namespace Cockpit.GUI.Views.Profile.Panels
 {
-    public class PreviewViewModel : PanelViewModel, Core.Common.Events.IHandle<MonitorViewStartedEvent>
+    public class PreviewViewModel : PanelViewModel, Core.Common.Events.IHandle<MonitorViewStartedEvent>,
+                                                    Core.Common.Events.IHandle<MonitorViewEndedEvent>
     {
         private readonly IEventAggregator eventAggregator;
 
@@ -22,7 +24,6 @@ namespace Cockpit.GUI.Views.Profile.Panels
 
         private ScrollViewer sv;
 
-        public MonitorViewModel MonitorViewModel { get; set; }
 
         private readonly DisplayManager DisplayManager;
 
@@ -77,38 +78,17 @@ namespace Cockpit.GUI.Views.Profile.Panels
                 }
             }
         }
-        //protected override void OnViewLoaded(object view)
-        //{
-        //    //base.OnViewLoaded(view);
-        //    //var d = GetView() as PreviewTabView;
-        //    ZoomPanelVisibility = Visibility.Collapsed;
-        //    //return;
 
-        //    ProcessElement((DependencyObject)view);
-        //    void ProcessElement(DependencyObject element)
-        //    {
-        //        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
-        //        {
-
-        //            Visual childVisual = (Visual)VisualTreeHelper.GetChild(element, i);
-        //            var t = childVisual.GetType().Name;
-        //            System.Diagnostics.Debug.WriteLine($"{this}:{i} -> {t} ");
-        //            if (t.Contains("ScrollViewer"))
-        //            {
-        //                sv = childVisual as ScrollViewer;
-        //                return;
-        //            }
-
-        //            ////System.Diagnostics.Debug.WriteLine($"{i} -> {t}");
-        //            //var childContentVisual = childVisual as ContentControl;
-        //            //if (childContentVisual != null)
-        //            //{
-        //            //    var content = childContentVisual.Content;
-        //            //}
-        //            ProcessElement(childVisual);
-        //        }
-        //    }
-        //}
+        private MonitorViewModel _monitorViewModel;
+        public MonitorViewModel MonitorViewModel
+        {
+            get => _monitorViewModel;
+            set
+            {
+                _monitorViewModel = value;
+                NotifyOfPropertyChange(() => MonitorViewModel);
+            }
+        }
 
         private bool fullSize;
         public bool FullSize
@@ -243,6 +223,8 @@ namespace Cockpit.GUI.Views.Profile.Panels
         public double ScrollWLast;
         public double ScrollHLast;
         public double ZoomLevelLast;
+
+
         public void ScrollViewerSizeChanged(SizeChangedEventArgs e)
         {
             if (FullSize) return;
@@ -291,17 +273,26 @@ namespace Cockpit.GUI.Views.Profile.Panels
         {
             if (MonitorViewModel == null) return;
             MonitorViewModel.ZoomFactorFromMonitorViewModel = value;
-            foreach (var p in MonitorViewModel.MyCockpitViewModels)
+            foreach (IPluginModel p in MonitorViewModel.MyCockpitViewModels)
             {
                 p.ZoomFactorFromPluginModel = value;
             }
         }
+        public void Handle(MonitorViewEndedEvent message)
+        {
+            MonitorViewModel.MyCockpitViewModels.Clear();
+            MonitorViewModel.RemoveAdorners();
+            MonitorViewModel.LayoutMonitor.BackgroundImage = "";
+            MonitorViewModel.LayoutMonitor.FillBackground = false;
+            //MonitorViewModel = null;
+            //IsVisible = false;
 
+        }
         public void Handle(MonitorViewStartedEvent message)
         {
             IsVisible = true;
             MonitorViewModel = message.MonitorViewModel;
-            var bg1 = MonitorViewModel.LayoutMonitor.BackgroundColor2;
+            MonitorViewModel.ZoomFactorFromMonitorViewModel = ZoomFactor;
         }
     }
 }

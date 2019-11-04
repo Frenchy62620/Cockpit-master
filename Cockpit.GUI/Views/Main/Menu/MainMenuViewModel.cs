@@ -53,7 +53,7 @@ namespace Cockpit.GUI.Views.Main.Menu
             this.fileSystem = fileSystem;
             this.profileDialogStrategy = profileDialogStrategy;
             this.settingsManager = settings;
-
+            
             RecentScripts = new BindableCollection<RecentFileViewModel>(ListRecentFiles());
         }
 
@@ -72,6 +72,10 @@ namespace Cockpit.GUI.Views.Main.Menu
 
         public void NewScript()
         {
+            //if (ActiveDocument != null)
+            //{
+            //    CloseScript();
+            //}
             CreateScriptViewModel(null);
         }
 
@@ -89,13 +93,12 @@ namespace Cockpit.GUI.Views.Main.Menu
         {
             if (filePath != null && !fileSystem.Exists(filePath)) return;
 
-            var document = profileEditorFactory()
-                .Configure(filePath);
+            var document = profileEditorFactory().Configure(filePath);
 
             if (!string.IsNullOrEmpty(filePath))
             {
                 //document.LoadFileContent(fileSystem.ReadAllText(filePath));
-                
+                document.LoadFileContent(document);
 
                 AddRecentScript(filePath);
             }
@@ -130,13 +133,21 @@ namespace Cockpit.GUI.Views.Main.Menu
 
         private void Save(PanelViewModel document, string filePath)
         {
-            document.FilePath = filePath;
 
-            var mv = document as MonitorViewModel;
 
             document.FilePath = filePath;
-            var buffer = mv.BuildXmlBuffer();
+            //var buffer = mv.BuildXmlBuffer();
+            var buffer = profileEditorFactory().BuildXMLBuffer((MonitorViewModel) document);
             fileSystem.WriteAllText(filePath, buffer);
+
+            //XmlDocument docxml = new XmlDocument();
+            //docxml.Load(filePath);
+            //using (XmlTextWriter writer = new XmlTextWriter($"_{filePath}", null))
+            //{
+            //    writer.Formatting = Formatting.Indented;
+            //    docxml.Save(writer);
+            //}
+
             document.Saved(buffer.GetHashCode());
 
             AddRecentScript(filePath);
@@ -259,6 +270,7 @@ namespace Cockpit.GUI.Views.Main.Menu
 
         public void ShowView(PanelViewModel panel)
         {
+            //if (panel.Title.Equals("Preview") && ActiveDocument == null) return;
             panel.IsVisible = true;
             panel.IsPanelActive = true;
         }

@@ -18,66 +18,171 @@ namespace Cockpit.Common.Properties.ViewModels
         private bool IsPanel;
         public double Factor;
         public double ScaleFactor;
-        public int WidthOriginal;
-        public int HeightOriginal;
+
+        [DataMember] public double WidthOriginal { get; set; }
+        [DataMember] public double HeightOriginal { get; set; }
         private IPluginModel Parent { get; set; }
-        public LayoutPropertyViewModel(IEventAggregator eventAggregator, bool IsPanel = false, params object[] settings)
+
+        //        public LayoutPropertyViewModel(IEventAggregator eventAggregator, object[] settings)
+        //        {
+        //            //  string NameUC = "", int UCLeft = 0, int UCTop = 0, int Width = 0, int Height = 0, int Angle = 0,
+        //            //  double ParentScaleX = 1, double ParentScaleY = 1,
+        //            //  double RealUCLeft = 0, double RealUCTop = 0, double RealWidth = 0, double RealHeight = 0,
+        //            //  double WidthOriginal = 0, double HeightOriginal = 0, double ScaleX = 1, double ScaleY = 1,
+        //            //  string[] Images = null, int StartImageIndex = 0
+
+        //            NameUC = (string)settings[0];
+        //            UCLeft = (int)settings[1];
+        //            UCTop = (int)settings[2];
+        //            Width = (int)settings[3];
+        //            Height = (int)settings[4];
+        //            IndexAngle = Array.FindIndex((int[])Enum.GetValues(typeof(LayoutRotation)), w => w == (int)settings[5]);
+
+        //            ParentScaleX = (double)settings[6];
+        //            ParentScaleY = (double)settings[7];
+        ////--------------------------------------------------------------
+        //            WidthOriginal = (int)Width;
+        //            HeightOriginal = (int)Height;
+
+        //            RealWidth = Width;
+        //            RealHeight = Height;
+
+
+        //            ScaleX = 1;
+        //            ScaleY = 1;
+
+        //            Factor = RealHeight / RealWidth;
+        //            ScaleFactor = 1;
+
+        //            RealUCLeft = UCLeft * ParentScaleX;
+        //            RealUCTop = UCTop * ParentScaleY;
+
+        //        }
+        public LayoutPropertyViewModel(IEventAggregator eventAggregator, bool IsModeEditor = false, bool IsPanel = false, bool IsPluginDropped = false,
+                                       string NameUC = "", int UCLeft = 0, int UCTop = 0, int Width = 0, int Height = 0, int Angle = 0,
+                                       double ParentScaleX = 1, double ParentScaleY = 1,
+                                       double RealUCLeft = 0, double RealUCTop = 0, double RealWidth = 0, double RealHeight = 0,
+                                       double WidthOriginal = 0, double HeightOriginal = 0, double ScaleX = 1, double ScaleY = 1)
         {
-            this.IsPanel = IsPanel;
-            Parent = settings[1] as IPluginModel;
 
-            NameUC = (string)settings[2];
+            this.NameUC = NameUC;
 
-            UCLeft = ((int[])settings[3])[0];
-            UCTop = ((int[])settings[3])[1];
-
-            var width = (double)((int[])settings[3])[2];
-            var height = (double)((int[])settings[3])[3];
-
-            var value = ((int[])settings[3])[4];
-            IndexAngle = Array.FindIndex((int[])Enum.GetValues(typeof(LayoutRotation)), w => w == value);
-            Factor = height / width;
-
-            Width = width;
-            Height = height;
-            WidthOriginal = (int)width;
-            HeightOriginal = (int)height;
-
-            RealWidth = width;
-            RealHeight = height;
-            UCLeftOriginal = UCLeft;
-            UCTopOriginal = UCTop;
-
-
-
-            this.eventAggregator = eventAggregator;
-
-            bool IsModeEditor = (bool)settings[0];
-            if (IsModeEditor)
-            {
-                eventAggregator.Subscribe(this);
-            }
             Linked = true;
             PxPct = true;
-            Name = "Layout";
 
-            ScaleX = 1;
-            ScaleY = 1;
+            this.UCLeft = UCLeft;
+            this.UCTop = UCTop;
+            this.Width = Width;
+            this.Height = Height;
+            this.WidthOriginal = WidthOriginal;
+            this.HeightOriginal = HeightOriginal;
+
+            this.RealUCLeft = RealUCLeft;
+            this.RealUCTop = RealUCTop;
+            this.RealWidth = RealWidth;
+            this.RealHeight = RealHeight;
+
+            this.ParentScaleX = ParentScaleX;
+            this.ParentScaleY = ParentScaleY;
+            this.ScaleX = ScaleX;
+            this.ScaleY = ScaleY;
+
             Factor = RealHeight / RealWidth;
             ScaleFactor = ScaleY / ScaleX;
 
-            ParentScaleX = ((double[])settings[4])[0];
-            ParentScaleY = ((double[])settings[4])[1];
+            this.ParentScaleX = ParentScaleX;
+            this.ParentScaleY = ParentScaleY;
 
-            RealUCLeft = UCLeft * ParentScaleX;
-            RealUCTop = UCTop * ParentScaleY;
+            this.RealUCLeft = UCLeft * ParentScaleX;
+            this.RealUCTop = UCTop * ParentScaleY;
+
+
+            Name = "Layout";
+
+            this.eventAggregator = eventAggregator;
+
+            if (IsModeEditor)
+                eventAggregator.Subscribe(this);
+
+        }
+        public LayoutPropertyViewModel(IEventAggregator eventAggregator, bool IsPanel = false, params object[] settings)
+        {
+            this.IsPanel = IsPanel;
+            //Parent = settings[1] as IPluginModel;
+            var index = 0;
+            var IsModeEditor = (bool)settings[index++];
+            var NameUC = (string)settings[index++];
+            var UCLeft = (int)settings[index++];
+            var UCTop = (int)settings[index++];
+            var Width = (double)(int)settings[index++];
+            var Height = (double)(int)settings[index++];
+            var IndexAngle = Array.FindIndex((int[])Enum.GetValues(typeof(LayoutRotation)), w => w == (int)settings[index++]);
+            var ParentScaleX = (double)settings[index++];
+            var ParentScaleY = (double)settings[index++];
+            var RealUCLeft = (double)settings[index++];
+            var RealUCTop = (double)settings[index++];
+            var RealWidth = (double)settings[index++];
+            var RealHeight = (double)settings[index++];
+            var WidthOriginal = (double)settings[index++];
+            var HeightOriginal = (double)settings[index++];
+            var ScaleX = (double)settings[index++];
+            var ScaleY = (double)settings[index++];
+
+
+
+            this.NameUC = NameUC;
+
+            this.UCLeft = UCLeft;
+            this.UCTop = UCTop;
+
+            //var width = (double)((int[])settings[3])[2];
+            //var height = (double)((int[])settings[3])[3];
+
+            this.IndexAngle = IndexAngle;
+            //Factor = height / width;
+
+            this.Width = Width;
+            this.Height = Height;
+            this.WidthOriginal = (int)Width;
+            this.HeightOriginal = (int)Height;
+
+            this.RealWidth = RealWidth;
+            this.RealHeight = RealHeight;
+            this.UCLeftOriginal = UCLeft;
+            this.UCTopOriginal = UCTop;
+
+            this.eventAggregator = eventAggregator;
+
+            if (IsModeEditor)
+                eventAggregator.Subscribe(this);
+
+            Linked = true;
+            PxPct = true;
+
+            this.ScaleX = ScaleX;
+            this.ScaleY = ScaleY;
+            Factor = RealHeight / RealWidth;
+            ScaleFactor = ScaleY / ScaleX;
+
+            this.ParentScaleX = ParentScaleX;
+            this.ParentScaleY = ParentScaleY;
+
+            this.RealUCLeft = UCLeft * ParentScaleX;
+            this.RealUCTop = UCTop * ParentScaleY;
+
+
+            Name = "Layout";
+
+            System.Diagnostics.Debug.WriteLine($"entree {this} {NameUC}");
         }
 
 
+#if DEBUG
         ~LayoutPropertyViewModel()
         {
-            System.Diagnostics.Debug.WriteLine("sortie Layout");
+            System.Diagnostics.Debug.WriteLine($"sortie {this} {NameUC}");
         }
+#endif
 
         [DataMember]public double UCTopOriginal { get; set; }
         [DataMember] public double UCLeftOriginal { get; set; }
@@ -106,6 +211,7 @@ namespace Cockpit.Common.Properties.ViewModels
         }
 
         private double _width;
+        [DataMember]
         public double Width
         {
             get => _width;
@@ -116,6 +222,7 @@ namespace Cockpit.Common.Properties.ViewModels
             }
         }
         private double _height;
+        [DataMember]
         public double Height
         {
             get => _height;
@@ -138,13 +245,14 @@ namespace Cockpit.Common.Properties.ViewModels
             get => nameUC;
             set
             {
-                if (nameUC.Equals(value)) return;
+                if (nameUC != null && nameUC.Equals(value)) return;
                 nameUC = value;
                 NotifyOfPropertyChange(() => NameUC);
             }
         }
 
         private double realucleft;
+        [DataMember]
         public double RealUCLeft
         {
             get => realucleft;
@@ -156,6 +264,7 @@ namespace Cockpit.Common.Properties.ViewModels
             }
         }
         private double realuctop;
+        [DataMember]
         public double RealUCTop
         {
             get => realuctop;
@@ -169,6 +278,7 @@ namespace Cockpit.Common.Properties.ViewModels
 
 
         private double realWidth;
+        [DataMember]
         public double RealWidth
         {
             get => realWidth;
@@ -183,6 +293,7 @@ namespace Cockpit.Common.Properties.ViewModels
         }
 
         private double realHeight;
+        [DataMember]
         public double RealHeight
         {
             get => realHeight;
@@ -198,6 +309,7 @@ namespace Cockpit.Common.Properties.ViewModels
 
 
         private double realScaleX;
+        [DataMember]
         public double RealScaleX
         {
             get => realScaleX;
@@ -209,6 +321,7 @@ namespace Cockpit.Common.Properties.ViewModels
             }
         }
         private double realScaleY;
+        [DataMember]
         public double RealScaleY
         {
             get => realScaleY;
@@ -221,6 +334,7 @@ namespace Cockpit.Common.Properties.ViewModels
         }
 
         private double scaleX;
+        [DataMember]
         public double ScaleX
         {
             get => scaleX;
@@ -232,6 +346,7 @@ namespace Cockpit.Common.Properties.ViewModels
             }
         }
         private double scaleY;
+        [DataMember]
         public double ScaleY
         {
             get => scaleY;
@@ -244,6 +359,7 @@ namespace Cockpit.Common.Properties.ViewModels
         }
 
         private double _parentScaleX;
+        [DataMember]
         public double ParentScaleX
         {
             get => _parentScaleX;
@@ -259,6 +375,7 @@ namespace Cockpit.Common.Properties.ViewModels
             }
         }
         private double _parentScaleY;
+        [DataMember]
         public double ParentScaleY
         {
             get => _parentScaleY;
@@ -274,6 +391,7 @@ namespace Cockpit.Common.Properties.ViewModels
             }
         }
         private int indexAngle;
+        [DataMember]
         public int IndexAngle
         {
             get => indexAngle;
@@ -286,6 +404,7 @@ namespace Cockpit.Common.Properties.ViewModels
         }
 
         private double angleRotation;
+        [DataMember]
         public double AngleRotation
         {
             get => angleRotation;
@@ -297,6 +416,7 @@ namespace Cockpit.Common.Properties.ViewModels
         }
 
         private bool linked;
+        [DataMember]
         public bool Linked
         {
             get => linked;
@@ -308,6 +428,7 @@ namespace Cockpit.Common.Properties.ViewModels
         }
 
         private bool pxpct;
+        [DataMember]
         public bool PxPct
         {
             get => pxpct;

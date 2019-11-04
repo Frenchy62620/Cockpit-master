@@ -12,20 +12,21 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
     [DataContract]
     public class PushButtonBehaviorViewModel : PropertyChangedBase, IPluginProperty
     {
-        public PushButtonBehaviorViewModel(params object[] settings)
+        public PushButtonBehaviorViewModel(int SelectedPushbuttonType = 0, string NameOfPanel ="")
         {
             PushButtonTypes = Enum.GetValues(typeof(PushButtonType)).Cast<PushButtonType>().ToList();
-            SelectedPushButtonType = (PushButtonType)(int)settings[20];
-
-            NameOfPanel = "Bonour";
+            this.SelectedPushButtonType = (PushButtonType)SelectedPushbuttonType;
+            this.NameOfPanel = NameOfPanel;
 
             Name = "Behavior";
         }
 
+#if DEBUG
         ~PushButtonBehaviorViewModel()
         {
             System.Diagnostics.Debug.WriteLine("sortie pushBehaviour");
         }
+#endif
 
         public string Name { get; set; }
 
@@ -44,6 +45,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         public IReadOnlyList<PushButtonType> PushButtonTypes { get; }
 
         private PushButtonType selectedPushButtonType;
+        [DataMember]
         public PushButtonType SelectedPushButtonType
         {
             get => selectedPushButtonType;

@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using Cockpit.Core.Contracts;
+using System.IO;
 using System.Runtime.Serialization;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
@@ -11,7 +12,18 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         private readonly IEventAggregator eventAggregator;
         public SwitchBehaviorViewModel Behavior { get; }
         public string NameUC { get; set; }
-        public SwitchAppearanceViewModel(IEventAggregator eventAggregator, SwitchBehaviorViewModel behavior, params object[] settings)
+        public SwitchAppearanceViewModel(string[] Images = null, string[] Indicators = null, bool Has3Images = true, bool HasIndicator = false)
+        {
+            PositionImage0 = Images[0];
+            PositionImage1 = PositionImage0.Replace(PositionImage0.Substring(PositionImage0.LastIndexOf("_0."), 3), "_1.");
+            PositionImage2 = PositionImage0.Replace(PositionImage0.Substring(PositionImage0.LastIndexOf("_0."), 3), "_2.");
+            if (!File.Exists(positionImage2))
+                PositionImage2 = "";
+
+            Name = "Appareance";
+        }
+
+            public SwitchAppearanceViewModel(IEventAggregator eventAggregator, SwitchBehaviorViewModel behavior, params object[] settings)
         {
             Behavior = behavior;
 
@@ -38,8 +50,8 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
 
             Has3Images = true;
             HasIndicator = false;
-            this.eventAggregator = eventAggregator;
-            eventAggregator.Subscribe(this);
+            //this.eventAggregator = eventAggregator;
+            //eventAggregator.Subscribe(this);
 
             Name = "Appareance";
         }

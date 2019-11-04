@@ -14,7 +14,6 @@ namespace Cockpit.GUI.Views.Profile.Panels
         public ToolBoxViewModel(IEventAggregator eventAggregator)
         {
             this.eventAggregator = eventAggregator;
-            eventAggregator.Subscribe(this);
 
             Title = "ToolBox";
             IconName = "console-16.png";
@@ -101,7 +100,7 @@ namespace Cockpit.GUI.Views.Profile.Panels
 
                 }
 
-                ToolBoxGroups.Add(new ToolBoxGroup { GroupName = groupname, ToolBoxItems = toolBoxItems });
+                ToolBoxGroups.Add(new ToolBoxGroup(eventAggregator) { GroupName = groupname, ToolBoxItems = toolBoxItems });
             }
         }
     }

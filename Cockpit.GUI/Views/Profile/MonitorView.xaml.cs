@@ -11,5 +11,11 @@ namespace Cockpit.GUI.Views.Profile
         {
             InitializeComponent();
         }
+#if DEBUG
+        ~MonitorView()
+        {
+            System.Diagnostics.Debug.WriteLine($"sortie {this}");
+        }
+#endif
     }
 }

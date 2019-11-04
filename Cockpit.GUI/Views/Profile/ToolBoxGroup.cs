@@ -1,15 +1,19 @@
 ﻿using Caliburn.Micro;
+using Cockpit.GUI.Events;
 using GongSolutions.Wpf.DragDrop;
 using System;
 using System.Linq;
 using System.Windows;
+using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.GUI.Views.Profile
 {
     public class ToolBoxGroup : PropertyChangedBase, IDragSource
     {
-        public ToolBoxGroup()
+        private readonly IEventAggregator eventAggregator;
+        public ToolBoxGroup(IEventAggregator eventAggregator)
         {
+            this.eventAggregator = eventAggregator;
             Translation = new Point(0, 0);
             AnchorMouse = new Point(0.5, 0.5);
         }
@@ -108,17 +112,17 @@ namespace Cockpit.GUI.Views.Profile
 
         void IDragSource.Dropped(IDropInfo dropInfo)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         void IDragSource.DragDropOperationFinished(DragDropEffects operationResult, IDragInfo dragInfo)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         void IDragSource.DragCancelled()
         {
-            throw new NotImplementedException();
+            eventAggregator.Publish(new DragCancelledEvent());
         }
 
         bool IDragSource.TryCatchOccurredException(Exception exception)

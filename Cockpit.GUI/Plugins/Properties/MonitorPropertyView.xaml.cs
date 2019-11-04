@@ -9,5 +9,11 @@ namespace Cockpit.GUI.Plugins.Properties
         {
             InitializeComponent();
         }
+#if DEBUG
+        ~MonitorPropertyView()
+        {
+            System.Diagnostics.Debug.WriteLine($"sortie {this}");
+        }
+#endif
     }
 }

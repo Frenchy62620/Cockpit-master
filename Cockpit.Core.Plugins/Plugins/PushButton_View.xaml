@@ -53,6 +53,9 @@
                    FontStyle="{Binding Appearance.TextFormat.FontStyle}"
                    FontWeight="{Binding Appearance.TextFormat.FontWeight}" TextDecorations="{Binding Appearance.TextFormat.TextDecorations}"
                    >
+            <TextBlock.Resources>
+                <TranslateTransform x:Key="MyTransform" X="{Binding Appearance.Offset.X}" Y="{Binding Appearance.Offset.Y}"  />
+            </TextBlock.Resources>
             <TextBlock.Margin>
                 <MultiBinding Converter="{StaticResource MyMultiConverterMargin }">
                     <Binding Path="Appearance.TextFormat.PaddingLeft" />
@@ -69,7 +72,8 @@
                         <DataTrigger Binding="{Binding Appearance.IndexImage}" Value="1">
                             <Setter Property="RenderTransform" >
                                 <Setter.Value>
-                                    <TranslateTransform X="{Binding Appearance.Offset.X}" Y="{Binding Appearance.Offset.Y}"  />
+                                    <StaticResource ResourceKey="MyTransform" />
+                                    <!--<TranslateTransform X="{Binding Appearance.Offset.X}" Y="{Binding Appearance.Offset.Y}"  />-->
                                     <!--<TranslateTransform>
                                         <TranslateTransform.X>
                                             <Binding Path="pushButtonAppearance.Offset.X"/>

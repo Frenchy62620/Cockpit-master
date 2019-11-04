@@ -44,6 +44,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -54,6 +55,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>free-pie.ico</ApplicationIcon>
@@ -146,6 +148,8 @@
     <Compile Include="Events\Command\RunEvent.cs" />
     <Compile Include="Events\Command\TrayEvent.cs" />
     <Compile Include="Events\DisplayPropertiesEvent.cs" />
+    <Compile Include="Events\DragCancelledEvent.cs" />
+    <Compile Include="Events\MonitorViewEndedEvent .cs" />
     <Compile Include="Events\ToolBarEvent.cs" />
     <Compile Include="Events\PreviewViewEvent.cs" />
     <Compile Include="Events\ProfileDocumentAddedEvent.cs" />
@@ -195,6 +199,7 @@
     </Compile>
     <Compile Include="Views\Main\Menu\MainMenuViewModel.cs" />
     <Compile Include="Views\Main\Menu\RecentFileViewModel.cs" />
+    <Compile Include="Views\Main\Menu\Deserialize.cs" />
     <Compile Include="Views\Main\Menu\Serialize.cs" />
     <Compile Include="Views\Main\PanelViewModel.cs" />
     <Compile Include="Views\Main\SettingsLoaderViewModel.cs" />

@@ -18,34 +18,22 @@ namespace Cockpit.GUI.Plugins.Properties
         private readonly Panel_ViewModel PanelViewModel;
         private readonly IEventAggregator eventAggregator;
         public string NameUC { get; private set; }
-        public PanelAppearanceViewModel(IEventAggregator eventAggregator, Panel_ViewModel panel, params object[] settings)
+
+        public PanelAppearanceViewModel(IEventAggregator eventAggregator, string[] BackgroundImage = null, Color? BackgroundColor = null, bool FillBackground = false,
+                                                                          PanelSideApparition SelectedApparition = PanelSideApparition.FromLeft)
         {
-            PanelViewModel = panel;
-
-            bool IsModeEditor = (bool)settings[0];
-            if (IsModeEditor)
-            {
-                //var view = ViewLocator.LocateForModel(this, null, null);
-                //ViewModelBinder.Bind(this, view, null);
-            }
-
-            NameUC = (string)settings[2];
-
             Apparitions = Enum.GetValues(typeof(PanelSideApparition)).Cast<PanelSideApparition>().ToList();
+            this.SelectedApparition = SelectedApparition;
 
-            SelectedApparition = PanelSideApparition.FromLeft;
+            this.BackgroundImage = BackgroundImage[0];
+            this.BackgroundColor = BackgroundColor ?? Colors.Gray;
+            this.FillBackground = FillBackground;
 
-            var index = 5;
-            BackgroundImage = (string)settings[index];
-            this.eventAggregator = eventAggregator;
-
-
-            BackgroundColor = Colors.Gray;
-            FillBackground = false;
 
             eventAggregator.Subscribe(this);
 
             Name = "Appearance";
+
         }
 
         public string Name { get; set; }
@@ -64,6 +52,7 @@ namespace Cockpit.GUI.Plugins.Properties
         //}
 
         private PanelSideApparition _SelectedApparition;
+        [DataMember]
         public PanelSideApparition SelectedApparition
         {
             get { return _SelectedApparition; }
@@ -76,6 +65,7 @@ namespace Cockpit.GUI.Plugins.Properties
         }
 
         private string backgroundImage;
+        [DataMember]
         public string BackgroundImage
         {
             get { return backgroundImage; }
@@ -84,16 +74,17 @@ namespace Cockpit.GUI.Plugins.Properties
                 backgroundImage = value;
                 int h, w;
                 getSizeOfImage(value, out w, out h);
-                if (PanelViewModel.Width != w || PanelViewModel.Height != h)
-                {
-                    PanelViewModel.Width = w;
-                    PanelViewModel.Height = h;
-                }
+                //if (PanelViewModel.Width != w || PanelViewModel.Height != h)
+                //{
+                //    PanelViewModel.Width = w;
+                //    PanelViewModel.Height = h;
+                //}
                 NotifyOfPropertyChange(() => BackgroundImage);
             }
         }
 
         private bool fillBackground;
+        [DataMember]
         public bool FillBackground
         {
             get { return fillBackground; }
@@ -108,6 +99,7 @@ namespace Cockpit.GUI.Plugins.Properties
         }
 
         private Color backgroundColor;
+        [DataMember]
         public Color BackgroundColor
         {
             get { return backgroundColor; }
@@ -130,7 +122,26 @@ namespace Cockpit.GUI.Plugins.Properties
             }
         }
 
-
+        private bool _LRorTB;
+        public bool LRorTB
+        {
+            get { return _LRorTB; }
+            set
+            {
+                _LRorTB = value;
+                NotifyOfPropertyChange(() => LRorTB);
+            }
+        }
+        private string _RBorLT;
+        public string RBorLT
+        {
+            get { return _RBorLT; }
+            set
+            {
+                _RBorLT = value;
+                NotifyOfPropertyChange(() => RBorLT);
+            }
+        }
         //public void Handle(PropertyMonitorEvent message)
         //{
         //    BackgroundImage = message.ImageBackground;
@@ -168,8 +179,8 @@ namespace Cockpit.GUI.Plugins.Properties
             //RenderO = "0.0,0.0";//From Left
             //RenderO = "0.0,0.0";//From Top
             //ScaleXX = true = X, false=Y
-            PanelViewModel.RenderO = (int)SelectedApparition < 2 ? "1.0, 1.0" : "0.0, 0.0";//FromRight/FromBottom or FromLeft/FromTop
-            PanelViewModel.ScaleXX = (int)SelectedApparition % 2 == 0; //FromLeft or FromRight? or FromTop or FromBottom?
+            RBorLT = (int)SelectedApparition < 2 ? "1.0, 1.0" : "0.0, 0.0";//FromRight/FromBottom or FromLeft/FromTop
+            LRorTB = (int)SelectedApparition % 2 == 0; //FromLeft or FromRight? or FromTop or FromBottom?
         }
 
     }

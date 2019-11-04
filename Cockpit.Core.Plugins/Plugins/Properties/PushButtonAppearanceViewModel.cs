@@ -15,63 +15,134 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
 {
     [DataContract]
     public class PushButtonAppearanceViewModel : PropertyChangedBase, IPluginProperty
-
     {
         public string NameUC { get; set; }
-        public PushButtonAppearanceViewModel(params object[] settings)
+        public PushButtonAppearanceViewModel(string[] Images, double GlyphThickness = 2d, double GlyphScale = 0.8, int GlyphSelected = 0,
+                                                              Color? GlyphColor = null, string GlyphText = "", string TextPushOffset = "1,1",
+                                                              Color? TextColor = null, 
+                                                              string FontFamily = "Franklin Gothic", string FontStyle = "Normal", string FontWeight = "Normal",
+                                                              double FontSize = 12d, double[] Padding = null, int[] Alignment = null)
         {
+            Image = Images[0];
+            PushedImage = Images.Count() == 1 ? Image.Replace(Image.Substring(Image.LastIndexOf("_0."), 3), "_1.") : Images[1];
+            this.GlyphThickness = GlyphThickness;
+            this.GlyphScale = GlyphScale;
+            this.GlyphSelected = GlyphSelected;
+            this.GlyphColor = GlyphColor ?? Colors.White;
+            this.GlyphText = GlyphText;
+            this.TextPushOffset = TextPushOffset;
+            this.TextColor = TextColor ?? Colors.White;
+            this.FontFamily = FontFamily;
+            this.FontStyle = FontStyle;
+            this.FontWeight = FontWeight;
+            this.FontSize = FontSize;
+            this.Padding = Padding ?? new double[] { 0d, 0d, 0d, 0d };
+            this.Alignment = Alignment ?? new int[] { 1, 1 };
 
-            bool IsModeEditor = (bool)settings[0];
-            if (IsModeEditor)
-            {
-                //var view = ViewLocator.LocateForModel(this, null, null);
-                //ViewModelBinder.Bind(this, view, null);
-            }
-
-            NameUC = (string)settings[2];
+            TextFormat = new TextFormat(fontFamily: FontFamily,
+                                        fontStyle: FontStyle,           //Normal, Oblique or Italic  see FontStyles
+                                        fontWeight: FontWeight,         //Thin.... see FontWeight
+                                        fontSize: FontSize,
+                                        padding: this.Padding,          //Padding L,T,R,B
+                                        Alignment: this.Alignment       //Left, Center, Right and Top, center, Bottom
+                                        );
 
             HAlignTypes = Enum.GetValues(typeof(HorizontalAlignment)).Cast<HorizontalAlignment>().Take(3).ToList();
             VAlignTypes = Enum.GetValues(typeof(VerticalAlignment)).Cast<VerticalAlignment>().Take(3).ToList();
+            SelectedHAlignType = (HorizontalAlignment)this.Alignment[0];
+            SelectedVAlignType = (VerticalAlignment)this.Alignment[1];
 
-            var index = 5;
-            Image = ((string[])settings[index])[0];
-            PushedImage = ((string[])settings[index++])[1];
-            IndexImage = (int)settings[index++];
-
-            GlyphThickness = (double)settings[index++];
-            GlyphScale = (double)settings[index++];
-            //SelectedPushButtonGlyph = (PushButtonGlyph)(int)settings[index++];
-            //SelectedPushButtonGlyph = (int)settings[index++];
-            GlyphSelected = (int)settings[index++];
-            GlyphColor = (Color)settings[index++];
-            GlyphText = (string)settings[index++];
-            TextPushOffset = (string)settings[index++]; 
-
-
-
-            TextFormat = new TextFormat(fontFamily: (string)settings[index++],
-                                        fontStyle: (string)settings[index++],           //Normal, Oblique or Italic  see FontStyles
-                                        fontWeight: (string)settings[index++],          //Thin.... see FontWeight
-                                        fontSize: (double)settings[index++],
-                                        padding: (double[])settings[index++],           //Padding L,T,R,B
-                                        Alignment: (int[])settings[index]               //Left, Center, Right and Top, center, Bottom
-                                       );
-
-            SelectedHAlignType = (HorizontalAlignment)((int[])settings[index])[0];
-            SelectedVAlignType = (VerticalAlignment)((int[])settings[index])[1];
-
-            TextColor = (Color)settings[++index];
-
-            //eventAggregator.Subscribe(this);
-            //this.eventAggregator = eventAggregator;
-            
             Name = "Appearance";
         }
-
-        //~PushButtonAppearanceEditorViewModel()
+        //public PushButtonAppearanceViewModel(params object[] settings)
         //{
-        //    System.Diagnostics.Debug.WriteLine("sortie pushAppearance");
+        //    var Images = (string[])settings[0];
+        //    var GlyphThickness = (double)settings[1];
+        //    var GlyphScale = (double)settings[2];
+        //    var GlyphSelected = (int)settings[3];
+        //    var GlyphColor = (Color?)settings[4];
+        //    var GlyphText = (string)settings[5];
+        //    var TextPushOffset = (string)settings[6];
+        //    var TextColor = (Color?)settings[7];
+        //    var FontFamily = (string)settings[8];
+        //    var FontStyle = (string)settings[9];
+        //    var FontWeight = (string)settings[10];
+        //    var FontSize = (double)settings[11];
+        //    var Padding = (double[])settings[12];
+        //    var Alignment = (int[])settings[13];
+
+        //    Image = Images[0];
+        //    PushedImage = Images.Count() == 1 ? Image.Replace(Image.Substring(Image.LastIndexOf("_0."), 3), "_1.") : Images[1];
+        //    this.GlyphThickness = GlyphThickness;
+        //    this.GlyphScale = GlyphScale;
+        //    this.GlyphSelected = GlyphSelected;
+        //    this.GlyphSelected = GlyphSelected;
+        //    this.GlyphColor = GlyphColor ?? Colors.White;
+        //    this.GlyphText = GlyphText;
+        //    this.TextPushOffset = TextPushOffset;
+        //    this.TextColor = TextColor ?? Colors.White;
+        //    this.FontFamily = FontFamily;
+        //    this.FontStyle = FontStyle;
+        //    this.FontWeight = FontWeight;
+        //    this.Padding = Padding ?? new double[] { 0d, 0d, 0d, 0d };
+        //    this.Alignment = Alignment ?? new int[] { 1, 1 };
+        //    //bool IsModeEditor = (bool)settings[0];
+        //    //if (IsModeEditor)
+        //    //{
+        //    //    //var view = ViewLocator.LocateForModel(this, null, null);
+        //    //    //ViewModelBinder.Bind(this, view, null);
+        //    //}
+
+        //    //NameUC = (string)settings[2];
+
+
+        //    HAlignTypes = Enum.GetValues(typeof(HorizontalAlignment)).Cast<HorizontalAlignment>().Take(3).ToList();
+        //    VAlignTypes = Enum.GetValues(typeof(VerticalAlignment)).Cast<VerticalAlignment>().Take(3).ToList();
+
+        //    //var index = 5;
+
+        //    //var ss = Convert.ChangeType(settings[0], typeof(string[]));
+
+        //    //Image = ((string[])settings[index])[0];
+        //    //PushedImage = ((string[])settings[index++])[1];
+        //    //IndexImage = (int)settings[index++];
+
+        //    //GlyphThickness = (double)settings[index++];
+        //    //GlyphScale = (double)settings[index++];
+        //    ////SelectedPushButtonGlyph = (PushButtonGlyph)(int)settings[index++];
+        //    ////SelectedPushButtonGlyph = (int)settings[index++];
+        //    //GlyphSelected = (int)settings[index++];
+        //    //GlyphColor = (Color)settings[index++];
+        //    //GlyphText = (string)settings[index++];
+        //    //TextPushOffset = (string)settings[index++]; 
+
+
+
+        //    TextFormat = new TextFormat(fontFamily: FontFamily,
+        //                                fontStyle: FontStyle,           //Normal, Oblique or Italic  see FontStyles
+        //                                fontWeight: FontWeight,          //Thin.... see FontWeight
+        //                                fontSize: FontSize,
+        //                                padding: this.Padding,           //Padding L,T,R,B
+        //                                Alignment: this.Alignment               //Left, Center, Right and Top, center, Bottom
+        //                               );
+            
+        //    SelectedHAlignType = (HorizontalAlignment)this.Alignment[0];
+        //    SelectedVAlignType = (VerticalAlignment)this.Alignment[1];
+
+
+
+        //    //eventAggregator.Subscribe(this);
+        //    //this.eventAggregator = eventAggregator;
+            
+        //    Name = "Appearance";
         //}
+
+#if DEBUG
+        ~PushButtonAppearanceViewModel()
+        {
+            System.Diagnostics.Debug.WriteLine($"sortie {this} /{NameUC}/");
+        }
+#endif
 
 
 
@@ -92,6 +163,17 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
                 NotifyOfPropertyChange(() => TextFormat);
             }
         }
+
+        public string FontFamily
+        {
+            get;
+            set;
+        }
+        public string FontStyle { get; set; }
+        public string FontWeight { get; set; }
+        public double FontSize { get; set; }
+        public double[] Padding { get; set; }
+        public int[] Alignment {get; set; }
 
         private string textPushOffset;
         public string TextPushOffset

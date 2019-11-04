@@ -11,9 +11,11 @@ namespace Cockpit.GUI.Plugins
         {
             InitializeComponent();
         }
+#if DEBUG
         ~Panel_View()
         {
-            System.Diagnostics.Debug.WriteLine($"sortie panelView");
+            System.Diagnostics.Debug.WriteLine($"sortie {this}");
         }
+#endif
     }
 }
