@@ -10,8 +10,6 @@ namespace Cockpit.General.Properties.Views
         OnOn,
         [Description("On - Mom")]
         OnMom,
-        [Description("Mom - On")]
-        MomOn,
         [Description("Panel Button 2p")]
         PanelButton2p,
         [Description("On - On - On")]

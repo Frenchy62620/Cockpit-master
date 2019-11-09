@@ -16,10 +16,11 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
     [DataContract]
     public class PushButtonAppearanceViewModel : PropertyChangedBase, IPluginProperty
     {
+        public PushButton_ViewModel PushButton_ViewModel { get; set; }
         public string NameUC { get; set; }
         public PushButtonAppearanceViewModel(string[] Images, double GlyphThickness = 2d, double GlyphScale = 0.8, int GlyphSelected = 0,
-                                                              Color? GlyphColor = null, string GlyphText = "", string TextPushOffset = "1,1",
-                                                              Color? TextColor = null, 
+                                                              string sGlyphColor = "#FFFFFFFF", string GlyphText = "", string TextPushOffset = "1,1",
+                                                              string TextColor = "#FFFFFFFF",
                                                               string FontFamily = "Franklin Gothic", string FontStyle = "Normal", string FontWeight = "Normal",
                                                               double FontSize = 12d, double[] Padding = null, int[] Alignment = null)
         {
@@ -28,13 +29,11 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             this.GlyphThickness = GlyphThickness;
             this.GlyphScale = GlyphScale;
             this.GlyphSelected = GlyphSelected;
-            this.GlyphColor = GlyphColor ?? Colors.White;
+            this.GlyphColor = (Color)ColorConverter.ConvertFromString(sGlyphColor);
             this.GlyphText = GlyphText;
             this.TextPushOffset = TextPushOffset;
-            this.TextColor = TextColor ?? Colors.White;
-            this.FontFamily = FontFamily;
-            this.FontStyle = FontStyle;
-            this.FontWeight = FontWeight;
+            this.TextColor = (Color)ColorConverter.ConvertFromString(TextColor);
+
             this.FontSize = FontSize;
             this.Padding = Padding ?? new double[] { 0d, 0d, 0d, 0d };
             this.Alignment = Alignment ?? new int[] { 1, 1 };
@@ -125,7 +124,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         //                                padding: this.Padding,           //Padding L,T,R,B
         //                                Alignment: this.Alignment               //Left, Center, Right and Top, center, Bottom
         //                               );
-            
+
         //    SelectedHAlignType = (HorizontalAlignment)this.Alignment[0];
         //    SelectedVAlignType = (VerticalAlignment)this.Alignment[1];
 
@@ -133,9 +132,34 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
 
         //    //eventAggregator.Subscribe(this);
         //    //this.eventAggregator = eventAggregator;
-            
+
         //    Name = "Appearance";
         //}
+
+
+        #region serialize
+        [OnSerializing]
+        void OnSerializingMethod(StreamingContext sc)
+        {
+            Images = new string[] { Image, pushedimage };
+            sTextColor = TextColor.ToString();
+            sGlyphColor = GlyphColor.ToString();
+            FontFamily = TextFormat.FontFamily.ToString();
+            FontStyle = TextFormat.FontStyle.ToString();
+            FontWeight = TextFormat.FontWeight.ToString();
+        }
+        [OnDeserialized]
+        void OnDeserializedMethod(StreamingContext sc)
+        {
+            TextFormat = new TextFormat(fontFamily: FontFamily,
+                                        fontStyle: FontStyle,      //Normal, Oblique or Italic  see FontStyles
+                                        fontWeight: FontWeight,    //Thin.... see FontWeight
+                                        fontSize: FontSize,
+                                        padding: Padding,          //Padding L,T,R,B
+                                        Alignment: Alignment       //Left, Center, Right and Top, center, Bottom
+                        );
+        }
+        #endregion
 
 #if DEBUG
         ~PushButtonAppearanceViewModel()
@@ -143,8 +167,6 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             System.Diagnostics.Debug.WriteLine($"sortie {this} /{NameUC}/");
         }
 #endif
-
-
 
         public string Name { get; set; }
 
@@ -163,17 +185,15 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
                 NotifyOfPropertyChange(() => TextFormat);
             }
         }
-
-        public string FontFamily
-        {
-            get;
-            set;
-        }
-        public string FontStyle { get; set; }
-        public string FontWeight { get; set; }
-        public double FontSize { get; set; }
-        public double[] Padding { get; set; }
-        public int[] Alignment {get; set; }
+        [DataMember] public string[] Images;
+        [DataMember(Name = "TextColor")] public string sTextColor { get; set; }
+        [DataMember(Name = "GlyphColor")] public string sGlyphColor { get; set; }
+        [DataMember] public string FontFamily { get; set; }
+        [DataMember] public string FontStyle { get; set; }
+        [DataMember] public string FontWeight { get; set; }
+        [DataMember] public double FontSize { get; set; }
+        [DataMember] public double[] Padding { get; set; }
+        [DataMember] public int[] Alignment {get; set; }
 
         private string textPushOffset;
         public string TextPushOffset
@@ -298,7 +318,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         }
 
         private Color _glyphColor;
-        [DataMember]
+        //[DataMember]
         public Color GlyphColor
         {
             get => _glyphColor;
@@ -346,7 +366,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         }
 
         private string image;
-        [DataMember]
+        //[DataMember]
         public string Image
         {
             get => image;
@@ -358,7 +378,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         }
 
         private string pushedimage;
-        [DataMember]
+        //[DataMember]
         public string PushedImage
         {
             get => pushedimage;
@@ -380,7 +400,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         }
 
         private Color _textColor;
-        [DataMember]
+        //[DataMember]
         public Color TextColor
         {
             get => _textColor;

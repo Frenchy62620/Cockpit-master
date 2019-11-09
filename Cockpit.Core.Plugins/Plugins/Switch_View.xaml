@@ -30,7 +30,7 @@
                 <Style TargetType="{x:Type Image}">
                     <Setter Property="Visibility" Value="Hidden" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Appearance.IndexImage}" Value="2">
+                        <DataTrigger Binding="{Binding Behavior.IndexImage}" Value="2">
                             <Setter Property="Visibility" Value="Visible" />
                         </DataTrigger>
                     </Style.Triggers>
@@ -44,7 +44,7 @@
                 <Style TargetType="{x:Type Image}">
                     <Setter Property="Visibility" Value="Hidden" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Appearance.IndexImage}" Value="1">
+                        <DataTrigger Binding="{Binding Behavior.IndexImage}" Value="1">
                             <Setter Property="Visibility" Value="Visible" />
                         </DataTrigger>
                     </Style.Triggers>
@@ -58,7 +58,7 @@
                 <Style TargetType="{x:Type Image}">
                     <Setter Property="Visibility" Value="Hidden" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Appearance.IndexImage}" Value="0">
+                        <DataTrigger Binding="{Binding Behavior.IndexImage}" Value="0">
                             <Setter Property="Visibility" Value="Visible" />
                         </DataTrigger>
                     </Style.Triggers>

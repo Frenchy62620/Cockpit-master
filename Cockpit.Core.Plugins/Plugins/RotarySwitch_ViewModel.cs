@@ -25,17 +25,19 @@ namespace Cockpit.Core.Plugins.Plugins
         [DataMember] public RotarySwitchBehaviorViewModel Behavior { get; set; }
          public ObservableCollection<RotarySwitchPosition> RotarySwitchPositions { get; private set; }
 
-        public RotarySwitch_ViewModel(IEventAggregator eventAggregator, params object[] settings)
+        public RotarySwitch_ViewModel(IEventAggregator eventAggregator, RotarySwitchAppearanceViewModel Appearance,
+                                                                        RotarySwitchBehaviorViewModel Behavior,
+                                                                        LayoutPropertyViewModel Layout)
         {
             RotarySwitchPositions = new ObservableCollection<RotarySwitchPosition>();
 
-            Layout = new LayoutPropertyViewModel(eventAggregator: eventAggregator, settings: settings);
-            Appearance = new RotarySwitchAppearanceViewModel(eventAggregator, this, settings);
-            Behavior = new RotarySwitchBehaviorViewModel(eventAggregator, this, settings);
+            this.Layout = Layout;
+            this.Behavior = Behavior;
+            this.Appearance = Appearance;
 
 
 
-            NameUC = (string)settings[2];
+            NameUC = this.Layout.NameUC;
 
             var s = Appearance.TextFormat.MeasureString("ABC", Appearance.LabelColor);
 

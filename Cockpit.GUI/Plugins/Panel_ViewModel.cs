@@ -3,6 +3,7 @@ using Cockpit.Common.Properties.ViewModels;
 using Cockpit.Core.Contracts;
 using Cockpit.Core.Model.Events;
 using Cockpit.Core.Plugins.Plugins.Properties;
+using Cockpit.GUI.Common;
 using Cockpit.GUI.Events;
 using Cockpit.GUI.Plugins.Properties;
 using Cockpit.GUI.Views.Profile;
@@ -42,24 +43,16 @@ namespace Cockpit.GUI.Plugins
         private bool IsFromPreviewView = false;
 
         public string lastNameUC = "";
-        private MonitorViewModel mv { get; set; }
-        public Panel_ViewModel(IEventAggregator eventAggregator, IResolutionRoot resolutionRoot, object[] plugin, 
-                                                                                                 KeyValuePair<object, Type>[] layout, 
-                                                                                                 KeyValuePair<object, Type>[] appearance, 
-                                                                                                 KeyValuePair<object, Type>[] behavior)
+        private MonitorViewModel OriginPlugin { get; set; }
+        public Panel_ViewModel(IEventAggregator eventAggregator, MonitorViewModel OriginPlugin, PanelAppearanceViewModel Appearance,
+                                                                                                LayoutPropertyViewModel Layout)
         {
-            mv = plugin[0] as MonitorViewModel;
-
-            var ctor = typeof(LayoutPropertyViewModel).GetConstructor(layout.Select(p => p.Value).ToArray());
-            Layout = (LayoutPropertyViewModel)ctor.Invoke(layout.Select(p => p.Key).ToArray());
-
-            ctor = typeof(PanelAppearanceViewModel).GetConstructor(appearance.Select(p => p.Value).ToArray());
-            Appearance = (PanelAppearanceViewModel)ctor.Invoke(appearance.Select(p => p.Key).ToArray());
+            this.OriginPlugin = OriginPlugin;
 
             IsVisible = true;
-            NameUC = Layout.NameUC;
+            this.Layout = Layout;
+            this.Appearance = Appearance;
 
-            this.resolutionRoot = resolutionRoot;
             this.eventAggregator = eventAggregator;
             this.eventAggregator.Subscribe(this);
 
@@ -93,7 +86,7 @@ namespace Cockpit.GUI.Plugins
 #if DEBUG
         ~Panel_ViewModel()
         {
-            System.Diagnostics.Debug.WriteLine($"sortie {this} {NameUC}");
+            System.Diagnostics.Debug.WriteLine($"sortie {this} {Layout.NameUC}");
         }
 #endif
 
@@ -137,16 +130,16 @@ namespace Cockpit.GUI.Plugins
         }
 
         #region PluginModel
-        private string nameUC;
-        public string NameUC
-        {
-            get => nameUC;
-            set
-            {
-                nameUC = value;
-                NotifyOfPropertyChange(() => NameUC);
-            }
-        }
+        //private string nameUC;
+        //public string NameUC
+        //{
+        //    get => nameUC;
+        //    set
+        //    {
+        //        nameUC = value;
+        //        NotifyOfPropertyChange(() => NameUC);
+        //    }
+        //}
 
         private double zoomfactorfrompluginmodel;
         public double ZoomFactorFromPluginModel
@@ -159,37 +152,37 @@ namespace Cockpit.GUI.Plugins
             }
         }
 
-        public double ScaleX
-        {
-            get => Layout.ScaleX;
-            set => Layout.ScaleX = value;
-        }
-        public double ScaleY
-        {
-            get => Layout.ScaleY;
-            set => Layout.ScaleY = value;
-        }
+        //public double ScaleX
+        //{
+        //    get => Layout.ScaleX;
+        //    set => Layout.ScaleX = value;
+        //}
+        //public double ScaleY
+        //{
+        //    get => Layout.ScaleY;
+        //    set => Layout.ScaleY = value;
+        //}
 
-        public double Left
-        {
-            get => Layout.UCLeft;
-            set => Layout.UCLeft = value;
-        }
-        public double Top
-        {
-            get => Layout.UCTop;
-            set => Layout.UCTop = value;
-        }
-        public double Width
-        {
-            get => Layout.Width;
-            set => Layout.Width = value;
-        }
-        public double Height
-        {
-            get => Layout.Height;
-            set => Layout.Height = value;
-        }
+        //public double Left
+        //{
+        //    get => Layout.UCLeft;
+        //    set => Layout.UCLeft = value;
+        //}
+        //public double Top
+        //{
+        //    get => Layout.UCTop;
+        //    set => Layout.UCTop = value;
+        //}
+        //public double Width
+        //{
+        //    get => Layout.Width;
+        //    set => Layout.Width = value;
+        //}
+        //public double Height
+        //{
+        //    get => Layout.Height;
+        //    set => Layout.Height = value;
+        //}
 
         public IPluginProperty[] GetProperties()
         {
@@ -247,17 +240,17 @@ namespace Cockpit.GUI.Plugins
 
             if (IsFromPreviewView) return;
 
-            //if (FindAncestor<MonitorView>(cc) == null) return;
+            var key = OriginPlugin.GetPropertyString("Layout.NameUC", pm);
 
             var CtrlDown = (Keyboard.Modifiers & ModifierKeys.Control) != 0;
-            if (!CtrlDown || mv.AdornersSelectedList.Count == 0 || !MyCockpitViewModels.Any(t => t.NameUC.Equals(mv.AdornersSelectedList.ElementAt(0))))
+            if (!CtrlDown || OriginPlugin.AdornersSelectedList.Count == 0 || !MyCockpitViewModels.Any(t => OriginPlugin.GetPropertyString("Layout.NameUC", t).Equals(OriginPlugin.AdornersSelectedList.ElementAt(0))))
             {
                 RemoveAdorners();
                 AddNewAdorner(cc, pm);
             }
             else
             {
-                if (mv.AdornersSelectedList.Contains(pm.NameUC))
+                if (OriginPlugin.AdornersSelectedList.Contains(key))
                 {
                     RemoveAdorner(cc, pm);
                     UpdateFirstAdorner();
@@ -268,10 +261,10 @@ namespace Cockpit.GUI.Plugins
                 }
             }
 
-            if (mv.AdornersSelectedList.Count() == 0)
-                eventAggregator.Publish(new DisplayPropertiesEvent(new[] { (IPluginProperty)mv.LayoutMonitor }));
+            if (OriginPlugin.AdornersSelectedList.Count() == 0)
+                eventAggregator.Publish(new DisplayPropertiesEvent(new[] { (IPluginProperty)OriginPlugin.LayoutMonitor }));
             else
-                eventAggregator.Publish(new DisplayPropertiesEvent(mv.SortedDico[mv.AdornersSelectedList.ElementAt(0)].pm.GetProperties()));
+                eventAggregator.Publish(new DisplayPropertiesEvent(OriginPlugin.SortedDico[OriginPlugin.AdornersSelectedList.ElementAt(0)].pm.GetProperties()));
 
         }
 
@@ -356,36 +349,37 @@ namespace Cockpit.GUI.Plugins
                 ff = parent;
             }
 
-            if (mv.SortedDico.ContainsKey(pm.NameUC))
+            var key = OriginPlugin.GetPropertyString("Layout.NameUC", pm);
+            if (OriginPlugin.SortedDico.ContainsKey(key))
                 return;
-            mv.SortedDico[pm.NameUC] = new Elements(cc, pm);
+            OriginPlugin.SortedDico[key] = new Elements(cc, pm);
 
             RemoveAdorners();
             AddNewAdorner(cc, pm);
 
-            eventAggregator.Publish(new DisplayPropertiesEvent(mv.SortedDico[mv.AdornersSelectedList.ElementAt(0)].pm.GetProperties()));
+            eventAggregator.Publish(new DisplayPropertiesEvent(OriginPlugin.SortedDico[OriginPlugin.AdornersSelectedList.ElementAt(0)].pm.GetProperties()));
             cc.Focus();
 
         }
         #region Adorner
         private void RemoveAdorner(ContentControl cc, IPluginModel pm)
         {
-            mv.RemoveAdorner(cc, pm);
+            OriginPlugin.RemoveAdorner(cc, pm);
         }
 
         private void RemoveAdorners()
         {
-            mv.RemoveAdorners();
+            OriginPlugin.RemoveAdorners();
         }
 
         private void AddNewAdorner(ContentControl cc, IPluginModel pm, int color = 0)
         {
-            mv.AddNewAdorner(cc, pm, color);
+            OriginPlugin.AddNewAdorner(cc, pm, color);
         }
 
         public void UpdateFirstAdorner()
         {
-            mv.UpdateFirstAdorner();
+            OriginPlugin.UpdateFirstAdorner();
         }
         #endregion Adorner
 
@@ -396,7 +390,7 @@ namespace Cockpit.GUI.Plugins
             if (dropInfo.Data is ToolBoxGroup && !IsFromPreviewView)
             {
                 var tbg = dropInfo.Data as ToolBoxGroup;
-                mv.TitleTemp = $"Dragging inside {NameUC} << X = {dropInfo.DropPosition.X * ScaleX:###0} / Y = {dropInfo.DropPosition.Y * ScaleY:###0} >>";
+                OriginPlugin.TitleTemp = $"Dragging inside {Layout.NameUC} << X = {dropInfo.DropPosition.X * Layout.ScaleX:###0} / Y = {dropInfo.DropPosition.Y * Layout.ScaleY:###0} >>";
                 var FullImage = tbg.SelectedToolBoxItem.FullImageName;
                 tbg.AnchorMouse = new Point(0.0, 0.0);
                 tbg.SelectedToolBoxItem.Layout = Layout;
@@ -408,7 +402,7 @@ namespace Cockpit.GUI.Plugins
 
         void IDropTarget.Drop(IDropInfo dropInfo)
         {
-            mv.TitleTemp = null;
+            OriginPlugin.TitleTemp = null;
             var tbg = dropInfo.Data as ToolBoxGroup;
             var selected = tbg.SelectedToolBoxItem;
             int left = (int)dropInfo.DropPosition.X;
@@ -418,24 +412,24 @@ namespace Cockpit.GUI.Plugins
 
             var key = groupname + tbg.SelectedToolBoxItem.ShortImageName;
             string model = "";
-            if (mv.Identities.ContainsKey(key))
-                model = mv.Identities[key].Type.ToString();
-            else if (mv.Identities.ContainsKey(groupname))
-                model = mv.Identities[groupname].Type.ToString();
+            if (OriginPlugin.Identities.ContainsKey(key))
+                model = OriginPlugin.Identities[key].Type.ToString();
+            else if (OriginPlugin.Identities.ContainsKey(groupname))
+                model = OriginPlugin.Identities[groupname].Type.ToString();
             else
                 throw new ArgumentException($" problem on GroupName : {groupname}, ImageName : {FullImage} / {tbg.SelectedToolBoxItem.ShortImageName}");
 
-            var nameUC = mv.GiveName(tbg.SelectedToolBoxItem.ShortImageName);
+            var nameUC = OriginPlugin.GiveName(tbg.SelectedToolBoxItem.ShortImageName);
 
-            var listofName = new List<string> { "Layout", "Appearance", "Behavior" };
+            var propertieslist = new List<string> { "Layout", "Appearance", "Behavior" };
 
-            var props = mv.GetType(model).GetProperties().Where(prop => listofName.Contains(prop.Name) && Attribute.IsDefined(prop, typeof(DataMemberAttribute)));
+            var props = OriginPlugin.GetType(model).GetProperties().Where(prop => propertieslist.Contains(prop.Name) && Attribute.IsDefined(prop, typeof(DataMemberAttribute)));
 
-            var ctors = mv.Identities.ContainsKey(key) ? mv.Identities[key].Type.GetConstructors() : mv.Identities[groupname].Type.GetConstructors();
+            //var ctors = OriginPlugin.Identities.ContainsKey(key) ? OriginPlugin.Identities[key].Type.GetConstructors() : OriginPlugin.Identities[groupname].Type.GetConstructors();
 
-            Dictionary<string, KeyValuePair<object, Type>> appearance;
-            Dictionary<string, KeyValuePair<object, Type>> layout;
-            Dictionary<string, KeyValuePair<object, Type>> behavior;
+            //Dictionary<string, KeyValuePair<object, Type>> appearance;
+            //Dictionary<string, KeyValuePair<object, Type>> layout;
+            //Dictionary<string, KeyValuePair<object, Type>> behavior;
 
             var defaultvalues = new Dictionary<string, object>
             {
@@ -444,6 +438,7 @@ namespace Cockpit.GUI.Plugins
                 { "IsPanel", model.EndsWith("Panel_ViewModel") },
                 { "IsPluginDropped", true },
                 { "PluginParent", this },
+                { "OriginPlugin", OriginPlugin },
                 { "NameUC", nameUC },
                 { "UCLeft", left },
                 { "UCTop", top },
@@ -457,50 +452,50 @@ namespace Cockpit.GUI.Plugins
                 { "BackgroundImage", new string[] {FullImage} },
             };
 
-            layout = props.First(p => p.Name == "Layout").PropertyType.GetConstructors()
-                    .Select(p => p.GetParameters()).OrderBy(p => p.Count()).Last()
-                    .ToDictionary(p => p.Name, p => new KeyValuePair<object, Type>(defaultvalues.ContainsKey(p.Name) ? defaultvalues[p.Name] : p.DefaultValue, p.ParameterType));
+            //layout = props.First(p => p.Name == "Layout").PropertyType.GetConstructors()
+            //        .Select(p => p.GetParameters()).OrderBy(p => p.Count()).Last()
+            //        .ToDictionary(p => p.Name, p => new KeyValuePair<object, Type>(defaultvalues.ContainsKey(p.Name) ? defaultvalues[p.Name] : p.DefaultValue, p.ParameterType));
 
 
-            try
-            {
-                appearance = props.First(p => p.Name == "Appearance").PropertyType.GetConstructors()
-                              .Select(p => p.GetParameters()).OrderBy(p => p.Count()).Last()
-                              .ToDictionary(p => p.Name, p => new KeyValuePair<object, Type>(defaultvalues.ContainsKey(p.Name) ? defaultvalues[p.Name] : p.DefaultValue, p.ParameterType));
+            //try
+            //{
+            //    appearance = props.First(p => p.Name == "Appearance").PropertyType.GetConstructors()
+            //                  .Select(p => p.GetParameters()).OrderBy(p => p.Count()).Last()
+            //                  .ToDictionary(p => p.Name, p => new KeyValuePair<object, Type>(defaultvalues.ContainsKey(p.Name) ? defaultvalues[p.Name] : p.DefaultValue, p.ParameterType));
 
-                //foreach (var s in new string[] { "Images", "BackgroundImage" })
-                //{
-                //    if (appearance.ContainsKey(s))
-                //    {
-                //        var value = appearance[s].Value;
-                //        appearance[s] = new KeyValuePair<object, Type>(new string[] { FullImage }, value);
-                //        break;
-                //    }
-                //}
-            }
-            catch
-            {
-                appearance = null;
-            }
+            //    //foreach (var s in new string[] { "Images", "BackgroundImage" })
+            //    //{
+            //    //    if (appearance.ContainsKey(s))
+            //    //    {
+            //    //        var value = appearance[s].Value;
+            //    //        appearance[s] = new KeyValuePair<object, Type>(new string[] { FullImage }, value);
+            //    //        break;
+            //    //    }
+            //    //}
+            //}
+            //catch
+            //{
+            //    appearance = null;
+            //}
 
-            try
-            {
-                behavior = props.First(p => p.Name == "Behavior").PropertyType.GetConstructors()
-                                  .Select(p => p.GetParameters()).OrderBy(p => p.Count()).Last()
-                                  .ToDictionary(p => p.Name, p => new KeyValuePair<object, Type>(defaultvalues.ContainsKey(p.Name) ? defaultvalues[p.Name] : p.DefaultValue, p.ParameterType));
-            }
-            catch
-            {
-                behavior = null;
-            }
+            //try
+            //{
+            //    behavior = props.First(p => p.Name == "Behavior").PropertyType.GetConstructors()
+            //                      .Select(p => p.GetParameters()).OrderBy(p => p.Count()).Last()
+            //                      .ToDictionary(p => p.Name, p => new KeyValuePair<object, Type>(defaultvalues.ContainsKey(p.Name) ? defaultvalues[p.Name] : p.DefaultValue, p.ParameterType));
+            //}
+            //catch
+            //{
+            //    behavior = null;
+            //}
 
-            Ninject.Parameters.Parameter[] param = new Ninject.Parameters.Parameter[]
-            {
-                        new ConstructorArgument("plugin", new object [] {mv, this }, true),
-                        new ConstructorArgument("layout", layout.Values.ToArray(), true),
-                        new ConstructorArgument("appearance", appearance == null ? null : appearance.Values.ToArray() , true),
-                        new ConstructorArgument("behavior", behavior == null ? null : behavior.Values.ToArray(), true)
-            };
+            //Ninject.Parameters.Parameter[] param = new Ninject.Parameters.Parameter[]
+            //{
+            //            new ConstructorArgument("plugin", new object [] { OriginPlugin, this }, true),
+            //            new ConstructorArgument("layout", layout.Values.ToArray(), true),
+            //            new ConstructorArgument("appearance", appearance == null ? null : appearance.Values.ToArray() , true),
+            //            new ConstructorArgument("behavior", behavior == null ? null : behavior.Values.ToArray(), true)
+            //};
 
 
             //var AngleSwitch = 90;
@@ -625,31 +620,16 @@ namespace Cockpit.GUI.Plugins
             //    //model = "Cockpit.Plugin.A10C.ViewModels.A10Alt_ViewModel";
             //    //properties = new string[] { "", "", "" };
             //}
-            var typeClass = mv.GetType(model);
-            //var typeClass = Type.GetType(model);
-            //var viewmodel = Activator.CreateInstance(typeClass);
-            var viewmodel = resolutionRoot.TryGet(typeClass, param);
-            //var view = ViewLocator.LocateForModel(viewmodel, null, null);
+            var typeClass = OriginPlugin.GetType(model);
+            props.ToList().ForEach(p => defaultvalues.Add(p.Name, HelperConstructor.MyCreateInstance(p.PropertyType, defaultvalues)));
 
-            Type tModelType = viewmodel.GetType();
+            //var viewmodel = resolutionRoot.TryGet(typeClass, param.ToArray());
+            var instanceplugin = HelperConstructor.MyCreateInstance(typeClass, defaultvalues);
+            ////var view = ViewLocator.LocateForModel(viewmodel, null, null);
+            ////ViewModelBinder.Bind(viewmodel, view, null);
+            var vm = instanceplugin as IPluginModel;
 
-            //We will be defining a PropertyInfo Object which contains details about the class property 
-            PropertyInfo[] arrayPropertyInfos = tModelType.GetProperties();
-
-            //Now we will loop in all properties one by one to get value
-            //foreach (PropertyInfo property in arrayPropertyInfos)
-            //{
-            //    Console.WriteLine("Name of Property is\t:\t" + property.Name);
-            //    if (property.Name.Equals("ToolTip"))
-            //    {
-            //        var s = 1;
-            //    }
-            //    Console.WriteLine("Value of Property is\t:\t" + (property.GetValue(viewmodel) == null ? "null" : property.GetValue(viewmodel).ToString()));
-            //    Console.WriteLine(Environment.NewLine);
-            //}
-
-
-            MyCockpitViewModels.Add((IPluginModel)viewmodel);
+            MyCockpitViewModels.Add((IPluginModel)vm);
         }
         //public void SetProperty(string compoundProperty, object target, object value)
         //{
@@ -682,7 +662,7 @@ namespace Cockpit.GUI.Plugins
         #endregion
         public void Handle(VisibilityPanelEvent message)
         {
-            if (!NameUC.Equals(message.PanelName)) return;
+            if (!Layout.NameUC.Equals(message.PanelName)) return;
 
             IsVisible = !IsVisible;
         }
@@ -690,23 +670,21 @@ namespace Cockpit.GUI.Plugins
 
         public void Handle(ScalingPanelEvent message)
         {
-            if (string.IsNullOrEmpty(NameUC) ||!NameUC.Equals(message.PanelName)) return;
+            if (string.IsNullOrEmpty(Layout.NameUC) ||!Layout.NameUC.Equals(message.PanelName)) return;
             if (message.ScaleX >= 0)
             {
                 foreach (var v in MyCockpitViewModels)
                 {
-                    mv.SetProperty("Layout.ParentScaleX", v, message.ScaleX);
+                    OriginPlugin.SetProperty("Layout.ParentScaleX", v, message.ScaleX);
                 }
             }
             if (message.ScaleY >= 0)
             {
                 foreach (var v in MyCockpitViewModels)
                 {
-                    mv.SetProperty("Layout.ParentScaleY", v, message.ScaleY);
+                    OriginPlugin.SetProperty("Layout.ParentScaleY", v, message.ScaleY);
                 }
             }
-
-
         }
     }
 }

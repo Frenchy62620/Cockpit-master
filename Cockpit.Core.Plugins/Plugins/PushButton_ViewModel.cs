@@ -3,15 +3,14 @@ using Cockpit.Common.Properties.ViewModels;
 using Cockpit.Core.Contracts;
 using Cockpit.Core.Model.Events;
 using Cockpit.Core.Plugins.Plugins.Properties;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Windows;
 using System.Windows.Input;
+#if DEBUG
+using System.IO;
 using System.Xml;
+using System.Text;
+#endif
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Core.Plugins.Plugins
@@ -25,35 +24,19 @@ namespace Cockpit.Core.Plugins.Plugins
         [DataMember] public PushButtonAppearanceViewModel Appearance { get; private set; }
         [DataMember] public LayoutPropertyViewModel Layout { get; private set; }
         [DataMember] public PushButtonBehaviorViewModel Behavior { get; private set; }
-        //public PushButton_ViewModel(IEventAggregator eventAggregator,
-        //                            string NameUC = "", int UCLeft = 0, int UCTop = 0, int Width = 0, int Height = 0, int Angle = 0,
-        //                            double RealUCLeft = 0, double RealUCTop = 0, double RealWidth = 0, double RealHeight = 0,
-        //                            double WidthOriginal = 0, double HeightOriginal = 0, double ScaleX = 1, double ScaleY = 1,
-        //                            double ParentScaleX = 1, double ParentScaleY = 1,
-        //                            string[] Images = null, int StartImageIndex = 0)
-        //{
-        //}
-        //public PushButton_ViewModel(IEventAggregator eventAggregator, object[] layout, object[] appearance, object[] behaviour)
-        public PushButton_ViewModel(IEventAggregator eventAggregator, object[] plugin,
-                                                                      KeyValuePair<object, Type>[] layout, 
-                                                                      KeyValuePair<object, Type>[] appearance, 
-                                                                      KeyValuePair<object, Type>[] behavior)
+        public PushButton_ViewModel(IEventAggregator eventAggregator, PushButtonAppearanceViewModel Appearance, 
+                                                                      PushButtonBehaviorViewModel Behavior, 
+                                                                      LayoutPropertyViewModel Layout)
         {
-
-            var ctor = typeof(LayoutPropertyViewModel).GetConstructor(layout.Select(p => p.Value).ToArray());
-            Layout = (LayoutPropertyViewModel)ctor.Invoke(layout.Select(p => p.Key).ToArray());
-
-            ctor = typeof(PushButtonAppearanceViewModel).GetConstructor(appearance.Select(p => p.Value).ToArray());
-            Appearance = (PushButtonAppearanceViewModel)ctor.Invoke(appearance.Select(p => p.Key).ToArray());
-
-            ctor = typeof(PushButtonBehaviorViewModel).GetConstructor(behavior.Select(p => p.Value).ToArray());
-            Behavior = (PushButtonBehaviorViewModel)ctor.Invoke(behavior.Select(p => p.Key).ToArray());
-
-            NameUC = Layout.NameUC;
+            this.Layout = Layout;
+            this.Behavior = Behavior;
+            this.Appearance = Appearance;
 
             this.eventAggregator = eventAggregator;
+
+
 #if DEBUG
-            System.Diagnostics.Debug.WriteLine($"entree {this} {NameUC}");
+            System.Diagnostics.Debug.WriteLine($"entree {this} {Layout.NameUC}");
             var types = new System.Type[] { typeof(LayoutPropertyViewModel), typeof(PushButtonAppearanceViewModel), typeof(PushButtonBehaviorViewModel)  };
             DataContractSerializer dcs = new DataContractSerializer(typeof(PushButton_ViewModel), types);
             string buffer;
@@ -64,12 +47,11 @@ namespace Cockpit.Core.Plugins.Plugins
             }
             XmlDocument docxml = new XmlDocument();
             docxml.LoadXml(buffer);
-            using (XmlTextWriter writer = new XmlTextWriter(@"j:\test.xml", null))
+            using (XmlTextWriter writer = new XmlTextWriter($@"j:\{this}.xml", null))
             {
                 writer.Formatting = Formatting.Indented;
                 docxml.Save(writer);
             }
-
 #endif
         }
 
@@ -87,17 +69,17 @@ namespace Cockpit.Core.Plugins.Plugins
         }
         #endregion
         #region PluginModel
-        private string nameUC;
-        [DataMember]
-        public string NameUC
-        {
-            get => nameUC;
-            set
-            {
-                nameUC = value;
-                NotifyOfPropertyChange(() => NameUC);
-            }
-        }
+        //private string nameUC;
+        //[DataMember]
+        //public string NameUC
+        //{
+        //    get => nameUC;
+        //    set
+        //    {
+        //        nameUC = value;
+        //        NotifyOfPropertyChange(() => NameUC);
+        //    }
+        //}
 
         private double zoomfactorfrompluginmodel;
         public double ZoomFactorFromPluginModel
@@ -109,47 +91,47 @@ namespace Cockpit.Core.Plugins.Plugins
                 NotifyOfPropertyChange(() => ZoomFactorFromPluginModel);
             }
         }
-        public double ParentScaleX
-        {
-            get => Layout.ScaleX;
-            set => Layout.ScaleX = value;
-        }
-        public double ParentScaleY
-        {
-            get => Layout.ScaleY;
-            set => Layout.ScaleY = value;
-        }
-        public double ScaleX
-        {
-            get => Layout.ScaleX;
-            set => Layout.ScaleX = value;
-        }
-        public double ScaleY
-        {
-            get => Layout.ScaleY;
-            set => Layout.ScaleY = value;
-        }
+        //public double ParentScaleX
+        //{
+        //    get => Layout.ScaleX;
+        //    set => Layout.ScaleX = value;
+        //}
+        //public double ParentScaleY
+        //{
+        //    get => Layout.ScaleY;
+        //    set => Layout.ScaleY = value;
+        //}
+        //public double ScaleX
+        //{
+        //    get => Layout.ScaleX;
+        //    set => Layout.ScaleX = value;
+        //}
+        //public double ScaleY
+        //{
+        //    get => Layout.ScaleY;
+        //    set => Layout.ScaleY = value;
+        //}
 
-        public double Left
-        {
-            get => Layout.UCLeft;
-            set => Layout.UCLeft = value;
-        }
-        public double Top
-        {
-            get => Layout.UCTop;
-            set => Layout.UCTop = value;
-        }
-        public double Width
-        {
-            get => Layout.RealWidth;
-            set => Layout.RealWidth = value;
-        }
-        public double Height
-        {
-            get => Layout.RealHeight;
-            set => Layout.RealHeight = value;
-        }
+        //public double Left
+        //{
+        //    get => Layout.UCLeft;
+        //    set => Layout.UCLeft = value;
+        //}
+        //public double Top
+        //{
+        //    get => Layout.UCTop;
+        //    set => Layout.UCTop = value;
+        //}
+        //public double Width
+        //{
+        //    get => Layout.RealWidth;
+        //    set => Layout.RealWidth = value;
+        //}
+        //public double Height
+        //{
+        //    get => Layout.RealHeight;
+        //    set => Layout.RealHeight = value;
+        //}
 
         public IPluginProperty[] GetProperties()
         {
@@ -193,7 +175,7 @@ namespace Cockpit.Core.Plugins.Plugins
 #if DEBUG
         ~PushButton_ViewModel()
         {
-            System.Diagnostics.Debug.WriteLine($"sortie {this} {NameUC}");
+            System.Diagnostics.Debug.WriteLine($"sortie {this} {Layout.NameUC}");
         }
 #endif
     }

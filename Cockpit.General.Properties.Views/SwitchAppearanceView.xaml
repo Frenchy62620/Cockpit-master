@@ -23,13 +23,13 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <TextBlock Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Margin="4,10,2,2" FontSize="12" FontWeight="Bold" Text="Position Images" />
-        <Label Grid.Column="0" Grid.Row="1" FontSize="10" HorizontalAlignment="Right" Content="Zero"
+        <Label Grid.Column="0" Grid.Row="3" FontSize="10" HorizontalAlignment="Right" Content="Zero"
                ToolTip="Image displayed when the switch is in position zero (down)." />
-        <ip:ImagePickerView Grid.Column="1" Grid.Row="1" ImageFilename="{Binding PositionImage0, Mode=TwoWay}" Grid.ColumnSpan="2" />
+        <ip:ImagePickerView Grid.Column="1" Grid.Row="3" ImageFilename="{Binding PositionImage0, Mode=TwoWay}" Grid.ColumnSpan="2" />
         <Label Grid.Column="0" Grid.Row="2" FontSize="10" HorizontalAlignment="Right" Content="One"
                ToolTip="Image displayed when the switch is in position one (center)." />
         <ip:ImagePickerView Grid.Column="1" Grid.Row="2" ImageFilename="{Binding PositionImage1, Mode=TwoWay}" Grid.ColumnSpan="2" />
-        <Label Grid.Column="0" Grid.Row="3" FontSize="10" HorizontalAlignment="Right" Content="Two"
+        <Label Grid.Column="0" Grid.Row="1" FontSize="10" HorizontalAlignment="Right" Content="Two"
                ToolTip="Image displayed when the switch is in position two (up)." >
             <Label.Style>
                 <Style TargetType="Label">
@@ -41,10 +41,10 @@
                 </Style>
             </Label.Style>
         </Label>
-        <ip:ImagePickerView Grid.Column="1" Grid.Row="3" ImageFilename="{Binding PositionImage2, Mode=TwoWay}" 
+        <ip:ImagePickerView Grid.Column="1" Grid.Row="1" ImageFilename="{Binding PositionImage2, Mode=TwoWay}" 
                             Visibility="{Binding Path=Children[5].Visibility, RelativeSource={RelativeSource AncestorType=Grid}}" Grid.ColumnSpan="2"/>
 
-        <TextBlock x:Name="TO" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="4" Margin="4,10,2,2" FontSize="12" FontWeight="Bold" Text="Indicator On Images" >
+        <!--<TextBlock x:Name="TO" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="4" Margin="4,10,2,2" FontSize="12" FontWeight="Bold" Text="Indicator On Images" >
             <TextBlock.Style>
                 <Style TargetType="TextBlock">
                     <Style.Triggers>
@@ -55,8 +55,7 @@
                 </Style>
             </TextBlock.Style>
         </TextBlock>
-        <!--Style="{StaticResource IndicatorTextBlockStyle}"-->
-        <!--Style="{StaticResource IndicatorLabelStyle}"-->
+
         <Label Grid.Column="0" Grid.Row="5" FontSize="10" HorizontalAlignment="Right" Content="Zero" 
                Visibility="{Binding Path=Children[7].Visibility, RelativeSource={RelativeSource AncestorType=Grid}}" 
                ToolTip="Image displayed when the switch is in position one (up) and the indicator light is on."/>
@@ -83,7 +82,7 @@
             </Label.Style>
         </Label>
         <ip:ImagePickerView Grid.Column="1" Grid.Row="7" ImageFilename="{Binding PositionIndicatorImage2, Mode=TwoWay}"
-                            Visibility="{Binding Path=Children[12].Visibility, RelativeSource={RelativeSource AncestorType=Grid}}" Grid.ColumnSpan="2"/>
+                            Visibility="{Binding Path=Children[12].Visibility, RelativeSource={RelativeSource AncestorType=Grid}}" Grid.ColumnSpan="2"/>-->
 
     </Grid>
 </UserControl>

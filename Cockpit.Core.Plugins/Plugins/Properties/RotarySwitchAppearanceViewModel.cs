@@ -14,22 +14,14 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
     public class RotarySwitchAppearanceViewModel : PropertyChangedBase, IPluginProperty
     {
         private readonly IEventAggregator eventAggregator;
-        public RotarySwitch_ViewModel RotarySwitchViewModel { get; }
+        public RotarySwitch_ViewModel RotarySwitchViewModel { get; set;}
         public string NameUC { get; set; }
-        public RotarySwitchAppearanceViewModel(IEventAggregator eventAggregator, RotarySwitch_ViewModel pm, params object[] settings)
+        public RotarySwitchAppearanceViewModel(IEventAggregator eventAggregator, string[] Images, object[]settings)
         {
-            //Behavior = behavior;
-            RotarySwitchViewModel = pm;
-            bool IsModeEditor = (bool)settings[0];
-            if (IsModeEditor)
-            {
-
-            }
-            NameUC = (string)settings[2];
 
             var index = 5;
 
-            Image = (string)settings[index++];
+            Image = Images[0];
             
             var nbrpoints = (int)settings[index++];
 

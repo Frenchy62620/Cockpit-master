@@ -10,8 +10,6 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         OnOn,
         [Description("On - Mom")]
         OnMom,
-        [Description("Mom - On")]
-        MomOn,
         [Description("Panel Button 2p")]
         PanelButton2p,
         [Description("On - On - On")]

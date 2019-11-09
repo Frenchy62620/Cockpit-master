@@ -2,8 +2,8 @@
 {
     public enum SwitchPosition
     {
-        Zero,
-        One,
-        Two
+        Zero = 2,
+        One = 1,
+        Two = 0,
     }
 }

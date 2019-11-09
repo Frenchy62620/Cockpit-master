@@ -224,7 +224,8 @@ namespace Cockpit.GUI.Views.Main.ToolBar
                 var controlsWidth = 0d;
                 foreach (var visual in listsorted)
                 {
-                    controlsWidth += visual.Width;
+                    //controlsWidth += visual.Width;
+                    controlsWidth += MonitorViewModel.GetProperty("Layout.Width", visual);
                 }
 
                 var spacing = (totalWidth - controlsWidth) / (listsorted.Count - 1);
@@ -258,7 +259,8 @@ namespace Cockpit.GUI.Views.Main.ToolBar
                 var controlsHeight = 0d;
                 foreach (var visual in listsorted)
                 {
-                    controlsHeight += visual.Height;
+                    //controlsHeight += visual.Height;
+                    controlsHeight += MonitorViewModel.GetProperty("Layout.Height", visual);
                 }
 
                 var spacing = (totalHeight - controlsHeight) / (listsorted.Count - 1);

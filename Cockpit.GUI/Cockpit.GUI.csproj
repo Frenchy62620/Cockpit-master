@@ -137,6 +137,7 @@
     <Compile Include="Common\Converters\EnumDisplayEntry.cs" />
     <Compile Include="Common\Converters\MyConverter.cs" />
     <Compile Include="Common\Converters\MyMultiConverter.cs" />
+    <Compile Include="Common\HelperConstructor.cs" />
     <Compile Include="Common\NativeMethods\DisplayOrientation.cs" />
     <Compile Include="Common\NativeMethods\NativeMethods.cs" />
     <Compile Include="Common\Resources\ResourceHelper.cs" />

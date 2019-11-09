@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows;
-using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Core.Plugins.Plugins.Properties
 {
@@ -13,42 +12,40 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
     public class SwitchBehaviorViewModel : PropertyChangedBase, IPluginProperty
     {
         private readonly IEventAggregator eventAggregator;
-
-        public SwitchBehaviorViewModel(IEventAggregator eventAggregator, params object[] settings)
+        public SwitchBehaviorViewModel(bool IsModeEditor, int SelectedSwitchTypeIndex = (int)SwitchType.OnOnOn,
+                                                          SwitchPosition SelectedDefaultPosition = SwitchPosition.One)
         {
-            var index = 0;
-            bool IsModeEditor = (bool)settings[index++];
-            if (IsModeEditor)
-            {
-                //var view = ViewLocator.LocateForModel(this, null, null);
-                //ViewModelBinder.Bind(this, view, null);
-            }
+            this.SelectedSwitchTypeIndex = SelectedSwitchTypeIndex;
+            this.SelectedDefaultPosition = SelectedDefaultPosition;
 
-            this.eventAggregator = eventAggregator;
+            Has3Images = true;
 
-            //SwitchOrientation = Enum.GetValues(typeof(SwitchOrientation)).Cast<SwitchOrientation>().ToList();
-
-            eventAggregator.Subscribe(this);
-            //Has3Images = true;
-            HasIndicator = false;
-            SelectedSwitchTypeIndex = (int) SwitchType.OnOnOn;
-            SelectedDefaultPosition = SwitchPosition.One;
             Name = "Behavior";
         }
 
         public string Name { get; set; }
 
+
+        //OnOn,             0
+        //OnMom,            1
+        //PanelButton2p,    2
+        //OnOnOn,           3
+        //OnOnMom,          4
+        //MomOnOn,          5
+        //MomOnMom,         6
+        //PanelButton3p,    7
+
         private int selectedSwitchTypeIndex;
+        [DataMember]
         public int SelectedSwitchTypeIndex
         {
             get => selectedSwitchTypeIndex;
             set
             {
-                if (value == 3 || value == 8)
+                if (((SwitchType)value).ToString().StartsWith("Panel"))
                 {
                     IsPanelButtonUp = Visibility.Visible;
-                    if (value == 8)
-                        IsPanelButtonDn = Visibility.Visible;
+                    IsPanelButtonDn = ((SwitchType)value).ToString().EndsWith("3p") ? Visibility.Visible : Visibility.Collapsed; ;
                 }
                 else
                 {
@@ -57,24 +54,11 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
                 }
 
                 selectedSwitchTypeIndex = value;
-                SetNumberOfPosition(value >= 4);
-                Has3Images = value >= 4;
+                SetNumberOfPosition(value);
                 NotifyOfPropertyChange(() => SelectedSwitchTypeIndex);
+                Has3Images = value > 2;
             }
         }
-
-        //public IReadOnlyList<SwitchOrientation> SwitchOrientation { get; }
-
-        //private SwitchOrientation selectedOrientation;
-        //public SwitchOrientation SelectedOrientation
-        //{
-        //    get => selectedOrientation;
-        //    set
-        //    {
-        //        selectedOrientation = value;
-        //        NotifyOfPropertyChange(() => SelectedOrientation);
-        //    }
-        //}
 
 
         private List<SwitchPosition> defaultPositions;
@@ -88,24 +72,8 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             }
         }
 
-        private int defaultInitialPosition;
-        public int DefaultInitialPosition
-        {
-            get => defaultInitialPosition;
-
-            set
-            {
-                //if (!AppearancewModel.Has3Images && value > 1)
-                //    defaultInitialPosition = 1;
-                //else
-                //    defaultInitialPosition = value;
-
-
-                SelectedDefaultPosition = (SwitchPosition)defaultInitialPosition;
-            }
-        }
-
         private SwitchPosition selectedDefaultPosition;
+        [DataMember]
         public SwitchPosition SelectedDefaultPosition
         {
             get => selectedDefaultPosition;
@@ -114,14 +82,63 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             {
                 selectedDefaultPosition = value;
                 NotifyOfPropertyChange(() => SelectedDefaultPosition);
+                IndexImage = 2 - (int)value  ;
             }
         }
 
-        void SetNumberOfPosition(bool numberOfPositionEqual3)
+        private int indexImage;
+        public int IndexImage
         {
-            DefaultPositions = Enum.GetValues(typeof(SwitchPosition)).Cast<SwitchPosition>().Take(numberOfPositionEqual3 ? 3 : 2).ToList();
-            if (SelectedSwitchTypeIndex == 3 || (SelectedDefaultPosition == SwitchPosition.Two && !numberOfPositionEqual3))
-                SelectedDefaultPosition = DefaultPositions[1];
+            get { return indexImage; }
+            set
+            {
+                indexImage = value;
+                NotifyOfPropertyChange(() => IndexImage);
+            }
+        }
+
+        //OnOn,             0
+        //OnMom,            1
+        //PanelButton2p,    2
+        //OnOnOn,           3
+        //OnOnMom,          4
+        //MomOnOn,          5
+        //MomOnMom,         6
+        //PanelButton3p,    7
+        private void SetNumberOfPosition(int numberOfPosition)
+        {
+            var listofvalues = Enum.GetValues(typeof(SwitchPosition)).Cast<SwitchPosition>()
+                                                                     .Skip(numberOfPosition >= 3 ? 0 : 1).ToList();/* Skip value Two if only 2 Positions*/
+
+            switch (SelectedSwitchTypeIndex)
+            {
+                case 0:
+                case 1:
+                case 2:
+                    SelectedDefaultPosition = SwitchPosition.Zero;
+                    break;
+                default:
+                    SelectedDefaultPosition = SwitchPosition.One;
+                    break;
+            }
+
+            if ((SwitchType)numberOfPosition == SwitchType.OnMom || (SwitchType)numberOfPosition == SwitchType.PanelButton2p)
+                listofvalues.Remove(SwitchPosition.One);
+            else if ((SwitchType)numberOfPosition == SwitchType.MomOnMom || (SwitchType)numberOfPosition == SwitchType.PanelButton3p)
+            {
+                listofvalues.Remove(SwitchPosition.Zero);
+                listofvalues.Remove(SwitchPosition.Two);
+            }
+            else if ((SwitchType)numberOfPosition == SwitchType.OnOnMom)
+            {
+                listofvalues.Remove(SwitchPosition.Two);
+            }
+            else if ((SwitchType)numberOfPosition == SwitchType.MomOnOn)
+            {
+                listofvalues.Remove(SwitchPosition.Zero);
+            }
+            DefaultPositions = listofvalues;
+            //NotifyOfPropertyChange(() => DefaultPositions);
         }
 
         private Visibility _IsPanelButtonUp;
@@ -142,11 +159,12 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
 
             set
             {
-                _IsPanelButtonUp = value;
+                _IsPanelButtonDn = value;
                 NotifyOfPropertyChange(() => IsPanelButtonDn);
             }
         }
         private string _NameOfPanelUp;
+        [DataMember]
         public string NameOfPanelUp
         {
             get => _NameOfPanelUp;
@@ -158,6 +176,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             }
         }
         private string _NameOfPanelDn;
+        [DataMember]
         public string NameOfPanelDn
         {
             get => _NameOfPanelDn;
@@ -168,17 +187,9 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
                 NotifyOfPropertyChange(() => _NameOfPanelDn);
             }
         }
-        private bool hasIndicator;
-        public bool HasIndicator
-        {
-            get => hasIndicator;
-            set
-            {
-                hasIndicator = value;
-                NotifyOfPropertyChange(() => HasIndicator);
-            }
-        }
+
         private bool has3images;
+        [DataMember]
         public bool Has3Images
         {
             get => has3images;
