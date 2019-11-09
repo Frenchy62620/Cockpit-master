@@ -73,10 +73,10 @@ namespace Cockpit.GUI.Views.Main.ToolBar
             var reference = MonitorViewModel.SortedDico[MonitorViewModel.AdornersSelectedList.ElementAt(0)].pm;
             var list = MonitorViewModel.SortedDico.Where(item => MonitorViewModel.AdornersSelectedList.Contains(item.Key)).Select(item => item.Value.pm);
 
-            var reftop = MonitorViewModel.GetProperty("Layout.RealUCTop", reference);
-            var refleft = MonitorViewModel.GetProperty("Layout.RealUCLeft", reference);
-            var refwidth = MonitorViewModel.GetProperty("Layout.RealWidth", reference);
-            var refheight = MonitorViewModel.GetProperty("Layout.RealHeight", reference);
+            var reftop = MonitorViewModel.GetPropertyDouble("Layout.RealUCTop", reference);
+            var refleft = MonitorViewModel.GetPropertyDouble("Layout.RealUCLeft", reference);
+            var refwidth = MonitorViewModel.GetPropertyDouble("Layout.RealWidth", reference);
+            var refheight = MonitorViewModel.GetPropertyDouble("Layout.RealHeight", reference);
 
             if (id == 2)    //AlignTop
             {
@@ -96,7 +96,7 @@ namespace Cockpit.GUI.Views.Main.ToolBar
                 foreach (var k in list)
                 {
                     if (k == reference) continue;
-                    var height = MonitorViewModel.GetProperty("Layout.RealHeight", k);
+                    var height = MonitorViewModel.GetPropertyDouble("Layout.RealHeight", k);
                     MonitorViewModel.SetProperty("Layout.RealUCTop", k, reftop + refheight - height);
                     //k.Top = reference.Top + reference.Height;
                 }
@@ -121,7 +121,7 @@ namespace Cockpit.GUI.Views.Main.ToolBar
                 foreach (var k in list)
                 {
                     if (k == reference) continue;
-                    var width = MonitorViewModel.GetProperty("Layout.RealWidth", k);
+                    var width = MonitorViewModel.GetPropertyDouble("Layout.RealWidth", k);
                     MonitorViewModel.SetProperty("Layout.RealUCLeft", k, refleft + (refwidth - width));
                     //k.Left = reference.Left + reference.Width;
                 }
@@ -135,7 +135,7 @@ namespace Cockpit.GUI.Views.Main.ToolBar
                 foreach (var k in list)
                 {
                     if (k == reference) continue;
-                    var height = MonitorViewModel.GetProperty("Layout.RealHeight", k);
+                    var height = MonitorViewModel.GetPropertyDouble("Layout.RealHeight", k);
                     MonitorViewModel.SetProperty("Layout.RealUCTop", k, Math.Round(middle - height / 2d, 0, MidpointRounding.ToEven));
                     //k.Top = Math.Round(middle - k.Height / 2d, 0, MidpointRounding.ToEven);
                 }
@@ -149,7 +149,7 @@ namespace Cockpit.GUI.Views.Main.ToolBar
                 foreach (var k in list)
                 {
                     if (k == reference) continue;
-                    var width = MonitorViewModel.GetProperty("Layout.RealWidth", k);
+                    var width = MonitorViewModel.GetPropertyDouble("Layout.RealWidth", k);
                     MonitorViewModel.SetProperty("Layout.RealUCLeft", k, Math.Round(middle - width / 2d, 0, MidpointRounding.ToEven));
                     //k.Left = Math.Round(middle + k.Width / 2d, 0, MidpointRounding.ToEven);
                 }
@@ -159,7 +159,7 @@ namespace Cockpit.GUI.Views.Main.ToolBar
 
             if (id == 8)    //DistributeHorizontalCenter
             {
-                var listsorted = list.OrderBy(k => MonitorViewModel.GetProperty("Layout.RealUCLeft", k)).ToList();
+                var listsorted = list.OrderBy(k => MonitorViewModel.GetPropertyDouble("Layout.RealUCLeft", k)).ToList();
 
                 var leftControl = listsorted[0];
                 var rightControl = listsorted[listsorted.Count - 1];
@@ -167,8 +167,8 @@ namespace Cockpit.GUI.Views.Main.ToolBar
                 //var leftCenter = leftControl.Left + (leftControl.Width / 2d);
                 //var rightCenter = rightControl.Left + (rightControl.Width / 2d);
 
-                var leftCenter = MonitorViewModel.GetProperty("Layout.RealUCLeft", leftControl) + MonitorViewModel.GetProperty("Layout.RealWidth", leftControl) / 2d;
-                var rightCenter = MonitorViewModel.GetProperty("Layout.RealUCLeft", rightControl) + MonitorViewModel.GetProperty("Layout.RealWidth", rightControl) / 2d;
+                var leftCenter = MonitorViewModel.GetPropertyDouble("Layout.RealUCLeft", leftControl) + MonitorViewModel.GetPropertyDouble("Layout.RealWidth", leftControl) / 2d;
+                var rightCenter = MonitorViewModel.GetPropertyDouble("Layout.RealUCLeft", rightControl) + MonitorViewModel.GetPropertyDouble("Layout.RealWidth", rightControl) / 2d;
 
                 var spacing = (rightCenter - leftCenter) / (listsorted.Count - 1);
                 var currentCenter = leftCenter;
@@ -176,7 +176,7 @@ namespace Cockpit.GUI.Views.Main.ToolBar
                 for (int i = 1; i < listsorted.Count - 1; i++)
                 {
                     currentCenter += spacing;
-                    MonitorViewModel.SetProperty("Layout.RealUCLeft", listsorted[i], Math.Round(currentCenter - MonitorViewModel.GetProperty("Layout.RealWidth", listsorted[i]) / 2d, 0, MidpointRounding.ToEven));
+                    MonitorViewModel.SetProperty("Layout.RealUCLeft", listsorted[i], Math.Round(currentCenter - MonitorViewModel.GetPropertyDouble("Layout.RealWidth", listsorted[i]) / 2d, 0, MidpointRounding.ToEven));
                     //listsorted[i].Left = Math.Round(currentCenter - (listsorted[i].Width / 2d), 0, MidpointRounding.ToEven);
                 }
 
@@ -185,7 +185,7 @@ namespace Cockpit.GUI.Views.Main.ToolBar
 
             if (id == 9)    //DistributeVerticalCenter
             {
-                var listsorted = list.OrderBy(k => MonitorViewModel.GetProperty("Layout.RealUCTop", k)).ToList();
+                var listsorted = list.OrderBy(k => MonitorViewModel.GetPropertyDouble("Layout.RealUCTop", k)).ToList();
 
                 var topControl = listsorted[0];
                 var bottomControl = listsorted[listsorted.Count - 1];
@@ -193,8 +193,8 @@ namespace Cockpit.GUI.Views.Main.ToolBar
                 //double topCenter = topControl.Top + (topControl.Height / 2d);
                 //double bottomCenter = bottomControl.Top + (bottomControl.Height / 2d);
 
-                var topCenter = MonitorViewModel.GetProperty("Layout.RealUCTop", topControl) + MonitorViewModel.GetProperty("Layout.RealHeight", topControl) / 2d;
-                var bottomCenter = MonitorViewModel.GetProperty("Layout.RealUCTop", bottomControl) + MonitorViewModel.GetProperty("Layout.RealHeight", bottomControl) / 2d;
+                var topCenter = MonitorViewModel.GetPropertyDouble("Layout.RealUCTop", topControl) + MonitorViewModel.GetPropertyDouble("Layout.RealHeight", topControl) / 2d;
+                var bottomCenter = MonitorViewModel.GetPropertyDouble("Layout.RealUCTop", bottomControl) + MonitorViewModel.GetPropertyDouble("Layout.RealHeight", bottomControl) / 2d;
 
                 var spacing = (bottomCenter - topCenter) / (double)(listsorted.Count - 1);
                 var currentCenter = topCenter;
@@ -202,7 +202,7 @@ namespace Cockpit.GUI.Views.Main.ToolBar
                 for (int i = 1; i < listsorted.Count - 1; i++)
                 {
                     currentCenter += spacing;
-                    MonitorViewModel.SetProperty("Layout.RealUCTop", listsorted[i], Math.Round(currentCenter - MonitorViewModel.GetProperty("Layout.RealHeight", listsorted[i]) / 2d, 0, MidpointRounding.ToEven));
+                    MonitorViewModel.SetProperty("Layout.RealUCTop", listsorted[i], Math.Round(currentCenter - MonitorViewModel.GetPropertyDouble("Layout.RealHeight", listsorted[i]) / 2d, 0, MidpointRounding.ToEven));
                     //listsorted[i].Top = Math.Round(currentCenter - (listsorted[i].Height / 2d), 0, MidpointRounding.ToEven);
                 }
 
@@ -212,25 +212,25 @@ namespace Cockpit.GUI.Views.Main.ToolBar
             if (id == 10)    //SpaceHorizontal
             {
                 //var listsorted = list.OrderBy(item => item.Left).ToList();
-                var listsorted = list.OrderBy(k => MonitorViewModel.GetProperty("Layout.RealUCLeft", k)).ToList();
+                var listsorted = list.OrderBy(k => MonitorViewModel.GetPropertyDouble("Layout.RealUCLeft", k)).ToList();
 
                 var leftControl = listsorted[0];
                 var rightControl = listsorted[listsorted.Count - 1];
 
                 //var totalWidth = rightControl.Left + rightControl.Width - leftControl.Left;
-                var totalWidth = MonitorViewModel.GetProperty("Layout.RealUCLeft", rightControl) +
-                                 MonitorViewModel.GetProperty("Layout.RealWidth", rightControl) - MonitorViewModel.GetProperty("Layout.RealUCLeft", leftControl);
+                var totalWidth = MonitorViewModel.GetPropertyDouble("Layout.RealUCLeft", rightControl) +
+                                 MonitorViewModel.GetPropertyDouble("Layout.RealWidth", rightControl) - MonitorViewModel.GetPropertyDouble("Layout.RealUCLeft", leftControl);
 
                 var controlsWidth = 0d;
                 foreach (var visual in listsorted)
                 {
                     //controlsWidth += visual.Width;
-                    controlsWidth += MonitorViewModel.GetProperty("Layout.Width", visual);
+                    controlsWidth += MonitorViewModel.GetPropertyDouble("Layout.Width", visual);
                 }
 
                 var spacing = (totalWidth - controlsWidth) / (listsorted.Count - 1);
                 //var currentLeft = leftControl.Left + leftControl.Width;
-                var currentLeft = MonitorViewModel.GetProperty("Layout.RealUCLeft", leftControl) + MonitorViewModel.GetProperty("Layout.RealWidth", leftControl);
+                var currentLeft = MonitorViewModel.GetPropertyDouble("Layout.RealUCLeft", leftControl) + MonitorViewModel.GetPropertyDouble("Layout.RealWidth", leftControl);
 
                 for (int i = 1; i < listsorted.Count - 1; i++)
                 {
@@ -238,7 +238,7 @@ namespace Cockpit.GUI.Views.Main.ToolBar
                     //listsorted[i].Left = currentLeft;
                     //currentLeft += listsorted[i].Width;
                     MonitorViewModel.SetProperty("Layout.RealUCLeft", listsorted[i], currentLeft);
-                    currentLeft += MonitorViewModel.GetProperty("Layout.RealWidth", listsorted[i]);
+                    currentLeft += MonitorViewModel.GetPropertyDouble("Layout.RealWidth", listsorted[i]);
                 }
 
                 return;
@@ -247,25 +247,25 @@ namespace Cockpit.GUI.Views.Main.ToolBar
             if (id == 11)    //SpaceVertical
             {
                 //var listsorted = list.OrderBy(item => item.Top).ToList();
-                var listsorted = list.OrderBy(k => MonitorViewModel.GetProperty("Layout.RealUCTop", k)).ToList();
+                var listsorted = list.OrderBy(k => MonitorViewModel.GetPropertyDouble("Layout.RealUCTop", k)).ToList();
 
                 var topControl = listsorted[0];
                 var bottomControl = listsorted[listsorted.Count - 1];
 
                 //var totalHeight = bottomControl.Top + bottomControl.Height - topControl.Top;
-                var totalHeight = MonitorViewModel.GetProperty("Layout.RealUCTop", bottomControl) +
-                                  MonitorViewModel.GetProperty("Layout.RealHeight", bottomControl) - MonitorViewModel.GetProperty("Layout.RealUCTop", topControl);
+                var totalHeight = MonitorViewModel.GetPropertyDouble("Layout.RealUCTop", bottomControl) +
+                                  MonitorViewModel.GetPropertyDouble("Layout.RealHeight", bottomControl) - MonitorViewModel.GetPropertyDouble("Layout.RealUCTop", topControl);
 
                 var controlsHeight = 0d;
                 foreach (var visual in listsorted)
                 {
                     //controlsHeight += visual.Height;
-                    controlsHeight += MonitorViewModel.GetProperty("Layout.Height", visual);
+                    controlsHeight += MonitorViewModel.GetPropertyDouble("Layout.Height", visual);
                 }
 
                 var spacing = (totalHeight - controlsHeight) / (listsorted.Count - 1);
                 //var currentTop = topControl.Top + topControl.Height;
-                var currentTop = MonitorViewModel.GetProperty("Layout.RealUCTop", topControl) + MonitorViewModel.GetProperty("Layout.RealHeight", topControl);
+                var currentTop = MonitorViewModel.GetPropertyDouble("Layout.RealUCTop", topControl) + MonitorViewModel.GetPropertyDouble("Layout.RealHeight", topControl);
 
                 for (int i = 1; i < listsorted.Count - 1; i++)
                 {
@@ -273,7 +273,7 @@ namespace Cockpit.GUI.Views.Main.ToolBar
                     //listsorted[i].Top = currentTop;
                     //currentTop += listsorted[i].Height;
                     MonitorViewModel.SetProperty("Layout.RealUCTop", listsorted[i], currentTop);
-                    currentTop += MonitorViewModel.GetProperty("Layout.RealHeight", listsorted[i]);
+                    currentTop += MonitorViewModel.GetPropertyDouble("Layout.RealHeight", listsorted[i]);
                 }
 
                 return;

@@ -789,7 +789,7 @@ namespace Cockpit.GUI.Views.Profile
                     {
                         foreach (var k in list)
                         {
-                            var value = GetProperty("Layout.RealUCLeft", k);
+                            var value = GetPropertyDouble("Layout.RealUCLeft", k);
                             SetProperty("Layout.RealUCLeft", k, value - step);
                             //k.Left = k.Left - step;
                         }
@@ -799,7 +799,7 @@ namespace Cockpit.GUI.Views.Profile
                     {
                         foreach (var k in list)
                         {
-                            var value = GetProperty("Layout.RealUCLeft", k);
+                            var value = GetPropertyDouble("Layout.RealUCLeft", k);
                             SetProperty("Layout.RealUCLeft", k, value + step);
                             //k.Left = k.Left + step;
                         }
@@ -810,7 +810,7 @@ namespace Cockpit.GUI.Views.Profile
                     {
                         foreach (var k in list)
                         {
-                            var value = GetProperty("Layout.RealUCTop", k);
+                            var value = GetPropertyDouble("Layout.RealUCTop", k);
                             SetProperty("Layout.RealUCTop", k, value - step);
                             //k.Top = k.Top - step;
                         }
@@ -820,7 +820,7 @@ namespace Cockpit.GUI.Views.Profile
                     {
                         foreach (var k in list)
                         {
-                            var value = GetProperty("Layout.RealUCTop", k);
+                            var value = GetPropertyDouble("Layout.RealUCTop", k);
                             SetProperty("Layout.RealUCTop", k, value + step);
                             //k.Top = k.Top + step;
                         }
@@ -841,10 +841,10 @@ namespace Cockpit.GUI.Views.Profile
             var list = SortedDico.Where(item => AdornersSelectedList.Contains(item.Key)).Select(item => item.Value.pm);
             foreach (var k in list)
             {
-                var linked = GetProperty("Layout.Linked", k);
-                var parentscale = GetProperty("Layout.ParentScaleY", k);
-                var width = GetProperty("Layout.RealWidth", k);
-                var height = GetProperty("Layout.RealHeight", k);
+                var linked = GetPropertyDouble("Layout.Linked", k);
+                var parentscale = GetPropertyDouble("Layout.ParentScaleY", k);
+                var width = GetPropertyDouble("Layout.RealWidth", k);
+                var height = GetPropertyDouble("Layout.RealHeight", k);
                 if (linked == 1d || !h)
                 {
                     SetProperty("Layout.RealWidth", k, width + step);
@@ -1131,7 +1131,7 @@ namespace Cockpit.GUI.Views.Profile
             PropertyInfo propertyToSet = target.GetType().GetProperty(bits.Last());
             propertyToSet.SetValue(target, value, null);
         }
-        public double GetProperty(string compoundProperty, object target)
+        public double GetPropertyDouble(string compoundProperty, object target)
         {
             string[] bits = compoundProperty.Split('.');
             for (int i = 0; i < bits.Length - 1; i++)
@@ -1140,8 +1140,6 @@ namespace Cockpit.GUI.Views.Profile
                 target = propToGet.GetValue(target, null);
             }
             PropertyInfo propertyToGet = target.GetType().GetProperty(bits.Last());
-
- 
             IConvertible convert = propertyToGet.GetValue(target) as IConvertible;
 
             if (convert != null)
