@@ -20,23 +20,22 @@ namespace Cockpit.Plugin.A10C.ViewModels
             Layout = new LayoutPropertyViewModel(eventAggregator: eventAggregator, settings: settings);
 
             this.eventAggregator = eventAggregator;
-            NameUC = (string)settings[2];
         }
 
         public string ImageLight { get; }
         public string ImageFrame { get; }
 
         #region PluginModel
-        private string nameUC;
-        public string NameUC
-        {
-            get => nameUC;
-            set
-            {
-                nameUC = value;
-                NotifyOfPropertyChange(() => NameUC);
-            }
-        }
+        //private string nameUC;
+        //public string NameUC
+        //{
+        //    get => nameUC;
+        //    set
+        //    {
+        //        nameUC = value;
+        //        NotifyOfPropertyChange(() => NameUC);
+        //    }
+        //}
 
         private double zoomfactorfrompluginmodel;
         public double ZoomFactorFromPluginModel
@@ -49,37 +48,37 @@ namespace Cockpit.Plugin.A10C.ViewModels
             }
         }
 
-        public double ScaleX
-        {
-            get => Layout.ScaleX;
-            set => Layout.ScaleX = value;
-        }
-        public double ScaleY
-        {
-            get => Layout.ScaleY;
-            set => Layout.ScaleY = value;
-        }
+        //public double ScaleX
+        //{
+        //    get => Layout.ScaleX;
+        //    set => Layout.ScaleX = value;
+        //}
+        //public double ScaleY
+        //{
+        //    get => Layout.ScaleY;
+        //    set => Layout.ScaleY = value;
+        //}
 
-        public double Left
-        {
-            get => Layout.UCLeft;
-            set => Layout.UCLeft = value;
-        }
-        public double Top
-        {
-            get => Layout.UCTop;
-            set => Layout.UCTop = value;
-        }
-        public double Width
-        {
-            get => Layout.Width;
-            set => Layout.Width = value;
-        }
-        public double Height
-        {
-            get => Layout.Height;
-            set => Layout.Height = value;
-        }
+        //public double Left
+        //{
+        //    get => Layout.UCLeft;
+        //    set => Layout.UCLeft = value;
+        //}
+        //public double Top
+        //{
+        //    get => Layout.UCTop;
+        //    set => Layout.UCTop = value;
+        //}
+        //public double Width
+        //{
+        //    get => Layout.Width;
+        //    set => Layout.Width = value;
+        //}
+        //public double Height
+        //{
+        //    get => Layout.Height;
+        //    set => Layout.Height = value;
+        //}
 
         public IPluginProperty[] GetProperties()
         {
@@ -89,7 +88,7 @@ namespace Cockpit.Plugin.A10C.ViewModels
 
         public void MouseEnter(MouseEventArgs e)
         {
-            ToolTip = $"({UCLeft}, {UCTop})\n({ScaleX:0.##}, {(ScaleX):0.##})";
+            ToolTip = $"({UCLeft}, {UCTop})\n({Layout.ScaleX:0.##}, {(Layout.ScaleX):0.##})";
         }
 
         #region Mode Edition

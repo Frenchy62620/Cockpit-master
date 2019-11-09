@@ -19,29 +19,22 @@ namespace Cockpit.Plugin.A10C.ViewModels
             Layout = new LayoutPropertyViewModel(eventAggregator: eventAggregator, settings: settings);
 
             this.eventAggregator = eventAggregator;
-            NameUC = (string)settings[2];
-            //ImageLight = settings.Image[1];
-            //ImageFrame = settings.Image[0];
-            //UCLeft = settings.Left;
-            //UCTop = settings.Top;
-            //ScaleX = settings.ScaleX;
-            //Frame = false;
         }
 
         public string ImageLight { get; }
         public string ImageFrame { get; }
 
         #region PluginModel
-        private string nameUC;
-        public string NameUC
-        {
-            get => nameUC;
-            set
-            {
-                nameUC = value;
-                NotifyOfPropertyChange(() => NameUC);
-            }
-        }
+        //private string nameUC;
+        //public string NameUC
+        //{
+        //    get => nameUC;
+        //    set
+        //    {
+        //        nameUC = value;
+        //        NotifyOfPropertyChange(() => NameUC);
+        //    }
+        //}
 
         private double zoomfactorfrompluginmodel;
         public double ZoomFactorFromPluginModel
@@ -54,37 +47,37 @@ namespace Cockpit.Plugin.A10C.ViewModels
             }
         }
 
-        public double ScaleX
-        {
-            get => Layout.ScaleX;
-            set => Layout.ScaleX = value;
-        }
-        public double ScaleY
-        {
-            get => Layout.ScaleY;
-            set => Layout.ScaleY = value;
-        }
+        //public double ScaleX
+        //{
+        //    get => Layout.ScaleX;
+        //    set => Layout.ScaleX = value;
+        //}
+        //public double ScaleY
+        //{
+        //    get => Layout.ScaleY;
+        //    set => Layout.ScaleY = value;
+        //}
 
-        public double Left
-        {
-            get => Layout.UCLeft;
-            set => Layout.UCLeft = value;
-        }
-        public double Top
-        {
-            get => Layout.UCTop;
-            set => Layout.UCTop = value;
-        }
-        public double Width
-        {
-            get => Layout.Width;
-            set => Layout.Width = value;
-        }
-        public double Height
-        {
-            get => Layout.Height;
-            set => Layout.Height = value;
-        }
+        //public double Left
+        //{
+        //    get => Layout.UCLeft;
+        //    set => Layout.UCLeft = value;
+        //}
+        //public double Top
+        //{
+        //    get => Layout.UCTop;
+        //    set => Layout.UCTop = value;
+        //}
+        //public double Width
+        //{
+        //    get => Layout.Width;
+        //    set => Layout.Width = value;
+        //}
+        //public double Height
+        //{
+        //    get => Layout.Height;
+        //    set => Layout.Height = value;
+        //}
 
         public IPluginProperty[] GetProperties()
         {
