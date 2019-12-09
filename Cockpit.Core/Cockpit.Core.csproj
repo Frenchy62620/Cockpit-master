@@ -71,6 +71,7 @@
     <Compile Include="Common\Log.cs" />
     <Compile Include="Common\Range.cs" />
     <Compile Include="Common\Utils.cs" />
+    <Compile Include="Model\Events\RenamePanelNameEvent.cs" />
     <Compile Include="Model\Events\RenameUCEvent.cs" />
     <Compile Include="Model\Events\ScriptErrorEvent.cs" />
     <Compile Include="Model\Events\TrayNotificationEvent.cs" />

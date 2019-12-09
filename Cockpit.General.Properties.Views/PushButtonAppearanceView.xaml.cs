@@ -6,7 +6,18 @@ namespace Cockpit.General.Properties.Views
         public PushButtonAppearanceView()
         {
             InitializeComponent();
+            System.Diagnostics.Debug.WriteLine($"entree {this}");
         }
+#if DEBUG
+        ~PushButtonAppearanceView()
+        {
+            System.Diagnostics.Debug.WriteLine($"sortie {this}");
+        }
+#endif
+        //private void Glyph_SelectedColorChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
+        //{
+        //    var t = sender as ColorPicker;
+        //}
 
         //private void LeftPaddingChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         //{

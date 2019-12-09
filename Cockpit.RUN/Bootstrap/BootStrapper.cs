@@ -53,7 +53,12 @@ namespace Cockpit.RUN.Bootstrap
 
         private void OnSettingsLoaded()
         {
-            //DisplayRootViewFor<TrayIconViewModel>();
+            //ViewLocator.NameTransformer.AddRule(@"ViewModel", @"ViewX");
+            ViewLocator.AddNamespaceMapping("Cockpit.Core.Plugins.Plugins.Properties", "Cockpit.General.Properties.Views");
+
+            //Dictionary<string, object> window_settings = new Dictionary<string, object>();
+            //window_settings.Add("Assemblies", ass);
+
             DisplayRootViewFor<StartupViewModel>();
         }
 

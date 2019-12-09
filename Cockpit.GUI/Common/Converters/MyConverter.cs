@@ -153,6 +153,27 @@ namespace Cockpit.GUI.Common.Converters
         }
     }
 
+    public class MyconverterStringToSolidColorBrush : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            try
+            {
+                var c = (Color)ColorConverter.ConvertFromString((string)value);
+                return new SolidColorBrush(c);
+            }
+            catch
+            {
+                return new SolidColorBrush(Color.FromRgb(0, 0, 0));
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class MyconverterColorToSolidColorBrush : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

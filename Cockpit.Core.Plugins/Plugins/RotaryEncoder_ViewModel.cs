@@ -32,9 +32,6 @@ namespace Cockpit.Core.Plugins.Plugins
             //Behavior = new RotarySwitchBehaviorViewModel(eventAggregator, this, settings);
 
 
-
-            NameUC = (string)settings[2];
-
             var s = Appearance.TextFormat.MeasureString("ABC", Appearance.LabelColor);
 
 
@@ -42,26 +39,10 @@ namespace Cockpit.Core.Plugins.Plugins
             this.eventAggregator.Subscribe(this);
 
             ToolTip = "Superbe";
-
-
-
-
         }
 
 
         #region PluginModel
-        private string nameUC;
-        [DataMember]
-        public string NameUC
-        {
-            get => nameUC;
-            set
-            {
-                nameUC = value;
-                NotifyOfPropertyChange(() => NameUC);
-            }
-        }
-
         private double zoomfactorfrompluginmodel;
         public double ZoomFactorFromPluginModel
         {
@@ -71,38 +52,6 @@ namespace Cockpit.Core.Plugins.Plugins
                 zoomfactorfrompluginmodel = value;
                 NotifyOfPropertyChange(() => ZoomFactorFromPluginModel);
             }
-        }
-
-        public double ScaleX
-        {
-            get => Layout.ScaleX;
-            set => Layout.ScaleX = value;
-        }
-        public double ScaleY
-        {
-            get => Layout.ScaleY;
-            set => Layout.ScaleY = value;
-        }
-
-        public double Left
-        {
-            get => Layout.UCLeft;
-            set => Layout.UCLeft = value;
-        }
-        public double Top
-        {
-            get => Layout.UCTop;
-            set => Layout.UCTop = value;
-        }
-        public double Width
-        {
-            get => Layout.Width;
-            set => Layout.Width = value;
-        }
-        public double Height
-        {
-            get => Layout.Height;
-            set => Layout.Height = value;
         }
 
         public IPluginProperty[] GetProperties()

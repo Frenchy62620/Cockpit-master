@@ -10,6 +10,7 @@ namespace Cockpit.GUI.Plugins
         public Panel_View()
         {
             InitializeComponent();
+            System.Diagnostics.Debug.WriteLine($"entree {this}");
         }
 #if DEBUG
         ~Panel_View()

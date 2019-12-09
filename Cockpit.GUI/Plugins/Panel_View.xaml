@@ -6,11 +6,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:cal="http://www.caliburnproject.org"
     xmlns:gg="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
-    mc:Ignorable="d" d:DesignHeight="150" d:DesignWidth="70" ToolTip="{Binding ToolTip}"    Style="{DynamicResource ResourceKey=PanelAnimation1}"
+    mc:Ignorable="d" d:DesignHeight="150" d:DesignWidth="70" ToolTip="{Binding ToolTip}"    Style="{StaticResource ResourceKey=PanelAnimation}"
     VerticalAlignment = "Top" HorizontalAlignment = "Left" ClipToBounds="True" Background="Transparent"
     cal:Message.Attach="[Event MouseDown] = [Action MouseLeftButtonDownOnPanelView($source, $mousepoint, $eventArgs)];
                         [Event SizeChanged] = [Action SizeChanged($source, $eventArgs)]"  >
-    <!--cal:Message.Attach="[Event MouseEnter] = [Action MouseEnter($eventArgs)];
+    <!--cal:Message.Attach="[Event MouseEnter] = [Action MouseEnter($eventArgs)];    Style="{DynamicResource ResourceKey=PanelAnimation1}"
                         [Event MouseDoubleClick] = [Action MouseDoubleClickOnPanel($dataContext, $eventArgs)]"-->
     <UserControl.Resources>
 
@@ -189,7 +189,7 @@
                                     TileMode="None" />
             </Rectangle.Fill>
         </Rectangle>
-        <ItemsControl ItemsSource="{Binding MyCockpitViewModels}" >
+        <ItemsControl ItemsSource="{Binding MyPluginsContainer}" >
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <!--<Border BorderThickness="4" BorderBrush="Red" Visibility="Visible" Margin="0,0,0,0">-->

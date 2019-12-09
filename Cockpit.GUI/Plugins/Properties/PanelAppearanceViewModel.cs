@@ -19,24 +19,50 @@ namespace Cockpit.GUI.Plugins.Properties
         private readonly IEventAggregator eventAggregator;
         public string NameUC { get; private set; }
 
-        public PanelAppearanceViewModel(IEventAggregator eventAggregator, string[] BackgroundImage = null, Color? BackgroundColor = null, bool FillBackground = false,
+        //private readonly SolidColorBrush color1 = new SolidColorBrush(Colors.White);
+        //private readonly SolidColorBrush color2 = new SolidColorBrush(Colors.LightGray);
+
+        public PanelAppearanceViewModel(IEventAggregator eventAggregator, string[] BackgroundImages = null, string BackgroundColor = null, bool FillBackground = false,
                                                                           PanelSideApparition SelectedApparition = PanelSideApparition.FromLeft)
         {
             Apparitions = Enum.GetValues(typeof(PanelSideApparition)).Cast<PanelSideApparition>().ToList();
             this.SelectedApparition = SelectedApparition;
 
-            this.BackgroundImage = BackgroundImage[0];
-            this.BackgroundColor = BackgroundColor ?? Colors.Gray;
+            this.BackgroundImage = BackgroundImages[0];
+            this.ColorBackground = BackgroundColor == null ? Colors.Gray : (Color)ColorConverter.ConvertFromString(BackgroundColor);
             this.FillBackground = FillBackground;
 
 
             eventAggregator.Subscribe(this);
 
             Name = "Appearance";
-
+            System.Diagnostics.Debug.WriteLine($"entree {this}");
         }
+        #region serialize
+        [OnSerializing]
+        void OnSerializingMethod(StreamingContext sc)
+        {
+            BackgroundImages = new string[] { BackgroundImage };
+            BackgroundColor = ColorBackground.ToString();
+        }
+        [OnDeserialized]
+        void OnDeserializedMethod(StreamingContext sc)
+        {
+            BackgroundImage = BackgroundImages[0];
+            ColorBackground = (Color)ColorConverter.ConvertFromString(BackgroundColor);
+        }
+        #endregion
+
+#if DEBUG
+        ~PanelAppearanceViewModel()
+        {
+            System.Diagnostics.Debug.WriteLine($"sortie {this}");
+        }
+#endif
 
         public string Name { get; set; }
+
+        [DataMember] public string[] BackgroundImages;
 
         public IReadOnlyList<PanelSideApparition> Apparitions { get; }
 
@@ -65,7 +91,6 @@ namespace Cockpit.GUI.Plugins.Properties
         }
 
         private string backgroundImage;
-        [DataMember]
         public string BackgroundImage
         {
             get { return backgroundImage; }
@@ -92,22 +117,23 @@ namespace Cockpit.GUI.Plugins.Properties
                 fillBackground = value;
                 NotifyOfPropertyChange(() => FillBackground);
                 if (value)
-                    FillColor = new SolidColorBrush(BackgroundColor);
+                    FillColor = new SolidColorBrush(ColorBackground);
                 else
                     FillColor = new SolidColorBrush(Colors.Transparent);
             }
         }
 
-        private Color backgroundColor;
-        [DataMember]
-        public Color BackgroundColor
+        [DataMember] public string BackgroundColor { get; set; }
+
+        private Color _ColorBackground;
+        public Color ColorBackground
         {
-            get { return backgroundColor; }
+            get { return _ColorBackground; }
             set
             {
-                backgroundColor = value;
-                NotifyOfPropertyChange(() => BackgroundColor);
-                FillColor = new SolidColorBrush(BackgroundColor);
+                _ColorBackground = value;
+                NotifyOfPropertyChange(() => ColorBackground);
+                FillColor = new SolidColorBrush(ColorBackground);
             }
         }
 

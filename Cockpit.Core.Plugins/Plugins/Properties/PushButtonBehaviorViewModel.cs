@@ -12,23 +12,28 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
     [DataContract]
     public class PushButtonBehaviorViewModel : PropertyChangedBase, IPluginProperty
     {
-        public PushButtonBehaviorViewModel(int SelectedPushbuttonType = 0, string NameOfPanel ="")
+        public readonly string Nothings;
+        public PushButtonBehaviorViewModel(object OriginPlugin, int SelectedPushbuttonType = 0, string Nothings = null, string SelectedPanelName = null)
         {
+            this.OriginPlugin = OriginPlugin;
             PushButtonTypes = Enum.GetValues(typeof(PushButtonType)).Cast<PushButtonType>().ToList();
             this.SelectedPushButtonType = (PushButtonType)SelectedPushbuttonType;
-            this.NameOfPanel = NameOfPanel;
+            this.SelectedPanelName = SelectedPanelName ?? Nothings;
+            this.Nothings = Nothings;
 
             Name = "Behavior";
+            System.Diagnostics.Debug.WriteLine($"entree {this}");
         }
 
 #if DEBUG
         ~PushButtonBehaviorViewModel()
         {
-            System.Diagnostics.Debug.WriteLine("sortie pushBehaviour");
+            System.Diagnostics.Debug.WriteLine($"sortie {this}");
         }
 #endif
 
         public string Name { get; set; }
+        public object OriginPlugin { get; }
 
         private Visibility _IsPanelButton;
         public Visibility IsPanelButton
@@ -62,16 +67,16 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             }
         }
 
-        private string _NameOfPanel;
+        private string _SelectedPanelName;
         [DataMember]
-        public string NameOfPanel
+        public string SelectedPanelName
         {
-            get => _NameOfPanel;
+            get => _SelectedPanelName;
 
             set
             {
-               _NameOfPanel = value;
-                NotifyOfPropertyChange(() => _NameOfPanel);
+               _SelectedPanelName = value;
+                NotifyOfPropertyChange(() => SelectedPanelName);
             }
         }
     }

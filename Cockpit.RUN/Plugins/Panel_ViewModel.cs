@@ -36,7 +36,7 @@ namespace Cockpit.RUN.Plugins
             Layout = new LayoutPropertyViewModel(eventAggregator, settings);
             Appearance = new PanelAppearanceViewModel(eventAggregator, this, settings);
 
-            MyCockpitViewModels = new BindableCollection<PluginModel>();
+            MyPluginsContainer = new BindableCollection<PluginModel>();
 
             //RenderO = (int)Appearance.SelectedApparition < 2 ? "1.0, 1.0" : "0.0, 0.0";//ToLeft/ToTop or ToRight/ToBottom
             //ScaleXX = (int)Appearance.SelectedApparition % 2 == 0; //ToLeft or ToRight? or ToUp or ToBottom?
@@ -55,7 +55,7 @@ namespace Cockpit.RUN.Plugins
         {
 
         }
-        public BindableCollection<PluginModel> MyCockpitViewModels { get; set; }
+        public BindableCollection<PluginModel> MyPluginsContainer { get; set; }
 
         private bool isvisible;
         public bool IsVisible
@@ -134,7 +134,7 @@ namespace Cockpit.RUN.Plugins
         //            {
         //                eventAggregator.Publish(new RemovePanelEvent(name));
         //            }
-        //            MyCockpitViewModels.Remove(mv.SortedDico[name].pm);
+        //            MyPluginsContainer.Remove(mv.SortedDico[name].pm);
         //            mv.SortedDico.Remove(name);
 
         //        }
@@ -269,10 +269,10 @@ namespace Cockpit.RUN.Plugins
         //    var FullImage = (dropInfo.Data as ToolBoxGroup).SelectedToolBoxItem.FullImageName;
         //    var groupname = (dropInfo.Data as ToolBoxGroup).GroupName;
 
-        //    var num = MyCockpitViewModels.Count;
+        //    var num = MyPluginsContainer.Count;
         //    var nameUC = tbg.SelectedToolBoxItem.ShortImageName;
 
-        //    //var nbr = MyCockpitViewModels.Select(t => t.NameUC.Equals(nameUC)).Count();
+        //    //var nbr = MyPluginsContainer.Select(t => t.NameUC.Equals(nameUC)).Count();
         //    //if (nbr > 0)
         //    //{
         //    //    nameUC = $"{nameUC}_{nbr}";
@@ -401,7 +401,7 @@ namespace Cockpit.RUN.Plugins
         //    //ViewModelBinder.Bind(viewmodel, view, null);
         //    var v = viewmodel as PluginModel;
         //    //v.ZoomFactorFromPluginModel = ZoomFactorFromMonitorViewModel;
-        //    MyCockpitViewModels.Add((PluginModel)viewmodel);
+        //    MyPluginsContainer.Add((PluginModel)viewmodel);
         //}
 
         #endregion

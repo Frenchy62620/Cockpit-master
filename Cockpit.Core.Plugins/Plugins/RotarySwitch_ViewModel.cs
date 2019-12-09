@@ -1,12 +1,16 @@
 ﻿using Caliburn.Micro;
 using Cockpit.Common.Properties.ViewModels;
-using Cockpit.Core.Common;
 using Cockpit.Core.Contracts;
 using Cockpit.Core.Plugins.Plugins.Properties;
 using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
 using System.Windows;
 using System.Windows.Input;
+#if DEBUG
+using System.IO;
+using System.Xml;
+using System.Text;
+#endif
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Core.Plugins.Plugins
@@ -23,7 +27,7 @@ namespace Cockpit.Core.Plugins.Plugins
         [DataMember] public LayoutPropertyViewModel Layout { get; set; }
         [DataMember] public RotarySwitchAppearanceViewModel Appearance { get; set; }
         [DataMember] public RotarySwitchBehaviorViewModel Behavior { get; set; }
-         public ObservableCollection<RotarySwitchPosition> RotarySwitchPositions { get; private set; }
+        public ObservableCollection<RotarySwitchPosition> RotarySwitchPositions { get; private set; }
 
         public RotarySwitch_ViewModel(IEventAggregator eventAggregator, RotarySwitchAppearanceViewModel Appearance,
                                                                         RotarySwitchBehaviorViewModel Behavior,
@@ -36,9 +40,6 @@ namespace Cockpit.Core.Plugins.Plugins
             this.Appearance = Appearance;
 
 
-
-            NameUC = this.Layout.NameUC;
-
             var s = Appearance.TextFormat.MeasureString("ABC", Appearance.LabelColor);
 
 
@@ -47,23 +48,28 @@ namespace Cockpit.Core.Plugins.Plugins
 
             ToolTip = "Superbe";
 
-
-
-
+#if DEBUG
+            System.Diagnostics.Debug.WriteLine($"entree {this} {Layout.NameUC}");
+            var types = new System.Type[] { typeof(LayoutPropertyViewModel), typeof(PushButtonAppearanceViewModel), typeof(PushButtonBehaviorViewModel) };
+            DataContractSerializer dcs = new DataContractSerializer(typeof(PushButton_ViewModel), types);
+            string buffer;
+            using (var memStream = new MemoryStream())
+            {
+                dcs.WriteObject(memStream, this);
+                buffer = Encoding.ASCII.GetString(memStream.GetBuffer()).TrimEnd('\0');
+            }
+            XmlDocument docxml = new XmlDocument();
+            docxml.LoadXml(buffer);
+            using (XmlTextWriter writer = new XmlTextWriter($@"j:\{this}.xml", null))
+            {
+                writer.Formatting = Formatting.Indented;
+                docxml.Save(writer);
+            }
+#endif
         }
 
 
         #region PluginModel
-        private string nameUC;
-        public string NameUC
-        {
-            get => nameUC;
-            set
-            {
-                nameUC = value;
-                NotifyOfPropertyChange(() => NameUC);
-            }
-        }
 
         private double zoomfactorfrompluginmodel;
         public double ZoomFactorFromPluginModel
@@ -74,38 +80,6 @@ namespace Cockpit.Core.Plugins.Plugins
                 zoomfactorfrompluginmodel = value;
                 NotifyOfPropertyChange(() => ZoomFactorFromPluginModel);
             }
-        }
-
-        public double ScaleX
-        {
-            get => Layout.ScaleX;
-            set => Layout.ScaleX = value;
-        }
-        public double ScaleY
-        {
-            get => Layout.ScaleY;
-            set => Layout.ScaleY = value;
-        }
-
-        public double Left
-        {
-            get => Layout.UCLeft;
-            set => Layout.UCLeft = value;
-        }
-        public double Top
-        {
-            get => Layout.UCTop;
-            set => Layout.UCTop = value;
-        }
-        public double Width
-        {
-            get => Layout.Width;
-            set => Layout.Width = value;
-        }
-        public double Height
-        {
-            get => Layout.Height;
-            set => Layout.Height = value;
         }
 
         public IPluginProperty[] GetProperties()

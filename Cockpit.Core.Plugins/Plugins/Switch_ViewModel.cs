@@ -10,6 +10,8 @@ using System.Text;
 #endif
 using System.Windows;
 using System.Windows.Input;
+using Cockpit.Core.Model.Events;
+using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Core.Plugins.Plugins
 {
@@ -21,7 +23,11 @@ namespace Cockpit.Core.Plugins.Plugins
         [DataMember] public SwitchAppearanceViewModel Appearance { get; set; }
         [DataMember] public SwitchBehaviorViewModel Behavior { get; set; }
 
-        public Switch_ViewModel(SwitchAppearanceViewModel Appearance, SwitchBehaviorViewModel Behavior, LayoutPropertyViewModel Layout)
+        private readonly IEventAggregator eventAggregator;
+
+        public Switch_ViewModel(IEventAggregator eventAggregator, SwitchAppearanceViewModel Appearance, 
+                                                                  SwitchBehaviorViewModel Behavior, 
+                                                                  LayoutPropertyViewModel Layout)
         {
             this.Layout = Layout;
             this.Behavior = Behavior;
@@ -29,14 +35,10 @@ namespace Cockpit.Core.Plugins.Plugins
 
             this.Appearance.Behavior = Behavior;
 
-            NameUC = Layout.NameUC;
-
+            this.eventAggregator = eventAggregator;
 
 #if DEBUG
-            //using System.IO;
-            //using System.Xml;
-            //using System.Text;
-            System.Diagnostics.Debug.WriteLine($"entree {this} {NameUC}");
+            System.Diagnostics.Debug.WriteLine($"entree {this} {Layout.NameUC}");
             var types = new System.Type[] { typeof(LayoutPropertyViewModel), Appearance.GetType(), Behavior.GetType() };
             DataContractSerializer dcs = new DataContractSerializer(GetType(), types);
             string buffer;
@@ -56,17 +58,6 @@ namespace Cockpit.Core.Plugins.Plugins
         }
 
         #region PluginModel
-        private string nameUC;
-        public string NameUC
-        {
-            get => nameUC;
-            set
-            {
-                nameUC = value;
-                NotifyOfPropertyChange(() => NameUC);
-            }
-        }
-
         private double zoomfactorfrompluginmodel;
         public double ZoomFactorFromPluginModel
         {
@@ -76,38 +67,6 @@ namespace Cockpit.Core.Plugins.Plugins
                 zoomfactorfrompluginmodel = value;
                 NotifyOfPropertyChange(() => ZoomFactorFromPluginModel);
             }
-        }
-
-        public double ScaleX
-        {
-            get => Layout.ScaleX;
-            set => Layout.ScaleX = value;
-        }
-        public double ScaleY
-        {
-            get => Layout.ScaleY;
-            set => Layout.ScaleY = value;
-        }
-
-        public double Left
-        {
-            get => Layout.UCLeft;
-            set => Layout.UCLeft = value;
-        }
-        public double Top
-        {
-            get => Layout.UCTop;
-            set => Layout.UCTop = value;
-        }
-        public double Width
-        {
-            get => Layout.Width;
-            set => Layout.Width = value;
-        }
-        public double Height
-        {
-            get => Layout.Height;
-            set => Layout.Height = value;
         }
 
         public IPluginProperty[] GetProperties()
@@ -136,27 +95,52 @@ namespace Cockpit.Core.Plugins.Plugins
 
             switch (Behavior.SelectedSwitchTypeIndex)
             {
-                case 0:
-                case 1:
-                case 2:
+                case (int)SwitchType.OnOn:
+                case (int)SwitchType.OnMom:
+                case (int)SwitchType.PanelButton2p:
                     Behavior.IndexImage = 1 - Behavior.IndexImage;
+                    EventHelperUp();
                     break;
                 default:
-                    switch(Layout.AngleRotation)
+                    void EventHelperUp()
+                    {
+                        if (!Behavior.SelectedPanelUpName.Equals(Behavior.Nothings))
+                            eventAggregator.Publish(new VisibilityPanelEvent(Behavior.SelectedPanelUpName));
+                    }
+                    void EventHelperDn()
+                    {
+                        if (!Behavior.SelectedPanelDnName.Equals(Behavior.Nothings))
+                            eventAggregator.Publish(new VisibilityPanelEvent(Behavior.SelectedPanelDnName));
+                    }
+
+
+                    switch (Layout.AngleRotation)
                     {
                         case 0:
                         case 180:
                             if (pos.Y < Layout.Height / 2)
+                            {
                                 Behavior.IndexImage = Behavior.IndexImage == 1 ? 2 : 1;
+                                EventHelperUp();
+                            }
                             else
+                            {
                                 Behavior.IndexImage = Behavior.IndexImage == 1 ? 0 : 1;
+                                EventHelperDn();
+                            }
                             break;
                         case 90:
                         case 270:
                             if (pos.Y < Layout.Height / 2)
+                            {
                                 Behavior.IndexImage = Behavior.IndexImage == 1 ? 2 : 1;
+                                EventHelperUp();
+                            }
                             else
+                            {
                                 Behavior.IndexImage = Behavior.IndexImage == 1 ? 0 : 1;
+                                EventHelperDn();
+                            }
                             break;
                     }
                     break;

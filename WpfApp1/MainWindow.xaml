@@ -1,0 +1,20 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        x:Class="MergeGridTest.test1window"
+        mc:Ignorable="d"
+        Title="test1window" Height="450" Width="800" Loaded="Window_Loaded" >
+    <Grid>
+        <DataGrid Background="LightBlue" x:Name="TestGrid" AutoGenerateColumns="False" Margin="50" IsReadOnly="True" UseLayoutRounding="True"
+                  CanUserAddRows="False" ItemsSource="{Binding}" 
+                  RowHeight="30" HorizontalGridLinesBrush="#FFCB0202" VerticalGridLinesBrush="{x:Null}" VerticalContentAlignment="Center">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Address" Binding="{Binding Name}" Width="*"/>
+                <DataGridTextColumn Header="Score" Binding="{Binding Score}" Width="*"/>
+                <DataGridTextColumn Header="Address" Binding="{Binding Address}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>

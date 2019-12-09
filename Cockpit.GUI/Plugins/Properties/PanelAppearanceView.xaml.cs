@@ -9,6 +9,13 @@ namespace Cockpit.GUI.Plugins.Properties
         public PanelAppearanceView()
         {
             InitializeComponent();
+            System.Diagnostics.Debug.WriteLine($"entree {this}");
         }
+#if DEBUG
+        ~PanelAppearanceView()
+        {
+            System.Diagnostics.Debug.WriteLine($"sortie {this}");
+        }
+#endif
     }
 }

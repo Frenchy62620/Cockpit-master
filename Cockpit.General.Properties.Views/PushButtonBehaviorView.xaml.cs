@@ -8,6 +8,13 @@
         public PushButtonBehaviorView()
         {
             InitializeComponent();
+            System.Diagnostics.Debug.WriteLine($"entree {this}");
         }
+#if DEBUG
+        ~PushButtonBehaviorView()
+        {
+            System.Diagnostics.Debug.WriteLine($"sortie {this}");
+        }
+#endif
     }
 }

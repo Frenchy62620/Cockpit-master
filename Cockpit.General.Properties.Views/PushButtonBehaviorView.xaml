@@ -20,7 +20,8 @@
 
         <Label Grid.Column="0" Grid.Row="1" FontSize="10" HorizontalAlignment="Right" Content="Name Of Panel" ToolTip="Name of Panel controlled by the Button."
                Visibility="{Binding Path=IsPanelButton}" />
-        <TextBox x:Name="NameOfPanel" Grid.Column="1" Grid.Row="1" Margin="2" Visibility="{Binding Path=IsPanelButton}"  />
+        <ComboBox x:Name="PanelNames" Grid.Column="1" Grid.Row="1" Margin="2" Visibility="{Binding Path=IsPanelButton}" 
+                 ItemsSource="{Binding Path=OriginPlugin.PanelNames}" SelectedItem="{Binding Path=SelectedPanelName}"/>
         
     </Grid>
 </UserControl >

@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using Cockpit.Core.Contracts;
+using Cockpit.Core.Model.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,21 +10,28 @@ using System.Windows;
 namespace Cockpit.Core.Plugins.Plugins.Properties
 {
     [DataContract]
-    public class SwitchBehaviorViewModel : PropertyChangedBase, IPluginProperty
+    public class SwitchBehaviorViewModel : PropertyChangedBase, IPluginProperty, Core.Common.Events.IHandle<RenamePanelNameEvent>
     {
         private readonly IEventAggregator eventAggregator;
-        public SwitchBehaviorViewModel(bool IsModeEditor, int SelectedSwitchTypeIndex = (int)SwitchType.OnOnOn,
-                                                          SwitchPosition SelectedDefaultPosition = SwitchPosition.One)
+        public readonly string Nothings;
+        public SwitchBehaviorViewModel(bool IsModeEditor, object OriginPlugin, int SelectedSwitchTypeIndex = (int)SwitchType.OnOnOn,
+                                                          SwitchPosition SelectedDefaultPosition = SwitchPosition.One, string Nothings = null,
+                                                          string SelectedPanelUpName = null, string SelectedPanelDnName = null)
         {
+            this.OriginPlugin = OriginPlugin;
+            this.Nothings = Nothings;
             this.SelectedSwitchTypeIndex = SelectedSwitchTypeIndex;
             this.SelectedDefaultPosition = SelectedDefaultPosition;
-
+            this.SelectedPanelDnName = SelectedPanelDnName ?? Nothings;
+            this.SelectedPanelUpName = SelectedPanelUpName ?? Nothings;
             Has3Images = true;
 
             Name = "Behavior";
         }
 
         public string Name { get; set; }
+
+        public  object OriginPlugin { get; }
 
 
         //OnOn,             0
@@ -141,6 +149,11 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             //NotifyOfPropertyChange(() => DefaultPositions);
         }
 
+        public void Handle(RenamePanelNameEvent message)
+        {
+            throw new NotImplementedException();
+        }
+
         private Visibility _IsPanelButtonUp;
         public Visibility IsPanelButtonUp
         {
@@ -163,30 +176,53 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
                 NotifyOfPropertyChange(() => IsPanelButtonDn);
             }
         }
-        private string _NameOfPanelUp;
+        private string _SelectedPanelUpName;
         [DataMember]
-        public string NameOfPanelUp
+        public string SelectedPanelUpName
         {
-            get => _NameOfPanelUp;
-
+            get => _SelectedPanelUpName;
             set
             {
-                _NameOfPanelUp = value;
-                NotifyOfPropertyChange(() => _NameOfPanelUp);
+                _SelectedPanelUpName = value;
+                NotifyOfPropertyChange(() => SelectedPanelUpName);
             }
         }
-        private string _NameOfPanelDn;
-        [DataMember]
-        public string NameOfPanelDn
-        {
-            get => _NameOfPanelDn;
 
+        private string _SelectedPanelDnName;
+        [DataMember]
+        public string SelectedPanelDnName
+        {
+            get => _SelectedPanelDnName;
             set
             {
-                _NameOfPanelDn = value;
-                NotifyOfPropertyChange(() => _NameOfPanelDn);
+                _SelectedPanelDnName = value;
+                NotifyOfPropertyChange(() => SelectedPanelDnName);
             }
         }
+        //private List<string> _PanelUpNames;
+        //[DataMember]
+        //public List<string> PanelUpNames
+        //{
+        //    get => _PanelUpNames;
+
+        //    set
+        //    {
+        //        _PanelUpNames = value;
+        //        NotifyOfPropertyChange(() => PanelUpNames);
+        //    }
+        //}
+        //private List<string> _PanelDnNames;
+        //[DataMember]
+        //public List<string> PanelDnNames
+        //{
+        //    get => _PanelDnNames;
+
+        //    set
+        //    {
+        //        _PanelDnNames = value;
+        //        NotifyOfPropertyChange(() => PanelDnNames);
+        //    }
+        //}
 
         private bool has3images;
         [DataMember]

@@ -11,7 +11,8 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 namespace Cockpit.Common.Properties.ViewModels
 {
     [DataContract]
-    public class LayoutPropertyViewModel : PropertyChangedBase, IPluginProperty, Core.Common.Events.IHandle<RenameUCEvent>
+    public class LayoutPropertyViewModel : PropertyChangedBase, IPluginProperty, Core.Common.Events.IHandle<RenamePluginEvent>
+                                                                               , Core.Common.Events.IHandle<RenamePanelNameEvent>
     {
         private readonly IEventAggregator eventAggregator;
 
@@ -59,7 +60,7 @@ namespace Cockpit.Common.Properties.ViewModels
 
         //        }
         public LayoutPropertyViewModel(IEventAggregator eventAggregator, bool IsModeEditor = false, bool IsPanel = false, bool IsPluginDropped = false,
-                                       string NameUC = "", int UCLeft = 0, int UCTop = 0, int Width = 0, int Height = 0, int Angle = 0,
+                                       string NameUC = "", double UCLeft = 0d, double UCTop = 0d, double Width = 0d, double Height = 0d, int Angle = 0,
                                        double ParentScaleX = 1, double ParentScaleY = 1,
                                        double RealUCLeft = 0, double RealUCTop = 0, double RealWidth = 0, double RealHeight = 0,
                                        double WidthOriginal = 0, double HeightOriginal = 0, double ScaleX = 1, double ScaleY = 1)
@@ -462,7 +463,7 @@ namespace Cockpit.Common.Properties.ViewModels
         {
             NewText = (sender as TextBox).Text;
             if (OldText.Equals(NewText)) return;
-            eventAggregator.Publish(new RenameUCEvent(OldText, NewText));
+            eventAggregator.Publish(new RenamePluginEvent(OldText, NewText));
         }
 
 
@@ -602,7 +603,7 @@ namespace Cockpit.Common.Properties.ViewModels
         //    }
 
         //}
-        public void Handle(RenameUCEvent message)
+        public void Handle(RenamePluginEvent message)
         {
             if (string.IsNullOrEmpty(NewText) || !message.Reponse) return;
 
@@ -611,6 +612,11 @@ namespace Cockpit.Common.Properties.ViewModels
                 System.Windows.MessageBox.Show($"** The name  << {NewText} >> already exists. **\n\n      Please change it.", "Error about renaming");
                 NameUC = OldText;
             }
+        }
+
+        public void Handle(RenamePanelNameEvent message)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -8,6 +8,7 @@ namespace Cockpit.GUI.Plugins.Properties
         public MonitorPropertyView()
         {
             InitializeComponent();
+            System.Diagnostics.Debug.WriteLine($"entree {this}");
         }
 #if DEBUG
         ~MonitorPropertyView()

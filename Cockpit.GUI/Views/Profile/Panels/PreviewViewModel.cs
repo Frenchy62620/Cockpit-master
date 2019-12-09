@@ -273,14 +273,14 @@ namespace Cockpit.GUI.Views.Profile.Panels
         {
             if (MonitorViewModel == null) return;
             MonitorViewModel.ZoomFactorFromMonitorViewModel = value;
-            foreach (IPluginModel p in MonitorViewModel.MyCockpitViewModels)
+            foreach (IPluginModel p in MonitorViewModel.MyPluginsContainer)
             {
                 p.ZoomFactorFromPluginModel = value;
             }
         }
         public void Handle(MonitorViewEndedEvent message)
         {
-            MonitorViewModel.MyCockpitViewModels.Clear();
+            MonitorViewModel.MyPluginsContainer.Clear();
             MonitorViewModel.RemoveAdorners();
             MonitorViewModel.LayoutMonitor.BackgroundImage = "";
             MonitorViewModel.LayoutMonitor.FillBackground = false;

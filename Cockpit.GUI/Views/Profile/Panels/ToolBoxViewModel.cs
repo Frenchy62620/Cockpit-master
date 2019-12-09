@@ -21,9 +21,9 @@ namespace Cockpit.GUI.Views.Profile.Panels
             LoadThumb(@"J:\heliosDevices\Images");
 
 
-            //MyCockpitViewModels = new BindableCollection<PluginModel>();
+            //MyPluginsContainer = new BindableCollection<PluginModel>();
         }
-        //public BindableCollection<PluginModel> MyCockpitViewModels;
+        //public BindableCollection<PluginModel> MyPluginsContainer;
 
         private BindableCollection<ToolBoxGroup> _toolBoxGroups;
         public BindableCollection<ToolBoxGroup> ToolBoxGroups

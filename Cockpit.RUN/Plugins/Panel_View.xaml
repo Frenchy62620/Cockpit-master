@@ -43,7 +43,7 @@
                                     TileMode="None" />
             </Rectangle.Fill>
         </Rectangle>
-        <ItemsControl ItemsSource="{Binding MyCockpitViewModels}" >
+        <ItemsControl ItemsSource="{Binding MyPluginsContainer}" >
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <!--<Border BorderThickness="4" BorderBrush="Red" Visibility="Visible" Margin="0,0,0,0">-->

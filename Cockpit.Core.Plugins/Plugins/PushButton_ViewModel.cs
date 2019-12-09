@@ -144,8 +144,8 @@ namespace Cockpit.Core.Plugins.Plugins
         {
             Mouse.Capture((UIElement)elem);
             Appearance.IndexImage = 1 - Appearance.IndexImage;
-            if (!string.IsNullOrEmpty(Behavior.NameOfPanel))
-                eventAggregator.Publish(new VisibilityPanelEvent(Behavior.NameOfPanel));
+            if (!string.IsNullOrEmpty(Behavior.SelectedPanelName))
+                eventAggregator.Publish(new VisibilityPanelEvent(Behavior.SelectedPanelName));
         }
         public void MouseLeftButtonUp()
         {

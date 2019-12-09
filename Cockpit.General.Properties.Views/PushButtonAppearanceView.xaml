@@ -39,6 +39,42 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+
+        <Style x:Key="LabelTextStyle" TargetType="{x:Type Label}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Text, ElementName=GlyphText }" Value="">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="FontPickerTextStyle" TargetType="{x:Type ip:FontPickerView}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Text, ElementName=GlyphText }" Value="">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ComboBoxTextStyle" TargetType="{x:Type ComboBox}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Text, ElementName=GlyphText }" Value="">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ColorPickerTextStyle" TargetType="{x:Type xctk:ColorPicker}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Text, ElementName=GlyphText }" Value="">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="TextBoxTextStyle" TargetType="{x:Type TextBox}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Text, ElementName=GlyphText }" Value="">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
     <Grid Background="Transparent" Margin="4">
         <Grid.ColumnDefinitions>
@@ -78,7 +114,7 @@
         <ip:ImagePickerView Grid.Column="1" Grid.Row="2" ImageFilename="{Binding PushedImage, Mode=TwoWay}" />
 
         <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3" Margin="4,10,2,2" FontSize="12" FontWeight="Bold" Text="Decoration"/>
-        
+
         <Label Grid.Column="0" Grid.Row="4" FontSize="10" HorizontalAlignment="Right" Content="Symbol"
             ToolTip="Symbol to be rendered on this buttom."/>
         <ComboBox x:Name="PushButtonGlyphs" Grid.Column="1" Grid.Row="4" Margin="4,0,0,0" FontSize="10" HorizontalAlignment="Left"
@@ -89,12 +125,13 @@
             ToolTip="Thickness of the symbols lines."/>
         <xctk:IntegerUpDown Grid.Column="1" Grid.Row="5" FontSize="10" Value="{Binding GlyphThickness, Mode=TwoWay}" Margin="2" Minimum="0" Maximum="10"
                             TextAlignment="Left" Style="{StaticResource TextBoxGlyphStyle}"/>
-        
+
         <Label Grid.Column="0" Grid.Row="6" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource LabelGlyphStyle}" Content="Color"
             ToolTip="Color of the symbol."/>
-        <xctk:ColorPicker x:Name="Glyph" Grid.Column="1" Grid.Row="6" HorizontalAlignment="Left" Margin="2" DisplayColorAndName="True" Style="{StaticResource ColorPickerGlyphStyle}"
-                          ColorMode="ColorCanvas"  UsingAlphaChannel="True"  />
-
+        <xctk:ColorPicker x:Name="ColorGlyph" Grid.Column="1" Grid.Row="6" HorizontalAlignment="Left" Margin="2" DisplayColorAndName="True" Style="{StaticResource ColorPickerGlyphStyle}"
+                          ColorMode="ColorCanvas"  UsingAlphaChannel="True"    />
+        <!--cal:Message.Attach="[Event SelectedColorChanged] = [Action SelectedColorChanged($source, $eventArgs)]"-->
+        <!--SelectedColor="{Binding GlyphColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"-->
         <Label Grid.Column="0" Grid.Row="7" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource LabelGlyphStyle}" Content="Scale"
             ToolTip="How large will the symbol be drawn."/>
         <Slider x:Name="GlyphScale" Grid.Row="7" Grid.Column="1" Minimum="0.1" Maximum="1"  Margin="4" TickPlacement="TopLeft" TickFrequency="0.1" Style="{StaticResource SliderGlyphStyle}" />
@@ -104,27 +141,27 @@
             ToolTip="Text which will be displayed on top of the button images."/>
 
         <TextBox x:Name="GlyphText" Grid.Column="1" Grid.Row="9" FontSize="10" Margin="2" />
-        <Label Grid.Column="0" Grid.Row="10" FontSize="10" HorizontalAlignment="Right" Content="Font"
+        <Label Grid.Column="0" Grid.Row="10" FontSize="10" HorizontalAlignment="Right" Content="Font" Style="{StaticResource LabelTextStyle}"
             ToolTip="Font used to render the text."/>
 
-        <ip:FontPickerView Grid.Column="1" Grid.Row="10" TextFormat="{Binding TextFormat}" HorizontalAlignment="Left" Margin="2" />
+        <ip:FontPickerView Grid.Column="1" Grid.Row="10" TextFormat="{Binding TextFormat}" HorizontalAlignment="Left" Margin="2" Style="{StaticResource FontPickerTextStyle}"/>
 
-        <Label Grid.Column="0" Grid.Row="11" FontSize="10" HorizontalAlignment="Right" VerticalAlignment="Top" Content="V Align"
+        <Label Grid.Column="0" Grid.Row="11" FontSize="10" HorizontalAlignment="Right" VerticalAlignment="Top" Content="V Align" Style="{StaticResource LabelTextStyle}"
             ToolTip="How the text will be aligned vertically inside the indicator."/>
-        <ComboBox x:Name="VAlignTypes" Grid.Column="1" Grid.Row="11" Margin="2" HorizontalAlignment="Left" />
+        <ComboBox x:Name="VAlignTypes" Grid.Column="1" Grid.Row="11" Margin="2" HorizontalAlignment="Left" Style="{StaticResource ComboBoxTextStyle}"/>
 
-        <Label Grid.Column="0" Grid.Row="12" FontSize="10" HorizontalAlignment="Right" VerticalAlignment="Top" Content="H Align"
+        <Label Grid.Column="0" Grid.Row="12" FontSize="10" HorizontalAlignment="Right" VerticalAlignment="Top" Content="H Align" Style="{StaticResource LabelTextStyle}"
             ToolTip="How the text will be aligned horizontally inside the indicator."/>
-        <ComboBox x:Name="HAlignTypes"  Grid.Column="1" Grid.Row="12" Margin="2" HorizontalAlignment="Left" />
+        <ComboBox x:Name="HAlignTypes"  Grid.Column="1" Grid.Row="12" Margin="2" HorizontalAlignment="Left" Style="{StaticResource ComboBoxTextStyle}"/>
 
-        <Label Grid.Column="0" Grid.Row="13" FontSize="10" HorizontalAlignment="Right" Content="Color"
+        <Label Grid.Column="0" Grid.Row="13" FontSize="10" HorizontalAlignment="Right" Content="Color" Style="{StaticResource LabelTextStyle}"
             ToolTip="Color in which the text will be rendered."/>
-        <xctk:ColorPicker  x:Name="Text" Grid.Column="1" Grid.Row="13" HorizontalAlignment="Left" Margin="2" DisplayColorAndName="True"   
-                           ColorMode="ColorCanvas"  UsingAlphaChannel="True"  />
+        <xctk:ColorPicker  x:Name="ColorText" Grid.Column="1" Grid.Row="13" HorizontalAlignment="Left" Margin="2,0,0,2" DisplayColorAndName="True"   
+                           ColorMode="ColorCanvas"  UsingAlphaChannel="True" Height="22" VerticalAlignment="Bottom" Style="{StaticResource ColorPickerTextStyle}" />
 
-        <Label Grid.Column="0" Grid.Row="14" FontSize="10" HorizontalAlignment="Right" Content="Push Offset"
+        <Label Grid.Column="0" Grid.Row="14" FontSize="10" HorizontalAlignment="Right" Content="Push Offset" Style="{StaticResource LabelTextStyle}"
             ToolTip="Offset which will be used to move text and decorations when the button is pushed."/>
-        <TextBox Grid.Column="1" Grid.Row="14" FontSize="10" Text="{Binding TextPushOffset, Mode=TwoWay}" Margin="2" />
+        <TextBox Grid.Column="1" Grid.Row="14" FontSize="10" Text="{Binding TextPushOffset, Mode=TwoWay}" Margin="2" Style="{StaticResource TextBoxTextStyle}"/>
 
         <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="15" Margin="4,10,2,2" FontSize="12" FontWeight="Bold"  Text="Text Padding"/>
         <Label Grid.Column="0" Grid.Row="16" FontSize="10" HorizontalAlignment="Right" VerticalAlignment="Top" Content="Left"

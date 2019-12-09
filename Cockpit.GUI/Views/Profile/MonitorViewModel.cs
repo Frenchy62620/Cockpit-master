@@ -2,13 +2,11 @@
 using Cockpit.Core.Common;
 using Cockpit.Core.Contracts;
 using Cockpit.Core.Model.Events;
-using Cockpit.Core.Plugins.Plugins.Properties;
 using Cockpit.GUI.Common;
 using Cockpit.GUI.Events;
 using Cockpit.GUI.Plugins;
 using Cockpit.GUI.Plugins.Properties;
 using Cockpit.GUI.Views.Main;
-using Cockpit.GUI.Views.Main.Menu;
 using Cockpit.GUI.Views.Main.Profile;
 using GongSolutions.Wpf.DragDrop;
 using Ninject;
@@ -28,7 +26,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
-using System.Linq.Expressions;
 
 namespace Cockpit.GUI.Views.Profile
 {
@@ -36,16 +33,19 @@ namespace Cockpit.GUI.Views.Profile
     {
         public ContentControl cc;
         public IPluginModel pm;
-
-        public Elements(ContentControl cc, IPluginModel pm)
+        public bool ispanel;
+        public BindableCollection<IPluginModel> container { get; set; }
+        public Elements(ContentControl cc, IPluginModel pm, bool ispanel, BindableCollection<IPluginModel> container)
         {
             this.cc = cc;
             this.pm = pm;
+            this.ispanel = ispanel;
+            this.container = container;
         }
     }
 
     [DataContract]
-    public class MonitorViewModel : PanelViewModel, IDropTarget, Core.Common.Events.IHandle<RenameUCEvent>,
+    public class MonitorViewModel : PanelViewModel, IDropTarget, Core.Common.Events.IHandle<RenamePluginEvent>,
                                                                  Core.Common.Events.IHandle<DragCancelledEvent>
     {
         public Dictionary<Assembly, List<Type>> pluginTypes;
@@ -57,11 +57,15 @@ namespace Cockpit.GUI.Views.Profile
         
         public HashSet<string> AdornersSelectedList = new HashSet<string>();
 
+        //private bool IsPluginDropped = false;
+        //public List<string> PanelNames = new List<string>() { "No Selected" }; 
+
         private readonly IEventAggregator eventAggregator;
         private readonly IResolutionRoot resolutionRoot;
         private readonly FileSystem fileSystem;
         private readonly DisplayManager DisplayManager;
 
+        private readonly string Nothings = "No Selected";
 
         [DataMember] public MonitorPropertyViewModel LayoutMonitor { get; set; }
 
@@ -69,11 +73,12 @@ namespace Cockpit.GUI.Views.Profile
 
         public MonitorViewModel(IEventAggregator eventAggregator, IResolutionRoot resolutionRoot, FileSystem fileSystem, DisplayManager displayManager)
         {
+
+            PanelNames = new List<string>() { Nothings };
+
             this.resolutionRoot = resolutionRoot;
             this.eventAggregator = eventAggregator;
             this.eventAggregator.Subscribe(this);
-
-            //Title = "Monitor1";
             IconName = "console-16.png";
             Enabled = true;
 
@@ -86,7 +91,7 @@ namespace Cockpit.GUI.Views.Profile
 
             this.fileSystem = fileSystem;
 
-            MyCockpitViewModels = new BindableCollection<IPluginModel>();
+            MyPluginsContainer = new BindableCollection<IPluginModel>();
 
             NbrSelected = 0;
 
@@ -107,11 +112,8 @@ namespace Cockpit.GUI.Views.Profile
 
         public void ViewLoaded()
         {
-            //if (Title.StartsWith("Monitor1"))
-            //{
-                eventAggregator.Publish(new MonitorViewStartedEvent(this));
-                eventAggregator.Publish(new DisplayPropertiesEvent(new[] { LayoutMonitor }));
-            //}
+            eventAggregator.Publish(new MonitorViewStartedEvent(this));
+            eventAggregator.Publish(new DisplayPropertiesEvent(new[] { LayoutMonitor }));
         }
 
         private int CockpitFileHash;
@@ -150,22 +152,96 @@ namespace Cockpit.GUI.Views.Profile
 
        
             }
+            var propertieslist = new List<string> { "Layout", "Appearance", "Behavior" };
 
-            LayoutMonitor = content.LayoutMonitor;
-            foreach(var model in content.MyCockpitViewModels)
+
+            LayoutMonitor.BackgroundImage = content.LayoutMonitor.BackgroundImage;
+            LayoutMonitor.FillBackground = content.LayoutMonitor.FillBackground;
+            LayoutMonitor.BackgroundColor = content.LayoutMonitor.BackgroundColor;
+
+            EnumeratePlugins(content.MyPluginsContainer, propertieslist, this);
+
+            return;
+
+            foreach (var model in content.MyPluginsContainer)
             {
+                var defaultvalues = new Dictionary<string, object>
+                {
+                    { "eventAggregator", eventAggregator },
+                    { "OriginPlugin", this },
+                };
                 System.Diagnostics.Debug.WriteLine(model);
                 var typeClass = model.GetType();
-                var param = new Ninject.Parameters.Parameter[]{ new ConstructorArgument("settings", new object[]{ model}, true)};
-                var viewmodel = resolutionRoot.TryGet(typeClass, param);
+                //var props = typeClass.GetProperties().Where(prop => propertieslist.Contains(prop.Name) && Attribute.IsDefined(prop, typeof(DataMemberAttribute)));
+                var pluginproperties = typeClass.GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(DataMemberAttribute)));
+                var parameters= typeClass.GetConstructors().FirstOrDefault(c => c.GetParameters().Length > 0).GetParameters().Select(p => p.Name).ToList();
 
-                var v = viewmodel as IPluginModel;
+                var ispanel = typeClass.ToString().EndsWith("Panel_ViewModel");
+                var dico = pluginproperties.ToDictionary(p => p.Name, p =>
+                {
+                    var pp = typeClass.GetProperty(p.Name).GetValue(model);
+                    var properties = pp.GetType().GetProperties().Where(property => Attribute.IsDefined(property, typeof(DataMemberAttribute)));
+                    var fields = pp.GetType().GetFields().Where(field => Attribute.IsDefined(field, typeof(DataMemberAttribute)));
+                    return properties.ToDictionary(property => property.Name, x => x.GetValue(pp)).Concat(fields.ToDictionary(field => field.Name, f => f.GetValue(pp)));
+                });
 
 
-                v.ZoomFactorFromPluginModel = ZoomFactorFromMonitorViewModel;
+                pluginproperties.ToList().ForEach(p =>
+                {
+                    if (propertieslist.Contains(p.Name))
+                    {
+                        foreach (var x in dico[p.Name])
+                        {
+                            defaultvalues[x.Key] = x.Value;
+                        }
+                        defaultvalues[p.Name] = HelperConstructor.MyCreateInstance(p.PropertyType, defaultvalues);
+                    }
+                    else
+                    {
+                        try
+                        {
+                            defaultvalues[p.Name] = p.GetValue(model);
+                        }
+                        catch 
+                        { }
+                    }
+                });
 
-                MyCockpitViewModels.Add((IPluginModel)viewmodel);
+                var instanceplugin = (IPluginModel)HelperConstructor.MyCreateInstance(typeClass, defaultvalues);
+                instanceplugin.ZoomFactorFromPluginModel = ZoomFactorFromMonitorViewModel;
+                MyPluginsContainer.Add(instanceplugin);
 
+                defaultvalues["PluginParentContainer"] = (BindableCollection<IPluginModel>)this.GetType().GetProperty("MyPluginsContainer").GetValue(this, null);
+
+                SortedDico[(string)defaultvalues["NameUC"]] = new Elements(null, null, ispanel, (BindableCollection<IPluginModel>)defaultvalues["PluginParentContainer"]);
+
+                //var values = props.ToDictionary(p => p.Name, p => {
+                //                                                    var vv = p.GetValue(model).GetType().GetProperties().ToDictionary(prop => prop.Name, prop => prop.GetValue(p.GetValue(model)));
+                //                                                    return p.GetValue(model);
+                //                                                  }
+                //                               );
+                //values.ToList().ForEach(p => {
+                //                                foreach(var val in p.Item2)
+                //                                {
+                //                                }
+                //                                defaultvalues.Add(p.p.Name, HelperConstructor.MyCreateInstance(p.p.PropertyType, defaultvalues));
+                //                             }
+                //                       );
+
+
+
+                //values.ToList().ForEach(p => defaultvalues.Add(p.p.Name, HelperConstructor.MyCreateInstance(p.p.PropertyType, defaultvalues)));
+                //props.ToList().ForEach(p => defaultvalues.Add(p.Name, HelperConstructor.MyCreateInstance(p.PropertyType, defaultvalues)));
+                //var param = new Ninject.Parameters.Parameter[]{ new ConstructorArgument("settings", new object[]{ model}, true)};
+                //var viewmodel = resolutionRoot.TryGet(typeClass, param);
+
+                //var v = viewmodel as IPluginModel;
+
+
+                //v.ZoomFactorFromPluginModel = ZoomFactorFromMonitorViewModel;
+
+                //MyPluginsContainer.Add((IPluginModel)viewmodel);
+                
             }
 
         }
@@ -175,6 +251,79 @@ namespace Cockpit.GUI.Views.Profile
             System.Diagnostics.Debug.WriteLine($"sortie {this} {Title}");
         }
 #endif
+
+        public void EnumeratePlugins(BindableCollection<IPluginModel> container, List<string> propertieslist, object PluginParent)
+        {
+            var defaultvalues = new Dictionary<string, object>
+                {
+                    { "eventAggregator", eventAggregator },
+                    { "OriginPlugin", this },
+                    { "IsModeEditor", true },
+                    { "IsPluginDropped", false },
+                };
+            var numberofitems = defaultvalues.Count();
+            var panelcontainer = (BindableCollection<IPluginModel>)PluginParent.GetType().GetProperty("MyPluginsContainer").GetValue(PluginParent);
+
+            defaultvalues["PluginParentContainer"] = panelcontainer;
+
+            foreach (var plugin in container)
+            {
+                var typeClass = plugin.GetType();
+                var ispanel = typeClass.ToString().EndsWith("Panel_ViewModel");
+                defaultvalues["IsPanel"] = ispanel;
+
+                var pluginproperties = typeClass.GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(DataMemberAttribute)));
+
+
+                var dico = pluginproperties.ToDictionary(p => p.Name, p =>
+                {
+                    var pp = typeClass.GetProperty(p.Name).GetValue(plugin);
+                    var properties = pp.GetType().GetProperties().Where(property => Attribute.IsDefined(property, typeof(DataMemberAttribute)));
+                    var fields = pp.GetType().GetFields().Where(field => Attribute.IsDefined(field, typeof(DataMemberAttribute)));
+                    return properties.ToDictionary(property => property.Name, property => property.GetValue(pp))
+                                     .Concat(fields.ToDictionary(field => field.Name, field => field.GetValue(pp)));
+                });
+
+
+                pluginproperties.ToList().ForEach(p =>
+                {
+                    if (propertieslist.Contains(p.Name))
+                    {
+                        foreach (var x in dico[p.Name])
+                            defaultvalues[x.Key] = x.Value;
+
+                        defaultvalues[p.Name] = HelperConstructor.MyCreateInstance(p.PropertyType, defaultvalues);
+                    }
+                    else
+                    {
+                        try
+                        {
+                            if(!p.Name.Equals("MyPluginsContainer"))
+                                defaultvalues[p.Name] = p.GetValue(plugin);
+                        }
+                        catch
+                        { }
+                    }
+                });
+
+
+
+                var instanceplugin = (IPluginModel)HelperConstructor.MyCreateInstance(typeClass, defaultvalues);
+                instanceplugin.ZoomFactorFromPluginModel = ZoomFactorFromMonitorViewModel;
+
+
+                panelcontainer.Add(instanceplugin);
+
+                if (ispanel)
+                    EnumeratePlugins((BindableCollection<IPluginModel>)typeClass.GetProperty("MyPluginsContainer").GetValue(plugin), propertieslist, instanceplugin);
+
+                SortedDico[(string)defaultvalues["NameUC"]] = new Elements(null, null, ispanel, panelcontainer);
+
+                foreach (var k in defaultvalues.Keys.ToList().Skip(numberofitems)) defaultvalues.Remove(k);
+
+            }
+        }
+
         #region DragOver & Drop
         void IDropTarget.DragOver(IDropInfo dropInfo)
         {
@@ -194,6 +343,12 @@ namespace Cockpit.GUI.Views.Profile
         }
         void IDropTarget.Drop(IDropInfo dropInfo)
         {
+            var pm = DropTargetDrop(dropInfo, this);
+            MyPluginsContainer.Add(pm);
+        }
+
+        public IPluginModel DropTargetDrop(IDropInfo dropInfo, object instance)
+        {
             TitleTemp = null;
             var tbg = dropInfo.Data as ToolBoxGroup;
             var selected = tbg.SelectedToolBoxItem;
@@ -211,43 +366,27 @@ namespace Cockpit.GUI.Views.Profile
             else
                 throw new ArgumentException($" problem on GroupName : {groupname}, ImageName : {FullImage} / {tbg.SelectedToolBoxItem.ShortImageName}");
 
-            
-            var nameUC = GiveName(tbg.SelectedToolBoxItem.ShortImageName);
+            var ispanel = model.EndsWith("Panel_ViewModel");
 
+            var nameUC = GiveName(tbg.SelectedToolBoxItem.ShortImageName);
 
             var propertieslist = new List<string> { "Layout", "Appearance", "Behavior" };
 
             var props = GetType(model).GetProperties().Where(prop => propertieslist.Contains(prop.Name) && Attribute.IsDefined(prop, typeof(DataMemberAttribute)));
 
-            //DataContractSerializer dcs = new DataContractSerializer(GetType(model), props.Select(p => p.PropertyType).ToArray());
-            //using (FileStream inputStream = new FileStream(@"j:\test.xml", FileMode.Open))
-            //using (XmlDictionaryReader reader = XmlDictionaryReader.CreateTextReader(inputStream, new XmlDictionaryReaderQuotas()))
-            //{
-            //    var contentt = dcs.ReadObject(reader, true);
-            //    var cc = contentt.GetType().GetProperties();
-            //    //System.Diagnostics.Debug.WriteLine(t);
-
-
-            //}
-
-
-            //var ctors = Identities.ContainsKey(key) ? Identities[key].Type.GetConstructors() : Identities[groupname].Type.GetConstructors();
-
-            //var props = (Identities.ContainsKey(key) ? Identities[key].Type.GetProperties() : Identities[groupname].Type.GetProperties())
-            //                                         .Where(prop => listofName.Contains(prop.Name) && Attribute.IsDefined(prop, typeof(DataMemberAttribute)));
-
-            //Dictionary<string, KeyValuePair<object, Type>> appearance;
-            //Dictionary<string, KeyValuePair<object, Type>> layout;
-            //Dictionary<string, KeyValuePair<object, Type>> behavior;
+            if (ispanel)
+                PanelNames.Add(nameUC);
 
             var defaultvalues = new Dictionary<string, object>
             {
                 { "eventAggregator", eventAggregator },
+                { "Nothings", Nothings },
                 { "IsModeEditor", true },
-                { "IsPanel", model.EndsWith("Panel_ViewModel") },
+                { "IsPanel", ispanel },
                 { "IsPluginDropped", true },
-                { "PluginParent", this },
+                { "PluginParent", instance },
                 { "OriginPlugin", this },
+                { "PluginParentContainer",  (BindableCollection<IPluginModel>) instance.GetType().GetProperty("MyPluginsContainer").GetValue(instance, null)},
                 { "NameUC", nameUC },
                 { "UCLeft", left },
                 { "UCTop", top },
@@ -258,220 +397,13 @@ namespace Cockpit.GUI.Views.Profile
                 { "RealWidth", tbg.SelectedToolBoxItem.ImageWidth },
                 { "RealHeight", tbg.SelectedToolBoxItem.ImageHeight },
                 { "Images", new string[] {FullImage} },
-                { "BackgroundImage", new string[] {FullImage} },
+                { "BackgroundImages", new string[] {FullImage} },
             };
 
-
-
-            //layout = props.First(p => p.Name == "Layout").PropertyType.GetConstructors()
-            //  .Select(p => p.GetParameters()).OrderBy(p => p.Count()).Last()
-            //  .ToDictionary(p => p.Name, p => new KeyValuePair<object, Type> (defaultvalues.ContainsKey(p.Name) ? defaultvalues[p.Name] : p.DefaultValue, p.ParameterType ));
-
-
-
-            //try
-            //{
-            //    //appearance = props.First(p => p.Name == "Appearance").PropertyType.GetConstructors()
-            //    //                  .Select(p => p.GetParameters()).OrderBy(p => p.Count()).Last()
-            //    //                  //.ToDictionary(p => p.Name, p => (p.DefaultValue, p.ParameterType));
-            //    //                  .ToDictionary(p => p.Name, p => p.DefaultValue);
-
-            //    appearance = props.First(p => p.Name == "Appearance").PropertyType.GetConstructors()
-            //                      .Select(p => p.GetParameters()).OrderBy(p => p.Count()).Last()
-            //                      .ToDictionary(p => p.Name, p => new KeyValuePair<object, Type>(defaultvalues.ContainsKey(p.Name) ? defaultvalues[p.Name] : p.DefaultValue, p.ParameterType));
-
-
-            //    //foreach (var s in new string[] {"Images", "BackgroundImage" })
-            //    //{
-            //    //    if (appearance.ContainsKey(s))
-            //    //    {
-            //    //        var value = appearance[s].Value;
-            //    //        appearance[s] = new KeyValuePair<object, Type>(new string[] { FullImage }, value);
-            //    //        break;
-            //    //    }
-            //    //}
-
-            //}
-            //catch
-            //{
-            //    appearance = null;
-            //}
-
-            //try
-            //{
-            //    behavior = props.First(p => p.Name == "Behavior").PropertyType.GetConstructors()
-            //                    .Select(p => p.GetParameters()).OrderBy(p => p.Count()).Last()
-            //                    .ToDictionary(p => p.Name, p => new KeyValuePair<object, Type>(defaultvalues.ContainsKey(p.Name) ? defaultvalues[p.Name] : p.DefaultValue, p.ParameterType));
-
-            //    //behavior = props.First(p => p.Name == "Behavior").PropertyType.GetConstructors()
-            //    //                  .Select(p => p.GetParameters()).OrderBy(p => p.Count()).Last()
-            //    //                  .ToDictionary(p => p.Name, p => p.DefaultValue);
-            //}
-            //catch
-            //{
-            //    behavior = null;
-            //}
-
-
-            //foreach (var prop in props)
-            //{
-            //    System.Diagnostics.Debug.WriteLine($"Property named {prop.ToString()}");
-            //    var propchildren = prop.PropertyType.GetProperties().Where(p => Attribute.IsDefined(p, typeof(DataMemberAttribute)));
-            //    foreach (var pp in propchildren)
-            //        System.Diagnostics.Debug.WriteLine($"Property named {pp.Name} and is of type {pp.PropertyType}");
-            //}
-
-
-            //Ninject.Parameters.Parameter[] param = null;
-
-            //Ninject.Parameters.Parameter[] param = new Ninject.Parameters.Parameter[]
-            //{
-            //            new ConstructorArgument("plugin", new object [] {this, this }, true),
-            //            new ConstructorArgument("layout", layout.Values.ToArray(), true),
-            //            new ConstructorArgument("appearance", appearance == null ? null : appearance.Values.ToArray() , true),
-            //            new ConstructorArgument("behavior", behavior == null ? null : behavior.Values.ToArray(), true)
-            //};
-
-            ////Ninject.Parameters.Parameter[][] paramproperties = null;
-            ////string[] properties;
-            ////string model="";
-            //var AngleSwitch = 90;
-            //if (groupname.StartsWith("_PushButton"))
-            //{
-            //    var FullImage1 = FullImage.Replace("_0.png", "_1.png");
-
-            //    param = new Ninject.Parameters.Parameter[]
-            //    {
-            //            new ConstructorArgument("layout",   layout.Values.ToArray()                                                 //PushButton
-            //                                                             , true),
-            //            //new ConstructorArgument("layout", new object[]{                                                   //PushButton
-            //            //    true, this,                                                                                         //0  is in Mode Editor?
-            //            //    $"{nameUC}",                                                                                        //2  name of UC
-            //            //    new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, 0 },//3  [Left, Top, Width, Height, Angle]
-            //            //    new double[] {1d, 1d},                                                                              //4  [ParentScaleX, ParentScaleY]
-            //            //    new string[]{ FullImage, FullImage1 }, 0,                                                           //5  [images] & startimageposition
-            //            //    2d, 0.8d, (PushButtonGlyph)1, Colors.White,                                                         //6  Glyph: Thickness, Scale, Type, Color
-            //            //    "Hello", "1,1", "Franklin Gothic", "Normal", "Normal",                                              //10 Text, TextPushOffset, Family, Style, Weight
-            //            //    12d, new double[] { 0d, 0d, 0d, 0d },                                                               //15 Size, [padding L,T,R,B]
-            //            //    new int[] { 1, 1 },  Colors.White,                                                                  //17 [TextAlign H,V], TextColor
-
-            //            //    1                                                                                                   //19 Button Type
-            //            //                                                }, true),
-            //            new ConstructorArgument("appearance",                                                    //PushButton
-            //                appearance == null ? null : appearance.Values.ToArray()
-            //                                                            , true),
-            //            new ConstructorArgument("behavior", behavior == null ? null : behavior.Values.ToArray(), true)
-            //    };
-            //}
-            //else if (groupname.StartsWith("_Panel"))
-            //{
-
-            //    param = new Ninject.Parameters.Parameter[]
-            //    {
-            //            new ConstructorArgument("settings", new object[]{                                                   //Panel Button
-            //                true, this,                                                                                         //0 is in Mode Editor?
-            //                $"{nameUC}",                                                                                        //2 name of UC
-            //                new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, 0 },//3 [Left, Top, Width, Height, Angle]
-            //                new double[] {1d, 1d},                                                                              //4  [ParentScaleX, ParentScaleY]
-            //                FullImage,                                                                                          //5 image
-
-            //                2, 1d, 2, 3 }, true)
-            //    };
-
-            //    //model = "Cockpit.GUI.Plugins.Panel_ViewModel";
-            //    //properties = new string[] { "Cockpit.Core.Plugins.Plugins.Properties.LayoutPropertyViewModel",
-            //    //                            "Cockpit.GUI.Plugins.Properties.PanelAppearanceViewModel"};
-            //}
-            //else if (groupname.StartsWith("_Switch"))
-            //{
-            //    var FullImage1 = FullImage.Replace("_0.png", "_1.png");
-            //    var FullImage2 = FullImage.Replace("_0.png", "_2.png");
-            //    AngleSwitch = 0;
-            //    param = new Ninject.Parameters.Parameter[]
-            //    {
-            //            new ConstructorArgument("settings", new object[]{                                                   //Switch Button
-            //                true, this,                                                                                         //0 is in Mode Editor?
-            //                $"{nameUC}",                                                                                        //2 name of UC
-            //                new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, AngleSwitch },//3 [Left, Top, Width, Height, Angle]
-            //                new double[] {1d, 1d},                                                                              //4  [ParentScaleX, ParentScaleY]
-            //                new string[]{ FullImage, FullImage1, FullImage2 , "", "", "" }, 0,                                  //5 [images] & startimageposition
-
-            //                2, 1d, 2, 3 }, true)
-            //    };
-
-            //    //model = "Cockpit.Core.Plugins.Plugins.Switch_ViewModel, Cockpit.Core.Plugins";
-            //    //model = "Cockpit.Core.Plugins.Plugins.Switch_ViewModel";
-            //    //properties = new string[] { "", "", "" };
-            //}
-            //else if (groupname.StartsWith("_RotarySwitch"))
-            //{
-            //    AngleSwitch = 0;
-            //    param = new Ninject.Parameters.Parameter[]
-            //    {
-            //            new ConstructorArgument("settings", new object[]{                                                   //Switch Button
-            //                true, this,                                                                                         //0 is in Mode Editor?
-            //                $"{nameUC}",                                                                                        //2 name of UC
-            //                new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, AngleSwitch },//3 [Left, Top, Width, Height, Angle]
-            //                new double[] {1d, 1d},                                                                              //4  [ParentScaleX, ParentScaleY]
-            //                FullImage,                                                                                           //5 [images]
-
-            //                 2,                                                                                                 //5  nbr points
-            //                 "Franklin Gothic", "Normal", "Normal",                                                             //6  Family, Style, Weight
-            //                12d, new double[] { 0d, 0d, 0d, 0d },                                                               //9 Size, [padding L,T,R,B]
-            //                new int[] { 1, 1 },  Colors.Red, 1d,                                                                 //11 [TextAlign H,V], TextColor, %distance
-
-            //                4d, Colors.Black, 0.9d, 0d,                                                                         //14 line thickness, line color, line length, Angle
-
-            //                new string[] {"Hello1","hel2" },
-
-
-            //                2, 1d, 2, 3 }, true)
-            //    };
-
-            //    //model = "Cockpit.Core.Plugins.Plugins.RotarySwitch_ViewModel, Cockpit.Core.Plugins";
-            //    //model = "Cockpit.Core.Plugins.Plugins.RotarySwitch_ViewModel";
-            //    //properties = new string[] { "", "", "" };
-            //}
-            //else if (groupname.StartsWith("_A10C"))
-            //{
-            //    AngleSwitch = 0;
-            //    param = new Ninject.Parameters.Parameter[]
-            //    {
-            //            new ConstructorArgument("settings", new object[]{                                                   //Switch Button
-            //                true, this,                                                                                         //0 is in Mode Editor?
-            //                $"{nameUC}",                                                                                        //2 name of UC
-            //                new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, AngleSwitch },//3 [Left, Top, Width, Height, Angle]
-            //                new double[] {1d, 1d},                                                                              //4  [ParentScaleX, ParentScaleY]
-            //                FullImage,                                                                                           //5 [images]
-
-            //                 2,                                                                                                 //5  nbr points
-            //                 "Franklin Gothic", "Normal", "Normal",                                                             //6  Family, Style, Weight
-            //                12d, new double[] { 0d, 0d, 0d, 0d },                                                               //9 Size, [padding L,T,R,B]
-            //                new int[] { 1, 1 },  Colors.Red, 1d,                                                                 //11 [TextAlign H,V], TextColor, %distance
-
-            //                4d, Colors.Black, 0.9d, 0d,                                                                         //14 line thickness, line color, line length, Angle
-
-            //                new string[] {"Hello1","hel2" },
-
-
-            //                2, 1d, 2, 3 }, true)
-            //    };
-
-            //    //model = "Cockpit.Plugin.A10C.ViewModels.A10Alt_ViewModel";
-            //    //properties = new string[] { "", "", "" };
-            //}
-            //var typeClass = Type.GetType(model);
 
             var typeClass = GetType(model);
 
             props.ToList().ForEach(p => defaultvalues.Add(p.Name, HelperConstructor.MyCreateInstance(p.PropertyType, defaultvalues)));
-
-            //var param = new List<Ninject.Parameters.Parameter>();
-            //foreach (var v in instanceproperties)
-            //{
-            //    defaultvalues.Add(v.Name, v.Item1);
-            //    //param.Add(new ConstructorArgument(v.Name, v.Item1, true));
-            //}
 
 
             //var viewmodel = resolutionRoot.TryGet(typeClass, param.ToArray());
@@ -483,7 +415,12 @@ namespace Cockpit.GUI.Views.Profile
 
             vm.ZoomFactorFromPluginModel = ZoomFactorFromMonitorViewModel;
 
-            MyCockpitViewModels.Add(vm);
+
+            //MyPluginsContainer.Add(vm);
+
+            //SortedDico[nameUC] = new Elements(null, null, ispanel ? (vm as Panel_ViewModel).MyPluginsContainer : null);
+            SortedDico[nameUC] = new Elements(null, null, ispanel, (BindableCollection<IPluginModel>)defaultvalues["PluginParentContainer"]);
+            return vm;
         }
         #endregion
         public  string GetIdentityKey(Type pluginType)
@@ -522,7 +459,7 @@ namespace Cockpit.GUI.Views.Profile
         }
 
 
-        [DataMember] public BindableCollection<IPluginModel> MyCockpitViewModels { get; set; }
+        [DataMember] public BindableCollection<IPluginModel> MyPluginsContainer { get; set; }
 
         private static int untitledIndex;
         private int untitledId;
@@ -663,7 +600,7 @@ namespace Cockpit.GUI.Views.Profile
         //{
         //    return v.Select(x => x.NameUC)
         //                .Union(v.Where(x => x.ToString().Contains("Panel_ViewModel"))
-        //                            .SelectMany(y => GetChilds((y as Panel_ViewModel).MyCockpitViewModels))
+        //                            .SelectMany(y => GetChilds((y as Panel_ViewModel).MyPluginsContainer))
         //    );
         //}
 
@@ -671,19 +608,19 @@ namespace Cockpit.GUI.Views.Profile
         //{
         //    return v.Where(x => x.NameUC.StartsWith($"{s}_") || x.NameUC.Equals(s))
         //                .Union(v.Where(x => x.ToString().Contains("Panel_ViewModel"))
-        //                            .SelectMany(y => GetChilds((y as Panel_ViewModel).MyCockpitViewModels, s))
+        //                            .SelectMany(y => GetChilds((y as Panel_ViewModel).MyPluginsContainer, s))
         //    );
         //}
 
         //public IPluginModel GetSingleChild(string s)
         //{
-        //    return GetChilds(MyCockpitViewModels, s).Single();
+        //    return GetChilds(MyPluginsContainer, s).Single();
 
         //    IEnumerable<IPluginModel> GetChilds(BindableCollection<IPluginModel> v, string ss)
         //    {
         //        return v.Where(x => x.NameUC.Equals(ss))
         //                    .Union(v.Where(x => x.ToString().Contains("Panel_ViewModel"))
-        //                                .SelectMany(y => GetChilds((y as Panel_ViewModel).MyCockpitViewModels, ss))
+        //                                .SelectMany(y => GetChilds((y as Panel_ViewModel).MyPluginsContainer, ss))
         //        );
         //    }
         //}
@@ -715,13 +652,13 @@ namespace Cockpit.GUI.Views.Profile
 
             //    (BindableCollection<IPluginModel>, IPluginModel, int) RemoveUC(string ss)
             //    {
-            //        return GetChildx(MyCockpitViewModels, ss).Single();
+            //        return GetChildx(MyPluginsContainer, ss).Single();
 
             //        IEnumerable<(BindableCollection<IPluginModel>, IPluginModel, int)> GetChildx(BindableCollection<IPluginModel> listOfpm, string s)
             //        {
             //            return listOfpm.Where(x => x.NameUC.Equals(s)).Select(pm => (listOfpm, pm, listOfpm.IndexOf(listOfpm.Single(i => i.NameUC.Equals(s)))))
             //                        .Union(listOfpm.Where(x => x.ToString().Contains("Panel_ViewModel"))
-            //                                    .SelectMany(y => GetChildx((y as Panel_ViewModel).MyCockpitViewModels, s))
+            //                                    .SelectMany(y => GetChildx((y as Panel_ViewModel).MyPluginsContainer, s))
             //            );
             //        }
             //    }
@@ -730,10 +667,10 @@ namespace Cockpit.GUI.Views.Profile
 
 
 
-            //    var sol = GetChilds(MyCockpitViewModels);
+            //    var sol = GetChilds(MyPluginsContainer);
 
 
-            //    //    foreach (var m in MyCockpitViewModels.ToList())
+            //    //    foreach (var m in MyPluginsContainer.ToList())
             //    //{
             //    //    if (m.NameUC.Equals("mfd"))
             //    //    {
@@ -762,18 +699,38 @@ namespace Cockpit.GUI.Views.Profile
             }
             if (key == Key.Delete)
             {
-                foreach(var name in AdornersSelectedList.ToList())
+                foreach (var name in AdornersSelectedList.ToList())
                 {
-                    RemoveAdorner(SortedDico[name].cc, SortedDico[name].pm);
+                    var pm = SortedDico[name].pm;
+                    RemoveAdorner(SortedDico[name].cc, pm);
 
-                    if (SortedDico[name].pm.ToString().Equals("Cockpit.GUI.Plugins.Panel_ViewModel"))
+                    if (SortedDico[name].ispanel)
                     {
-                        RemoveAllCCFromContainer(name);
+                        var PanelNames = new Stack<string>();
+                        var instance = pm;
+                        var PanelContainer = (BindableCollection<IPluginModel>) instance.GetType().GetProperty("MyPluginsContainer").GetValue(instance, null);
+                        PanelNames.Push(name);
+                        RemoveAllPluginsSelected(PanelContainer, PanelNames);
+
+                        while (PanelNames.Count() > 0)
+                            RemovePlugin(PanelNames.Pop());
                     }
-
-                    RemoveCC(name);
-
+                    else
+                        RemovePlugin(name);
                 }
+
+                //foreach (var name in AdornersSelectedList.ToList())
+                //{
+                //    RemoveAdorner(SortedDico[name].cc, SortedDico[name].pm);
+
+                //    if (SortedDico[name].pm.ToString().Equals("Cockpit.GUI.Plugins.Panel_ViewModel"))
+                //    {
+                //        RemoveAllCCFromContainer(name);
+                //    }
+
+                //    RemoveCC(name);
+
+                //}
 
                 AdornersSelectedList.Clear();
                 eventAggregator.Publish(new DisplayPropertiesEvent(new[] { LayoutMonitor }));
@@ -892,8 +849,8 @@ namespace Cockpit.GUI.Views.Profile
             e.Handled = true;
 
             var CtrlDown = (Keyboard.Modifiers & ModifierKeys.Control) != 0;
-            //if (!CtrlDown || AdornersSelectedList.Count == 0 || !MyCockpitViewModels.Any(t => ((IPluginModel)t).NameUC.Equals(AdornersSelectedList.ElementAt(0))))
-            if (!CtrlDown || AdornersSelectedList.Count == 0 || !MyCockpitViewModels.Any(t => GetPropertyString("Layout.NameUC", t).Equals(AdornersSelectedList.ElementAt(0))))
+            //if (!CtrlDown || AdornersSelectedList.Count == 0 || !MyPluginsContainer.Any(t => ((IPluginModel)t).NameUC.Equals(AdornersSelectedList.ElementAt(0))))
+            if (!CtrlDown || AdornersSelectedList.Count == 0 || !MyPluginsContainer.Any(t => GetPropertyString("Layout.NameUC", t).Equals(AdornersSelectedList.ElementAt(0))))
             {
                 RemoveAdorners();
                 AddNewAdorner(cc, pm);
@@ -921,11 +878,22 @@ namespace Cockpit.GUI.Views.Profile
 
         public void ContentControlLoaded(ContentControl cc, IPluginModel pm)
         {
-            var key = GetPropertyString("Layout.NameUC", pm);
-            if (SortedDico.ContainsKey(key))
-                return;
+            DependencyObject ff = cc;
+            while (true)
+            {
+                var parent = VisualTreeHelper.GetParent(ff);
+                if (parent == null) break;
+                if (parent.ToString().EndsWith("PreviewView"))
+                    return;
+                if (parent.ToString().EndsWith("MonitorView"))
+                    break;
+                ff = parent;
+            }
 
-            SortedDico[key] = new Elements(cc, pm);
+            var key = GetPropertyString("Layout.NameUC", pm);
+            SortedDico[key].cc = cc;
+            SortedDico[key].pm = pm;
+
             RemoveAdorners();
             AddNewAdorner(cc, pm);
 
@@ -933,6 +901,7 @@ namespace Cockpit.GUI.Views.Profile
             cc.Focus();
         }
 
+        #region Adorner
         public void RemoveAdorner(ContentControl cc, IPluginModel pm)
         {
             var key = GetPropertyString("Layout.NameUC", pm);
@@ -1001,15 +970,17 @@ namespace Cockpit.GUI.Views.Profile
                 cc.Focus();
             }
         }
+        #endregion
 
         public string GiveName(string nameUC)
         {
-            var list = GetAllNameUC(MyCockpitViewModels).ToList();
+            //var list = GetAllNameUC(MyPluginsContainer).ToList();
+            var list = SortedDico.Keys.ToList();
             var newname = nameUC;
 
             var c = list.Count(x => x.StartsWith($"{nameUC}_") || x.Equals($"{nameUC}"));
             var caller = new System.Diagnostics.StackFrame(1).GetMethod().Name;
-            if (caller.StartsWith("RenameUC"))
+            if (caller.StartsWith("RenamePlugin"))
                 return c == 1 ? newname : "";
                 
             if (list.Contains(nameUC))
@@ -1024,23 +995,26 @@ namespace Cockpit.GUI.Views.Profile
 
             return newname;
 
-            IEnumerable<string> GetAllNameUC(BindableCollection<IPluginModel> v)
-            {
-                return v.Select(pm => GetPropertyString("Layout.NameUC", pm))
-                            .Concat(v.Where(x => x.ToString().Contains("Panel_ViewModel"))
-                                        .SelectMany(y => GetAllNameUC((y as Panel_ViewModel).MyCockpitViewModels))
-                );
-            }
+            //IEnumerable<string> GetAllNameUC(BindableCollection<IPluginModel> v)
+            //{
+            //    return v.Select(pm => GetPropertyString("Layout.NameUC", pm))
+            //                .Concat(v.Where(x => x.ToString().Contains("Panel_ViewModel"))
+            //                            .SelectMany(y => GetAllNameUC((y as Panel_ViewModel).MyPluginsContainer))
+            //    );
+            //}
         }
 
 
-        private bool RenameUC(string oldname, string newname)
+        private bool RenamePlugin(string oldname, string newname)
         {
             if (!GiveName(newname).Equals(newname)) return false;
             var cc = SortedDico[oldname].cc;
             var pm = SortedDico[oldname].pm;
+            var ispanel = SortedDico[oldname].ispanel;
+            var container = SortedDico[oldname].container;
+
             SortedDico.Remove(oldname);
-            SortedDico.Add(newname, new Elements(cc, pm));
+            SortedDico.Add(newname, new Elements(cc, pm, ispanel, container));
             if (AdornersSelectedList.Contains(oldname))
             {
                 var list = AdornersSelectedList.ToList();
@@ -1050,75 +1024,88 @@ namespace Cockpit.GUI.Views.Profile
                     AdornersSelectedList.Add(x.Equals(oldname) ? newname : x);
                 }
             }
+
+            if (ispanel)
+            {
+                RenamePanelSelection(oldname, newname, new string[] { "Behavior.SelectedPanelDnName", "Behavior.SelectedPanelUpName" });
+                //PanelNames.Remove(oldname);
+                //PanelNames.Add(newname);
+                //var properties = new List<string>() { "Behavior.SelectedPanelDnName", "Behavior.SelectedPanelUpName" };
+                //foreach (var pmx in SortedDico.Values.Where(v => !v.ispanel).Select(v => v.pm))
+                //{
+                //    foreach (var p in properties)
+                //        if (GetPropertyString(p, pmx).Equals(oldname))
+                //            SetProperty(p, pmx, newname);
+                //}
+            }
+
             return true;
 
             //IEnumerable<(BindableCollection<IPluginModel>, int)> GetContainerOfCC(BindableCollection<IPluginModel> listOfpm, string s)
             //{
             //    return listOfpm.Where(x => x.NameUC.Equals(s)).Select(p => (listOfpm, listOfpm.IndexOf(listOfpm.Single(i => i.NameUC.Equals(s)))))
             //                .Union(listOfpm.Where(x => x.ToString().Contains("Panel_ViewModel"))
-            //                            .SelectMany(y => GetContainerOfCC((y as Panel_ViewModel).MyCockpitViewModels, s))
+            //                            .SelectMany(y => GetContainerOfCC((y as Panel_ViewModel).MyPluginsContainer, s))
             //    );
             //}
         }
 
-        public void RemoveAllCCFromContainer(string container)
+        private void RenamePanelSelection(string oldname, string newname, string[] properties)
         {
-            var w =  GetCCFromContainer(MyCockpitViewModels, container).Single();
-            var result  = GetAllChildrenOfContainer(w.Item2, 0);
-
-            foreach (var collection in result.Reverse())
-                foreach (IPluginModel pm in collection.Item1.ToList())
-                {
-                    var key = GetPropertyString("Layout.NameUC", pm);
-                    System.Diagnostics.Debug.WriteLine($"2:{key} order {collection.Item2}");
-                    if (pm.ToString().Contains("Panel_ViewModel"))
-                    {
-                        (pm as Panel_ViewModel).MyCockpitViewModels.Clear();
-                        System.Diagnostics.Debug.WriteLine($"3:{(pm as Panel_ViewModel).MyCockpitViewModels} clear");
-                    }
-                    SortedDico.Remove(key);
-                    collection.Item1.RemoveAt(collection.Item1.IndexOf(collection.Item1.Single(t => GetPropertyString("Layout.NameUC", t).Equals(key))));                 
-                }
-                
-
-
-            IEnumerable<(BindableCollection<IPluginModel>, BindableCollection<IPluginModel>)> GetCCFromContainer(BindableCollection<IPluginModel> listOfpm, string s)
+            PanelNames.Remove(oldname);
+            PanelNames.Add(newname);
+            //var properties = new List<string>() { "Behavior.SelectedPanelDnName", "Behavior.SelectedPanelUpName" };
+            foreach (var pm in SortedDico.Values.Where(v => !v.ispanel).Select(v => v.pm))
             {
-                return listOfpm.Where(pm => GetPropertyString("Layout.NameUC", pm).Equals(s)).Select(pm => (listOfpm, (pm as Panel_ViewModel).MyCockpitViewModels))
-                            .Union(listOfpm.Where(pm => pm.ToString().Contains("Panel_ViewModel"))
-                                        .SelectMany(pm => GetCCFromContainer((pm as Panel_ViewModel).MyCockpitViewModels, s))
-                );
+                foreach (var p in properties)
+                    if (GetPropertyString(p, pm).Equals(oldname))
+                        SetProperty(p, pm, newname);
             }
+        }
 
-            IEnumerable<(BindableCollection<IPluginModel>, int)> GetAllChildrenOfContainer(BindableCollection<IPluginModel> listOfpm, int order)
+        public void RemoveAllPluginsSelected(BindableCollection<IPluginModel> collection, Stack<string> PanelNamesToDelete)
+        {
+            foreach (var pm in collection.ToList())
             {
-                return listOfpm.Select(t => (listOfpm, order))
-                            .Union(listOfpm.Where(x => x.ToString().Contains("Panel_ViewModel"))
-                                        .SelectMany(y => GetAllChildrenOfContainer((y as Panel_ViewModel).MyCockpitViewModels, ++order))
-                );
+                var name = GetPropertyString("Layout.NameUC", pm);
+                if (SortedDico[name].ispanel)
+                {
+                    PanelNamesToDelete.Push(name);
+                    var instance = SortedDico[name].pm;
+                    var PanelContainer = (BindableCollection<IPluginModel>)instance.GetType().GetProperty("MyPluginsContainer").GetValue(instance, null);
+                    RemoveAllPluginsSelected(PanelContainer, PanelNamesToDelete);
+                }
+                else
+                {
+                    RemovePlugin(name);
+                }
             }
         }
 
 
-        public void RemoveCC(string nameUC)
+
+        public void RemovePlugin(string nameUC)
         {
-            var w = GetContainer(nameUC);
+            var pluginmodel = SortedDico[nameUC].pm;
+            var container = SortedDico[nameUC].container;
+
+            container.Remove(pluginmodel);
             SortedDico.Remove(nameUC);
-            w.Item1.RemoveAt(w.Item2);
 
-            (BindableCollection<IPluginModel>, int) GetContainer(string nameuc)
+            if (PanelNames.Contains(nameUC))
             {
-                return GetChildPanel(MyCockpitViewModels, nameuc).Single();
-
-                IEnumerable<(BindableCollection<IPluginModel>, int)> GetChildPanel(BindableCollection<IPluginModel> listOfpm, string s)
-                {
-                    return listOfpm.Where(pm => GetPropertyString("Layout.NameUC", pm).Equals(s)).Select(pm => (listOfpm, listOfpm.IndexOf(listOfpm.Single(pmx => GetPropertyString("Layout.NameUC", pmx).Equals(s)))))
-                                .Union(listOfpm.Where(pm => pm.ToString().Contains("Panel_ViewModel"))
-                                            .SelectMany(pm => GetChildPanel((pm as Panel_ViewModel).MyCockpitViewModels, s))
-                    );
-                }
+                RenamePanelSelection(nameUC, Nothings, new string[] { "Behavior.SelectedPanelDnName", "Behavior.SelectedPanelUpName" });
+                //PanelNames.Remove(nameUC);
+                //var properties = new List<string>() { "Behavior.SelectedPanelDnName", "Behavior.SelectedPanelUpName" };
+                //foreach (var pm in SortedDico.Values.Where(v => !v.ispanel).Select(v => v.pm))
+                //{
+                //    foreach (var p in properties)
+                //        if (GetPropertyString(p, pm).Equals(nameUC))
+                //            SetProperty(p, pm, Nothings);
+                //}
             }
         }
+
 
         public void SetProperty(string compoundProperty, object target, object value)
         {
@@ -1130,6 +1117,7 @@ namespace Cockpit.GUI.Views.Profile
             }
             PropertyInfo propertyToSet = target.GetType().GetProperty(bits.Last());
             propertyToSet.SetValue(target, value, null);
+            //return true;
         }
         public double GetPropertyDouble(string compoundProperty, object target)
         {
@@ -1152,25 +1140,435 @@ namespace Cockpit.GUI.Views.Profile
             string[] bits = compoundProperty.Split('.');
             for (int i = 0; i < bits.Length - 1; i++)
             {
-                PropertyInfo propToGet = target.GetType().GetProperty(bits[i]);
-                target = propToGet.GetValue(target, null);
+                PropertyInfo propToGet = target.GetType().GetProperty(bits[i]);               
+                target = propToGet?.GetValue(target, null);
             }
-            PropertyInfo propertyToGet = target.GetType().GetProperty(bits.Last());
-
-            return (string)propertyToGet.GetValue(target);
+            PropertyInfo propertyToGet = target?.GetType().GetProperty(bits.Last());
+            return (string)propertyToGet?.GetValue(target) ?? string.Empty;
+            //return propertyToGet == null ? "" : (string)propertyToGet?.GetValue(target);
         }
 
-        public void Handle(RenameUCEvent message)
+        public void Handle(RenamePluginEvent message)
         {
             if (message.Reponse) return;
-            var result = RenameUC(message.OldName, message.NewName);
+            var result = RenamePlugin(message.OldName, message.NewName);
             var newname = result ? message.NewName : message.OldName;
-            eventAggregator.Publish(new RenameUCEvent(message.OldName, newname, true));
+            eventAggregator.Publish(new RenamePluginEvent(message.OldName, newname, true));
         }
 
         public void Handle(DragCancelledEvent message)
         {
             TitleTemp = null;
         }
+
+        private List<string> _PanelNames;
+        [DataMember]
+        public List<string> PanelNames
+        {
+            get => _PanelNames;
+
+            set
+            {
+                _PanelNames = value;
+                NotifyOfPropertyChange(() => PanelNames);
+            }
+        }
     }
 }
+//TitleTemp = null;
+//var tbg = dropInfo.Data as ToolBoxGroup;
+//var selected = tbg.SelectedToolBoxItem;
+//int left = (int)dropInfo.DropPosition.X;
+//int top = (int)dropInfo.DropPosition.Y;
+//var FullImage = (dropInfo.Data as ToolBoxGroup).SelectedToolBoxItem.FullImageName;
+//var groupname = (dropInfo.Data as ToolBoxGroup).GroupName;
+
+//var key = groupname + tbg.SelectedToolBoxItem.ShortImageName;
+//string model = "";
+//if (Identities.ContainsKey(key))
+//    model = Identities[key].Type.ToString();
+//else if (Identities.ContainsKey(groupname))
+//    model = Identities[groupname].Type.ToString();
+//else
+//    throw new ArgumentException($" problem on GroupName : {groupname}, ImageName : {FullImage} / {tbg.SelectedToolBoxItem.ShortImageName}");
+
+
+//var nameUC = GiveName(tbg.SelectedToolBoxItem.ShortImageName);
+
+
+//var propertieslist = new List<string> { "Layout", "Appearance", "Behavior" };
+
+//var props = GetType(model).GetProperties().Where(prop => propertieslist.Contains(prop.Name) && Attribute.IsDefined(prop, typeof(DataMemberAttribute)));
+
+////DataContractSerializer dcs = new DataContractSerializer(GetType(model), props.Select(p => p.PropertyType).ToArray());
+////using (FileStream inputStream = new FileStream(@"j:\test.xml", FileMode.Open))
+////using (XmlDictionaryReader reader = XmlDictionaryReader.CreateTextReader(inputStream, new XmlDictionaryReaderQuotas()))
+////{
+////    var contentt = dcs.ReadObject(reader, true);
+////    var cc = contentt.GetType().GetProperties();
+////    //System.Diagnostics.Debug.WriteLine(t);
+
+
+////}
+
+
+////var ctors = Identities.ContainsKey(key) ? Identities[key].Type.GetConstructors() : Identities[groupname].Type.GetConstructors();
+
+////var props = (Identities.ContainsKey(key) ? Identities[key].Type.GetProperties() : Identities[groupname].Type.GetProperties())
+////                                         .Where(prop => listofName.Contains(prop.Name) && Attribute.IsDefined(prop, typeof(DataMemberAttribute)));
+
+////Dictionary<string, KeyValuePair<object, Type>> appearance;
+////Dictionary<string, KeyValuePair<object, Type>> layout;
+////Dictionary<string, KeyValuePair<object, Type>> behavior;
+
+//PanelNames.Add(nameUC);
+
+//var defaultvalues = new Dictionary<string, object>
+//{
+//    { "eventAggregator", eventAggregator },
+//    { "IsModeEditor", true },
+//    { "IsPanel", model.EndsWith("Panel_ViewModel") },
+//    { "IsPluginDropped", true },
+//    { "PluginParent", this },
+//    { "OriginPlugin", this },
+//    { "NameUC", nameUC },
+//    { "UCLeft", left },
+//    { "UCTop", top },
+//    { "Width", tbg.SelectedToolBoxItem.ImageWidth },
+//    { "Height", tbg.SelectedToolBoxItem.ImageHeight },
+//    { "WidthOriginal", tbg.SelectedToolBoxItem.ImageWidth },
+//    { "HeightOriginal", tbg.SelectedToolBoxItem.ImageHeight },
+//    { "RealWidth", tbg.SelectedToolBoxItem.ImageWidth },
+//    { "RealHeight", tbg.SelectedToolBoxItem.ImageHeight },
+//    { "Images", new string[] {FullImage} },
+//    { "BackgroundImage", new string[] {FullImage} },
+//};
+
+
+
+////layout = props.First(p => p.Name == "Layout").PropertyType.GetConstructors()
+////  .Select(p => p.GetParameters()).OrderBy(p => p.Count()).Last()
+////  .ToDictionary(p => p.Name, p => new KeyValuePair<object, Type> (defaultvalues.ContainsKey(p.Name) ? defaultvalues[p.Name] : p.DefaultValue, p.ParameterType ));
+
+
+
+////try
+////{
+////    //appearance = props.First(p => p.Name == "Appearance").PropertyType.GetConstructors()
+////    //                  .Select(p => p.GetParameters()).OrderBy(p => p.Count()).Last()
+////    //                  //.ToDictionary(p => p.Name, p => (p.DefaultValue, p.ParameterType));
+////    //                  .ToDictionary(p => p.Name, p => p.DefaultValue);
+
+////    appearance = props.First(p => p.Name == "Appearance").PropertyType.GetConstructors()
+////                      .Select(p => p.GetParameters()).OrderBy(p => p.Count()).Last()
+////                      .ToDictionary(p => p.Name, p => new KeyValuePair<object, Type>(defaultvalues.ContainsKey(p.Name) ? defaultvalues[p.Name] : p.DefaultValue, p.ParameterType));
+
+
+////    //foreach (var s in new string[] {"Images", "BackgroundImage" })
+////    //{
+////    //    if (appearance.ContainsKey(s))
+////    //    {
+////    //        var value = appearance[s].Value;
+////    //        appearance[s] = new KeyValuePair<object, Type>(new string[] { FullImage }, value);
+////    //        break;
+////    //    }
+////    //}
+
+////}
+////catch
+////{
+////    appearance = null;
+////}
+
+////try
+////{
+////    behavior = props.First(p => p.Name == "Behavior").PropertyType.GetConstructors()
+////                    .Select(p => p.GetParameters()).OrderBy(p => p.Count()).Last()
+////                    .ToDictionary(p => p.Name, p => new KeyValuePair<object, Type>(defaultvalues.ContainsKey(p.Name) ? defaultvalues[p.Name] : p.DefaultValue, p.ParameterType));
+
+////    //behavior = props.First(p => p.Name == "Behavior").PropertyType.GetConstructors()
+////    //                  .Select(p => p.GetParameters()).OrderBy(p => p.Count()).Last()
+////    //                  .ToDictionary(p => p.Name, p => p.DefaultValue);
+////}
+////catch
+////{
+////    behavior = null;
+////}
+
+
+////foreach (var prop in props)
+////{
+////    System.Diagnostics.Debug.WriteLine($"Property named {prop.ToString()}");
+////    var propchildren = prop.PropertyType.GetProperties().Where(p => Attribute.IsDefined(p, typeof(DataMemberAttribute)));
+////    foreach (var pp in propchildren)
+////        System.Diagnostics.Debug.WriteLine($"Property named {pp.Name} and is of type {pp.PropertyType}");
+////}
+
+
+////Ninject.Parameters.Parameter[] param = null;
+
+////Ninject.Parameters.Parameter[] param = new Ninject.Parameters.Parameter[]
+////{
+////            new ConstructorArgument("plugin", new object [] {this, this }, true),
+////            new ConstructorArgument("layout", layout.Values.ToArray(), true),
+////            new ConstructorArgument("appearance", appearance == null ? null : appearance.Values.ToArray() , true),
+////            new ConstructorArgument("behavior", behavior == null ? null : behavior.Values.ToArray(), true)
+////};
+
+//////Ninject.Parameters.Parameter[][] paramproperties = null;
+//////string[] properties;
+//////string model="";
+////var AngleSwitch = 90;
+////if (groupname.StartsWith("_PushButton"))
+////{
+////    var FullImage1 = FullImage.Replace("_0.png", "_1.png");
+
+////    param = new Ninject.Parameters.Parameter[]
+////    {
+////            new ConstructorArgument("layout",   layout.Values.ToArray()                                                 //PushButton
+////                                                             , true),
+////            //new ConstructorArgument("layout", new object[]{                                                   //PushButton
+////            //    true, this,                                                                                         //0  is in Mode Editor?
+////            //    $"{nameUC}",                                                                                        //2  name of UC
+////            //    new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, 0 },//3  [Left, Top, Width, Height, Angle]
+////            //    new double[] {1d, 1d},                                                                              //4  [ParentScaleX, ParentScaleY]
+////            //    new string[]{ FullImage, FullImage1 }, 0,                                                           //5  [images] & startimageposition
+////            //    2d, 0.8d, (PushButtonGlyph)1, Colors.White,                                                         //6  Glyph: Thickness, Scale, Type, Color
+////            //    "Hello", "1,1", "Franklin Gothic", "Normal", "Normal",                                              //10 Text, TextPushOffset, Family, Style, Weight
+////            //    12d, new double[] { 0d, 0d, 0d, 0d },                                                               //15 Size, [padding L,T,R,B]
+////            //    new int[] { 1, 1 },  Colors.White,                                                                  //17 [TextAlign H,V], TextColor
+
+////            //    1                                                                                                   //19 Button Type
+////            //                                                }, true),
+////            new ConstructorArgument("appearance",                                                    //PushButton
+////                appearance == null ? null : appearance.Values.ToArray()
+////                                                            , true),
+////            new ConstructorArgument("behavior", behavior == null ? null : behavior.Values.ToArray(), true)
+////    };
+////}
+////else if (groupname.StartsWith("_Panel"))
+////{
+
+////    param = new Ninject.Parameters.Parameter[]
+////    {
+////            new ConstructorArgument("settings", new object[]{                                                   //Panel Button
+////                true, this,                                                                                         //0 is in Mode Editor?
+////                $"{nameUC}",                                                                                        //2 name of UC
+////                new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, 0 },//3 [Left, Top, Width, Height, Angle]
+////                new double[] {1d, 1d},                                                                              //4  [ParentScaleX, ParentScaleY]
+////                FullImage,                                                                                          //5 image
+
+////                2, 1d, 2, 3 }, true)
+////    };
+
+////    //model = "Cockpit.GUI.Plugins.Panel_ViewModel";
+////    //properties = new string[] { "Cockpit.Core.Plugins.Plugins.Properties.LayoutPropertyViewModel",
+////    //                            "Cockpit.GUI.Plugins.Properties.PanelAppearanceViewModel"};
+////}
+////else if (groupname.StartsWith("_Switch"))
+////{
+////    var FullImage1 = FullImage.Replace("_0.png", "_1.png");
+////    var FullImage2 = FullImage.Replace("_0.png", "_2.png");
+////    AngleSwitch = 0;
+////    param = new Ninject.Parameters.Parameter[]
+////    {
+////            new ConstructorArgument("settings", new object[]{                                                   //Switch Button
+////                true, this,                                                                                         //0 is in Mode Editor?
+////                $"{nameUC}",                                                                                        //2 name of UC
+////                new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, AngleSwitch },//3 [Left, Top, Width, Height, Angle]
+////                new double[] {1d, 1d},                                                                              //4  [ParentScaleX, ParentScaleY]
+////                new string[]{ FullImage, FullImage1, FullImage2 , "", "", "" }, 0,                                  //5 [images] & startimageposition
+
+////                2, 1d, 2, 3 }, true)
+////    };
+
+////    //model = "Cockpit.Core.Plugins.Plugins.Switch_ViewModel, Cockpit.Core.Plugins";
+////    //model = "Cockpit.Core.Plugins.Plugins.Switch_ViewModel";
+////    //properties = new string[] { "", "", "" };
+////}
+////else if (groupname.StartsWith("_RotarySwitch"))
+////{
+////    AngleSwitch = 0;
+////    param = new Ninject.Parameters.Parameter[]
+////    {
+////            new ConstructorArgument("settings", new object[]{                                                   //Switch Button
+////                true, this,                                                                                         //0 is in Mode Editor?
+////                $"{nameUC}",                                                                                        //2 name of UC
+////                new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, AngleSwitch },//3 [Left, Top, Width, Height, Angle]
+////                new double[] {1d, 1d},                                                                              //4  [ParentScaleX, ParentScaleY]
+////                FullImage,                                                                                           //5 [images]
+
+////                 2,                                                                                                 //5  nbr points
+////                 "Franklin Gothic", "Normal", "Normal",                                                             //6  Family, Style, Weight
+////                12d, new double[] { 0d, 0d, 0d, 0d },                                                               //9 Size, [padding L,T,R,B]
+////                new int[] { 1, 1 },  Colors.Red, 1d,                                                                 //11 [TextAlign H,V], TextColor, %distance
+
+////                4d, Colors.Black, 0.9d, 0d,                                                                         //14 line thickness, line color, line length, Angle
+
+////                new string[] {"Hello1","hel2" },
+
+
+////                2, 1d, 2, 3 }, true)
+////    };
+
+////    //model = "Cockpit.Core.Plugins.Plugins.RotarySwitch_ViewModel, Cockpit.Core.Plugins";
+////    //model = "Cockpit.Core.Plugins.Plugins.RotarySwitch_ViewModel";
+////    //properties = new string[] { "", "", "" };
+////}
+////else if (groupname.StartsWith("_A10C"))
+////{
+////    AngleSwitch = 0;
+////    param = new Ninject.Parameters.Parameter[]
+////    {
+////            new ConstructorArgument("settings", new object[]{                                                   //Switch Button
+////                true, this,                                                                                         //0 is in Mode Editor?
+////                $"{nameUC}",                                                                                        //2 name of UC
+////                new int[] { left, top, tbg.SelectedToolBoxItem.ImageWidth, tbg.SelectedToolBoxItem.ImageHeight, AngleSwitch },//3 [Left, Top, Width, Height, Angle]
+////                new double[] {1d, 1d},                                                                              //4  [ParentScaleX, ParentScaleY]
+////                FullImage,                                                                                           //5 [images]
+
+////                 2,                                                                                                 //5  nbr points
+////                 "Franklin Gothic", "Normal", "Normal",                                                             //6  Family, Style, Weight
+////                12d, new double[] { 0d, 0d, 0d, 0d },                                                               //9 Size, [padding L,T,R,B]
+////                new int[] { 1, 1 },  Colors.Red, 1d,                                                                 //11 [TextAlign H,V], TextColor, %distance
+
+////                4d, Colors.Black, 0.9d, 0d,                                                                         //14 line thickness, line color, line length, Angle
+
+////                new string[] {"Hello1","hel2" },
+
+
+////                2, 1d, 2, 3 }, true)
+////    };
+
+////    //model = "Cockpit.Plugin.A10C.ViewModels.A10Alt_ViewModel";
+////    //properties = new string[] { "", "", "" };
+////}
+////var typeClass = Type.GetType(model);
+
+//var typeClass = GetType(model);
+
+//props.ToList().ForEach(p => defaultvalues.Add(p.Name, HelperConstructor.MyCreateInstance(p.PropertyType, defaultvalues)));
+
+////var param = new List<Ninject.Parameters.Parameter>();
+////foreach (var v in instanceproperties)
+////{
+////    defaultvalues.Add(v.Name, v.Item1);
+////    //param.Add(new ConstructorArgument(v.Name, v.Item1, true));
+////}
+
+
+////var viewmodel = resolutionRoot.TryGet(typeClass, param.ToArray());
+//var instanceplugin = HelperConstructor.MyCreateInstance(typeClass, defaultvalues);
+//////var view = ViewLocator.LocateForModel(viewmodel, null, null);
+//////ViewModelBinder.Bind(viewmodel, view, null);
+//var vm = instanceplugin as IPluginModel;
+
+
+//vm.ZoomFactorFromPluginModel = ZoomFactorFromMonitorViewModel;
+
+//MyPluginsContainer.Add(vm);
+
+
+//        public void RemoveAllPluginsSelected(string nameUC)
+//        {
+//            var PanelNamesToModify = new List<string>();
+
+
+//            IEnumerable<(IPluginModel, string)> GetChildPanel(BindableCollection<IPluginModel> listOfpm, string s)
+//            {
+//                return listOfpm.Where(pm => pm.ToString().Contains("Panel_ViewModel") && GetPropertyString("Layout.NameUC", pm).Equals(nameUC))
+//                                                         .Select(pm =>
+//                                                                       {
+//                                                                            var nameuc = GetPropertyString("Layout.NameUC", pm);
+//                                                                            PanelNamesToModify.Add(nameuc);
+//                                                                            return (pm, nameuc);
+//                                                                       })
+//                                                         .SelectMany(p => GetChildPanel((p.pm as Panel_ViewModel).MyPluginsContainer, s))
+//                               .Concat(listOfpm.Where(pm => pm.ToString().Contains("Panel_ViewModel"))
+//                                        .SelectMany(pm => GetChildPanel((pm as Panel_ViewModel).MyPluginsContainer, s))
+//);
+//                //return listOfpm.Where(pm => GetPropertyString(property, pm).Equals(s)).Select(pm => (pm, property))
+//                //            .Concat(listOfpm.Where(pm => pm.ToString().Contains("Panel_ViewModel"))
+//                //                        .SelectMany(pm => GetChildPanel((pm as Panel_ViewModel).MyPluginsContainer, s, property))
+//                //);
+//            }
+
+//    IEnumerable<(BindableCollection<IPluginModel>, BindableCollection<IPluginModel>)> GetCCFromContainer(BindableCollection<IPluginModel> listOfpm, string s)
+//    {
+//        return listOfpm.Where(pm => GetPropertyString("Layout.NameUC", pm).Equals(s)).Select(pm => (listOfpm, (pm as Panel_ViewModel).MyPluginsContainer))
+//                    .Concat(listOfpm.Where(pm => pm.ToString().Contains("Panel_ViewModel"))
+//                                .SelectMany(pm => GetCCFromContainer((pm as Panel_ViewModel).MyPluginsContainer, s))
+//        );
+//    }
+//}
+
+//public void RemoveAllCCFromContainer(string container, List<string> panelnames = null)
+//{
+//    var w =  GetCCFromContainer(MyPluginsContainer, container).Single();
+//    var result  = GetAllChildrenOfContainer(w.Item2, 0);
+
+//    foreach (var collection in result.Reverse())
+//        foreach (IPluginModel pm in collection.Item1.ToList())
+//        {
+//            var key = GetPropertyString("Layout.NameUC", pm);
+//            System.Diagnostics.Debug.WriteLine($"2:{key} order {collection.Item2}");
+//            if (pm.ToString().Contains("Panel_ViewModel"))
+//            {
+//                (pm as Panel_ViewModel).MyPluginsContainer.Clear();
+//                System.Diagnostics.Debug.WriteLine($"3:{(pm as Panel_ViewModel).MyPluginsContainer} clear");
+//                panelnames.Add(key);
+//            }
+//            SortedDico.Remove(key);
+//            collection.Item1.RemoveAt(collection.Item1.IndexOf(collection.Item1.Single(t => GetPropertyString("Layout.NameUC", t).Equals(key))));                 
+//        }
+
+
+
+//    IEnumerable<(BindableCollection<IPluginModel>, BindableCollection<IPluginModel>)> GetCCFromContainer(BindableCollection<IPluginModel> listOfpm, string s)
+//    {
+//        return listOfpm.Where(pm => GetPropertyString("Layout.NameUC", pm).Equals(s)).Select(pm => (listOfpm, (pm as Panel_ViewModel).MyPluginsContainer))
+//                    .Union(listOfpm.Where(pm => pm.ToString().Contains("Panel_ViewModel"))
+//                                .SelectMany(pm => GetCCFromContainer((pm as Panel_ViewModel).MyPluginsContainer, s))
+//        );
+//    }
+
+//    IEnumerable<(BindableCollection<IPluginModel>, int)> GetAllChildrenOfContainer(BindableCollection<IPluginModel> listOfpm, int order)
+//    {
+//        return listOfpm.Select(t => (listOfpm, order))
+//                    .Union(listOfpm.Where(x => x.ToString().Contains("Panel_ViewModel"))
+//                                .SelectMany(y => GetAllChildrenOfContainer((y as Panel_ViewModel).MyPluginsContainer, ++order))
+//        );
+//    }
+//}
+
+
+
+//(BindableCollection<IPluginModel>, int) GetContainer(string nameuc)
+//{
+//    return GetChildPanel(MyPluginsContainer, nameuc).Single();
+
+//    IEnumerable<(BindableCollection<IPluginModel>, int)> GetChildPanel(BindableCollection<IPluginModel> listOfpm, string s)
+//    {
+//        return listOfpm.Where(pm => GetPropertyString("Layout.NameUC", pm).Equals(s)).Select(pm => (listOfpm, listOfpm.IndexOf(listOfpm.Single(pmx => GetPropertyString("Layout.NameUC", pmx).Equals(s)))))
+//                    .Concat(listOfpm.Where(pm => pm.ToString().Contains("Panel_ViewModel"))
+//                                .SelectMany(pm => GetChildPanel((pm as Panel_ViewModel).MyPluginsContainer, s))
+//        );
+//    }
+//}
+
+//BindableCollection<IPluginModel> GetContainer1(string nameuc)
+//{
+//    return GetChildPanel(MyPluginsContainer, nameuc);
+
+//    BindableCollection<IPluginModel> GetChildPanel(BindableCollection<IPluginModel> listOfpm, string s)
+//    {
+//        foreach(var pm in listOfpm)
+//        {
+//            if (SortedDico[nameuc].pm.Equals(pm))
+//                return listOfpm;
+//            if (pm.ToString().Contains("Panel_ViewModel"))
+//                GetChildPanel((pm as Panel_ViewModel).MyPluginsContainer, s);
+//        }
+//        return null;
+//    }
+//}

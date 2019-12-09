@@ -15,46 +15,70 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
     {
         private readonly IEventAggregator eventAggregator;
         public RotarySwitch_ViewModel RotarySwitchViewModel { get; set;}
-        public string NameUC { get; set; }
-        public RotarySwitchAppearanceViewModel(IEventAggregator eventAggregator, string[] Images, object[]settings)
+        public string Name { get; set; }
+        public RotarySwitchAppearanceViewModel(string[] Images, int NbrPoints = 0,
+                                                                string LabelColor = "#FFFFFFFF", double LabelDistance = 0d,
+                                                                string LineColor = "#FFFFFFFF", double LineLenght = 0d, double LineThickness = 2d, 
+                                                                string FontFamily = "Franklin Gothic", string FontStyle = "Normal", string FontWeight = "Normal",
+                                                                double FontSize = 12d, double[] Padding = null, int[] Alignment = null)
         {
 
-            var index = 5;
-
             Image = Images[0];
-            
-            var nbrpoints = (int)settings[index++];
 
-            var fontFamily = (string)settings[index++];
-            var fontStyle = (string)settings[index++];
-            var fontWeight = (string)settings[index++];
-            var fontSize = (double)settings[index++];
+            this.NbrPoints = NbrPoints;
 
-            TextFormat = new TextFormat(fontFamily: fontFamily,
-                            fontStyle: fontStyle,           //Normal, Oblique or Italic  see FontStyles
-                            fontWeight: fontWeight,          //Thin.... see FontWeight
-                            fontSize: fontSize,
-                            padding: (double[])settings[index++],           //Padding L,T,R,B
-                            Alignment: (int[])settings[index++]               //Left, Center, Right and Top, center, Bottom
-                           );
+            this.FontSize = FontSize;
+            this.Padding = Padding ?? new double[] { 0d, 0d, 0d, 0d };
+            this.Alignment = Alignment ?? new int[] { 1, 1 };
 
-            //LabelColor = (Color)settings[index++];
-            LabelColor = (Color)settings[index++];
-            LabelDistance = (double)settings[index++];
-            LineThickness = (double)settings[index++];
-            LineColor = (Color)settings[index++];
-            LineLength = (double)settings[index++];
+            TextFormat = new TextFormat(fontFamily: FontFamily,
+                                        fontStyle: FontStyle,           //Normal, Oblique or Italic  see FontStyles
+                                        fontWeight: FontWeight,         //Thin.... see FontWeight
+                                        fontSize: FontSize,
+                                        padding: this.Padding,          //Padding L,T,R,B
+                                        Alignment: this.Alignment       //Left, Center, Right and Top, center, Bottom
+                                       );
+
+            this.LabelColor = (Color)ColorConverter.ConvertFromString(LabelColor);
+            this.LabelDistance = LabelDistance;
+
+            this.LineColor = (Color)ColorConverter.ConvertFromString(LineColor);
+            this.LineThickness = LineThickness;
+            this.LineLength = LineLength;
 
 
 
             //var text = (string)settings[index++];
             //var textpushoffset = (string)settings[index++];
 
-            this.eventAggregator = eventAggregator;
-            eventAggregator.Subscribe(this);
+            //this.eventAggregator = eventAggregator;
+            //eventAggregator.Subscribe(this);
 
             Name = "Appareance";
         }
+        #region serialize
+        [OnSerializing]
+        void OnSerializingMethod(StreamingContext sc)
+        {
+            Images = new string[] { Image };
+            sLabelColor = LabelColor.ToString();
+            sLineColor = LineColor.ToString();
+            FontFamily = TextFormat.FontFamily.ToString();
+            FontStyle = TextFormat.FontStyle.ToString();
+            FontWeight = TextFormat.FontWeight.ToString();
+        }
+        [OnDeserialized]
+        void OnDeserializedMethod(StreamingContext sc)
+        {
+            TextFormat = new TextFormat(fontFamily: FontFamily,
+                                        fontStyle: FontStyle,      //Normal, Oblique or Italic  see FontStyles
+                                        fontWeight: FontWeight,    //Thin.... see FontWeight
+                                        fontSize: FontSize,
+                                        padding: Padding,          //Padding L,T,R,B
+                                        Alignment: Alignment       //Left, Center, Right and Top, center, Bottom
+                        );
+        }
+        #endregion
 
         private TextFormat textformat;
         public TextFormat TextFormat
@@ -67,7 +91,16 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
                 NotifyOfPropertyChange(() => TextFormat);
             }
         }
-        public string Name { get; set; }
+        [DataMember] public string[] Images;
+        [DataMember(Name = "LabelColor")] public string sLabelColor { get; set; }
+        [DataMember(Name = "LineColor")] public string sLineColor { get; set; }
+        [DataMember] public string FontFamily { get; set; }
+        [DataMember] public string FontStyle { get; set; }
+        [DataMember] public string FontWeight { get; set; }
+        [DataMember] public double FontSize { get; set; }
+        [DataMember] public double[] Padding { get; set; }
+        [DataMember] public int[] Alignment { get; set; }
+        [DataMember] public int NbrPoints { get; set; }
 
         #region Selection Image
         private string image;
@@ -113,7 +146,7 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
             }
         }
         private Color _labelColor;
-        [DataMember]
+        //[DataMember]
         public Color LabelColor
         {
             get => _labelColor;

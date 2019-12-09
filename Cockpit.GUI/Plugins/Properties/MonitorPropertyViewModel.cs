@@ -31,16 +31,36 @@ namespace Cockpit.GUI.Plugins.Properties
             this.eventAggregator = eventAggregator;
             eventAggregator.Subscribe(this);
 
-            Name = "Monitor1";
+
 
             FillBackground = false;
-            BackgroundColor = Colors.Gray;
+            ColorBackground = Colors.Gray;
             BackgroundColor1 = color1;
             BackgroundColor2 = color2;
             BackgroundImage = "";
             SelectedAlignmentType = ImageAlignment.Stretched;
-        }
 
+            Name = "Monitor1";
+            System.Diagnostics.Debug.WriteLine($"entree {this}");
+        }
+        #region serialize
+        [OnSerializing]
+        void OnSerializingMethod(StreamingContext sc)
+        {
+            BackgroundColor = ColorBackground.ToString();
+        }
+        [OnDeserialized]
+        void OnDeserializedMethod(StreamingContext sc)
+        {
+            ColorBackground = (Color)ColorConverter.ConvertFromString(BackgroundColor);
+        }
+        #endregion
+#if DEBUG
+        ~MonitorPropertyViewModel()
+        {
+            System.Diagnostics.Debug.WriteLine($"sortie {this}");
+        }
+#endif
         public string Name { get; set; }
 
         private bool alwaysOnTop;
@@ -87,9 +107,8 @@ namespace Cockpit.GUI.Plugins.Properties
         //                    _backgroundImageBrush.Viewport = new Rect(0d, 0d, backgroundImage.Width, backgroundImage.Height);
         //_backgroundImageBrush.ViewportUnits = BrushMappingMode.Absolute;
         //                    break;
-
+    
         private string backgroundImage;
-        [DataMember]
         public string BackgroundImage
         {
             get { return backgroundImage; }
@@ -108,24 +127,25 @@ namespace Cockpit.GUI.Plugins.Properties
             set {
                 fillBackground = value;
                 NotifyOfPropertyChange(() => FillBackground);
-                var b = new SolidColorBrush(BackgroundColor);
+                var b = new SolidColorBrush(ColorBackground);
                 BackgroundColor1 = value ? b : color1;
                 BackgroundColor2 = value ? b : color2;
             }
         }
-
-        private Color backgroundColor;
-        [DataMember]
-        public Color BackgroundColor
+        [DataMember] public string BackgroundColor { get; set; }
+        private Color _ColorBackground;
+        //[DataMember]
+        public Color ColorBackground
         {
-            get { return backgroundColor; }
+            get { return _ColorBackground; }
             set
             {
-                backgroundColor = value;
-                NotifyOfPropertyChange(() => BackgroundColor);
-                var b = new SolidColorBrush(BackgroundColor);
+                _ColorBackground = value;
+                NotifyOfPropertyChange(() => ColorBackground);
+                var b = new SolidColorBrush(ColorBackground);
                 BackgroundColor1 = b;
                 BackgroundColor2 = b;
+                BackgroundColor = b.ToString();
             }
         }
 

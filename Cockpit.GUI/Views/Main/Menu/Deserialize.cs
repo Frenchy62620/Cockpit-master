@@ -15,7 +15,7 @@ namespace Cockpit.GUI.Views.Main.Menu
         [DataMember]
         public LayoutMonitor LayoutMonitor { get; set; }
         [DataMember]
-        public BindableCollection<IPluginModel> MyCockpitViewModels { get; set; }
+        public BindableCollection<IPluginModel> MyPluginsContainer { get; set; }
 
 
         public Deserialize()

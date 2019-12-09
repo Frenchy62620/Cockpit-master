@@ -41,7 +41,7 @@
         <Button x:Name="btCloseLeftDown"  Canvas.Bottom="0" Style="{StaticResource MainButton}" Visibility="{Binding ElementName=btCloseRight, Path=Visibility, Mode=OneTime}"/>
         <Button x:Name="btCloseRightDown"   Canvas.Bottom="0" Canvas.Right="0" Style="{StaticResource MainButton}" Visibility="{Binding ElementName=btCloseRight, Path=Visibility, Mode=OneTime}"/>
 
-        <ItemsControl ItemsSource="{Binding MyCockpitViewModels}" >
+        <ItemsControl ItemsSource="{Binding MyPluginsContainer}" >
 
             <ItemsControl.Resources>
                 <!--<DataTemplate DataType="{x:Type vm:SwitchOffOn_ViewModel}">

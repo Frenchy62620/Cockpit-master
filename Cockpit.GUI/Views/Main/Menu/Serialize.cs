@@ -13,17 +13,17 @@ namespace Cockpit.GUI.Views.Main.Menu
         [DataMember]
         public List<object> MyCockpit = new List<object>();
 
-        public BindableCollection<IPluginModel> MyCockpitViewModels { get; set; }
+        public BindableCollection<IPluginModel> MyPluginsContainer { get; set; }
         [DataMember]
         public MonitorPropertyViewModel LayoutMonitor { get; set; }
         public Serialize(BindableCollection<IPluginModel> myCockpitViewModel)
         {
-            MyCockpitViewModels = myCockpitViewModel;
+            MyPluginsContainer = myCockpitViewModel;
         }
 
         public Serialize()
         {
-            foreach (var m in MyCockpitViewModels)
+            foreach (var m in MyPluginsContainer)
                 MyCockpit.Add(m);
 
         }
@@ -33,7 +33,7 @@ namespace Cockpit.GUI.Views.Main.Menu
             //foreach (var m in myCockpitViewModels)
             //    MyCockpit.Add(m);
 
-            //MyCockpitViewModels = mv.MyCockpitViewModels;
+            //MyPluginsContainer = mv.MyPluginsContainer;
             LayoutMonitor = mv.LayoutMonitor;
         }
     }

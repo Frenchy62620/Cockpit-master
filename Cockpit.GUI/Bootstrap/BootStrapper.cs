@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Windows;
-using System.Windows.Input;
-using Caliburn.Micro;
-using Cockpit.Core.Common;
+﻿using Caliburn.Micro;
 using Cockpit.Core.Services;
 using Cockpit.GUI.Common.AvalonDock;
 using Cockpit.GUI.Common.CommandLine;
@@ -16,6 +7,13 @@ using Cockpit.GUI.Shells;
 using Cockpit.GUI.Views.Main;
 using Cockpit.GUI.Views.Profile.Panels;
 using Ninject;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Windows;
+using System.Windows.Input;
 using Xceed.Wpf.Toolkit;
 using ILog = Cockpit.Core.Common.ILog;
 //using ILog = Caliburn.Micro.ILog;
@@ -197,7 +195,7 @@ namespace Cockpit.GUI.Bootstrap
                 {
                     foreach (var frameworkElement in frameWorkElements)
                     {
-                        var selectedPropertyName = frameworkElement.Name + "Color";
+                        var selectedPropertyName = frameworkElement.Name;/* + "Color"*/;
                         var selectedProperty = viewModels
                                 .GetPropertyCaseInsensitive(selectedPropertyName);
 

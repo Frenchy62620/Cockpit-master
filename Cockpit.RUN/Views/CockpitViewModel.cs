@@ -16,7 +16,7 @@ namespace Cockpit.RUN.Views
             this.resolutionRoot = resolutionRoot;
         }
 
-        public BindableCollection<PluginModel> MyCockpitViewModels { get; set; }
+        public BindableCollection<PluginModel> MyPluginsContainer { get; set; }
 
     }
 }
