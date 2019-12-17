@@ -16,7 +16,8 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 namespace Cockpit.Core.Plugins.Plugins
 {
     [Identity(GroupName = "PushButton", Name ="", Type = typeof(PushButton_ViewModel))]
-    [DataContract(Name = "Cockpit.Core.Plugins.Plugins.PushButton_ViewModel")]
+    //[DataContract(Name = "Cockpit.Core.Plugins.Plugins.PushButton_ViewModel")]
+    [DataContract(Namespace ="")]
     public class PushButton_ViewModel : PropertyChangedBase, IPluginModel 
     {
         private readonly IEventAggregator eventAggregator;

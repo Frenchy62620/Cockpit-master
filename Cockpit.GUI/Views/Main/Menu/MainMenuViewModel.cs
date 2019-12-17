@@ -136,8 +136,9 @@ namespace Cockpit.GUI.Views.Main.Menu
 
 
             document.FilePath = filePath;
-            //var buffer = mv.BuildXmlBuffer();
-            var buffer = profileEditorFactory().BuildXMLBuffer((MonitorViewModel) document);
+            var buffer = (document as MonitorViewModel).BuildXmlBuffer();
+            //var buffer = profileEditorFactory().BuildXmlBuffer();
+            var hashcode = (document as MonitorViewModel).CalculateHashCode(buffer);
             fileSystem.WriteAllText(filePath, buffer);
 
             //XmlDocument docxml = new XmlDocument();
@@ -148,7 +149,7 @@ namespace Cockpit.GUI.Views.Main.Menu
             //    docxml.Save(writer);
             //}
 
-            document.Saved(buffer.GetHashCode());
+            document.HashCode = hashcode;
 
             AddRecentScript(filePath);
         }
@@ -162,7 +163,10 @@ namespace Cockpit.GUI.Views.Main.Menu
         {
             CreateScriptViewModel(model.File);
         }
-
+        public void ClickOnFILE()
+        {
+            //var xml = ActiveDocument as MonitorViewModel;
+        }
         private void AddRecentScript(string filePath)
         {
             settingsManager.Settings.AddRecentScript(filePath);
@@ -193,7 +197,7 @@ namespace Cockpit.GUI.Views.Main.Menu
 
         public bool PathSet => !string.IsNullOrEmpty(activeDocument.FilePath);
 
-        public bool CanSaveScript => activeDocument != null;
+        public bool CanSaveScript => activeDocument != null /*&& (activeDocument as MonitorViewModel).IsDirty*/;
 
         //public void RunScript()
         //{

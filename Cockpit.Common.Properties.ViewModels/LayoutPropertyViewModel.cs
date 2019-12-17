@@ -10,7 +10,7 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.Common.Properties.ViewModels
 {
-    [DataContract]
+    [DataContract(Namespace = "")]
     public class LayoutPropertyViewModel : PropertyChangedBase, IPluginProperty, Core.Common.Events.IHandle<RenamePluginEvent>
                                                                                , Core.Common.Events.IHandle<RenamePanelNameEvent>
     {

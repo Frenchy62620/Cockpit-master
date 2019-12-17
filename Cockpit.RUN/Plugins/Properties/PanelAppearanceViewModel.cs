@@ -1,15 +1,19 @@
-﻿using Cockpit.RUN.Common;
+﻿using Caliburn.Micro;
+using Cockpit.Core.Contracts;
+using Cockpit.RUN.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Windows.Media;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.RUN.Plugins.Properties
 {
-    public class PanelAppearanceViewModel:PluginProperties /*, Core.Common.Events.IHandle<PropertyMonitorEvent>*/
+    [DataContract(Namespace = "")]
+    public class PanelAppearanceViewModel: PropertyChangedBase, IPluginProperty /*, Core.Common.Events.IHandle<PropertyMonitorEvent>*/
     {
 
         private readonly Panel_ViewModel PanelViewModel;
@@ -81,11 +85,11 @@ namespace Cockpit.RUN.Plugins.Properties
                 backgroundImage = value;
                 int h, w;
                 getSizeOfImage(value, out w, out h);
-                if (PanelViewModel.Width != w || PanelViewModel.Height != h)
-                {
-                    PanelViewModel.Width = w;
-                    PanelViewModel.Height = h;
-                }
+                //if (PanelViewModel.Width != w || PanelViewModel.Height != h)
+                //{
+                //    PanelViewModel.Width = w;
+                //    PanelViewModel.Height = h;
+                //}
                 NotifyOfPropertyChange(() => BackgroundImage);
             }
         }

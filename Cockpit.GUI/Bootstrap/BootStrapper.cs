@@ -184,34 +184,34 @@ namespace Cockpit.GUI.Bootstrap
 
         private void SetupCustomConvention()
         {
-            var selectedConvention = ConventionManager.AddElementConvention<ColorPicker>(ColorPicker.SelectedColorProperty, "SelectedColor", "ValueChanged");
-            //var maximumConvention = ConventionManager.AddElementConvention<FrameworkElement>(IntegerUpDown.MaximumProperty, "Maximum", "ValueChanged");
-            //var minimumConvention = ConventionManager.AddElementConvention<FrameworkElement>(IntegerUpDown.MinimumProperty, "Minimum", "ValueChanged");
+            //var selectedConvention = ConventionManager.AddElementConvention<ColorPicker>(ColorPicker.SelectedColorProperty, "SelectedColor", "ValueChanged");
+            ////var maximumConvention = ConventionManager.AddElementConvention<FrameworkElement>(IntegerUpDown.MaximumProperty, "Maximum", "ValueChanged");
+            ////var minimumConvention = ConventionManager.AddElementConvention<FrameworkElement>(IntegerUpDown.MinimumProperty, "Minimum", "ValueChanged");
 
-            //bind the properties
-            var baseBindProperties = ViewModelBinder.BindProperties;
-            ViewModelBinder.BindProperties =
-                (frameWorkElements, viewModels) =>
-                {
-                    foreach (var frameworkElement in frameWorkElements)
-                    {
-                        var selectedPropertyName = frameworkElement.Name;/* + "Color"*/;
-                        var selectedProperty = viewModels
-                                .GetPropertyCaseInsensitive(selectedPropertyName);
+            ////bind the properties
+            //var baseBindProperties = ViewModelBinder.BindProperties;
+            //ViewModelBinder.BindProperties =
+            //    (frameWorkElements, viewModels) =>
+            //    {
+            //        foreach (var frameworkElement in frameWorkElements)
+            //        {
+            //            var selectedPropertyName = frameworkElement.Name;/* + "Color"*/;
+            //            var selectedProperty = viewModels
+            //                    .GetPropertyCaseInsensitive(selectedPropertyName);
 
-                        if (selectedProperty != null)
-                        {
-                            ConventionManager.SetBindingWithoutBindingOverwrite(
-                                    viewModels,
-                                    selectedPropertyName,
-                                    selectedProperty,
-                                    frameworkElement,
-                                    selectedConvention,
-                                    selectedConvention.GetBindableProperty(frameworkElement));
-                        }
-                    }
-                    return baseBindProperties(frameWorkElements, viewModels);
-                };
+            //            if (selectedProperty != null)
+            //            {
+            //                ConventionManager.SetBindingWithoutBindingOverwrite(
+            //                        viewModels,
+            //                        selectedPropertyName,
+            //                        selectedProperty,
+            //                        frameworkElement,
+            //                        selectedConvention,
+            //                        selectedConvention.GetBindableProperty(frameworkElement));
+            //            }
+            //        }
+            //        return baseBindProperties(frameWorkElements, viewModels);
+            //    };
         }
 
         private void SetupCustomMessageBindings()

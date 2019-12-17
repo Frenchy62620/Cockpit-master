@@ -15,8 +15,8 @@
                     <converters:MyConverterAdorner x:Key="MyConverterAdorner" />
                     <converters:MyConverterSize x:Key="MyConverterSize" />
                     <converters:MyConverterMargin x:Key="MyConverterMargin" />
-                    <converters:MyconverterColorToSolidColorBrush x:Key="MyconverterColorToSolidColorBrush" />
-                    <converters:MyconverterStringToSolidColorBrush x:Key="MyconverterStringToSolidColorBrush" />
+                    <converters:MyConverterColorToSolidColorBrush x:Key="MyConverterColorToSolidColorBrush" />
+                    <converters:MyConverterStringToSolidColorBrush x:Key="MyconverterStringToSolidColorBrush" />
                     <converters:MyMultiConverterMargin x:Key="MyMultiConverterMargin" />
                     <converters:DraggingOver x:Key="DraggingOver" />
                     <converters:DrawGlyphes x:Key="DrawGlyphes"/>

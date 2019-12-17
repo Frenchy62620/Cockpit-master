@@ -2,10 +2,10 @@
 
 namespace Cockpit.RUN.Views
 {
-    public partial class CockpitView : Window
+    public partial class MonitorView : Window
     {
 
-        public CockpitView()
+        public MonitorView()
         {
             InitializeComponent();
         }

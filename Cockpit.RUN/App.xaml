@@ -15,12 +15,12 @@
                 <converters:MyConverterRender x:Key="MyConverterRender" />
                 <!--<converters:MyConverterAdorner x:Key="MyConverterAdorner" />
                 <converters:MyConverterSize x:Key="MyConverterSize" />
-                <converters:MyConverterMargin x:Key="MyConverterMargin" />
-                <converters:MyconverterColorToSolidColorBrush x:Key="MyconverterColorToSolidColorBrush" />
+                <converters:MyConverterMargin x:Key="MyConverterMargin" />-->
+                <converters:MyConverterColorToSolidColorBrush x:Key="MyConverterColorToSolidColorBrush" />
                 <converters:MyMultiConverterMargin x:Key="MyMultiConverterMargin" />
                 <converters:DrawGlyphes x:Key="DrawGlyphes"/>
                 <converters:MultiplyConverter x:Key="MultiplyConverter" />
-                <converters:FormatNumber x:Key="MyFormatNumber" />-->
+                <!--<converters:FormatNumber x:Key="MyFormatNumber" />-->
 
                 <Style x:Key="PanelAnimation" TargetType="{x:Type UserControl}">
                     <Setter Property="RenderTransformOrigin" Value="1.0,0.0"/>

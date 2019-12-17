@@ -80,8 +80,8 @@
 
         <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
             <CheckBox VerticalAlignment="Top" Margin="0,6,6,6" IsChecked="{Binding Path=FillBackground}" />
-            <xctk:ColorPicker x:Name="ColorBackground" HorizontalAlignment="Left" Margin="0,2" DisplayColorAndName="True"
-                              ColorMode="ColorCanvas"  UsingAlphaChannel="True" Style="{StaticResource FillStyle}" />
+            <xctk:ColorPicker x:Name="ColorBack" HorizontalAlignment="Left" Margin="0,2" DisplayColorAndName="True"
+                              ColorMode="ColorCanvas"  UsingAlphaChannel="True" Style="{StaticResource FillStyle}" SelectedColor="{Binding ColorBackground}"/>
         </StackPanel>
 
         <Label Grid.Column="0" Grid.Row="4" FontSize="10" HorizontalAlignment="Right" Content="Image" />

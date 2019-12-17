@@ -8,9 +8,9 @@ using System.Runtime.Serialization;
 using System.Windows.Media;
 using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
-namespace Cockpit.GUI.Plugins.Properties
+namespace Cockpit.RUN.Plugins.Properties
 {
-    [DataContract(Namespace ="")]
+    [DataContract(Namespace = "")]
     public class MonitorPropertyViewModel :PropertyChangedBase, IPluginProperty /*, Core.Common.Events.IHandle<PropertyMonitorEvent>*/
     {
         //private readonly Color xcolor1 = Colors.White;

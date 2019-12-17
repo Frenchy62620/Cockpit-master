@@ -49,6 +49,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Caliburn.Micro.3.2.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -71,12 +72,16 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Common\Converters\MyConverter.cs" />
-    <Compile Include="Views\CockpitViewModel.cs" />
+    <Compile Include="Common\Converters\MyMultiConverter.cs" />
+    <Compile Include="Common\HelperConstructor.cs" />
+    <Compile Include="Plugins\Properties\MonitorImageAlignment.cs" />
+    <Compile Include="Plugins\Properties\MonitorPropertyViewModel.cs" />
+    <Compile Include="Views\MonitorViewModel.cs" />
     <Compile Include="Views\StartupView.xaml.cs">
       <DependentUpon>StartupView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CockpitView.xaml.cs">
-      <DependentUpon>CockpitView.xaml</DependentUpon>
+    <Compile Include="Views\MonitorView.xaml.cs">
+      <DependentUpon>MonitorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\StartupViewModel.cs" />
     <Page Include="MainWindow.xaml">
@@ -100,7 +105,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\CockpitView.xaml">
+    <Page Include="Views\MonitorView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -147,6 +152,10 @@
       <Project>{07EC4990-A61F-4F76-A555-75B1CB0C7182}</Project>
       <Name>Cockpit.Core.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Cockpit.Core.Contracts\Cockpit.Core.Contracts.csproj">
+      <Project>{58285bd6-810d-4bbd-8249-230c3b0ac76f}</Project>
+      <Name>Cockpit.Core.Contracts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Cockpit.Core.Plugins\Cockpit.Core.Plugins.csproj">
       <Project>{10B49D6C-3DE3-49B2-8107-2C963E472FF7}</Project>
       <Name>Cockpit.Core.Plugins</Name>
@@ -154,10 +163,6 @@
     <ProjectReference Include="..\Cockpit.Core\Cockpit.Core.csproj">
       <Project>{bcf7160f-9cb9-46e5-91ca-ee15e1d5ed54}</Project>
       <Name>Cockpit.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Cockpit.RUN.Common\Cockpit.RUN.Common.csproj">
-      <Project>{8278F85F-BF49-4B9D-BF49-E57946DF1487}</Project>
-      <Name>Cockpit.RUN.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

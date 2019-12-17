@@ -4,13 +4,10 @@ using Cockpit.Core.Contracts;
 using Cockpit.Core.Model.Events;
 using Cockpit.GUI.Common;
 using Cockpit.GUI.Events;
-using Cockpit.GUI.Plugins;
 using Cockpit.GUI.Plugins.Properties;
 using Cockpit.GUI.Views.Main;
 using Cockpit.GUI.Views.Main.Profile;
 using GongSolutions.Wpf.DragDrop;
-using Ninject;
-using Ninject.Parameters;
 using Ninject.Syntax;
 using System;
 using System.Collections.Generic;
@@ -44,7 +41,7 @@ namespace Cockpit.GUI.Views.Profile
         }
     }
 
-    [DataContract]
+    [DataContract(Namespace ="")]
     public class MonitorViewModel : PanelViewModel, IDropTarget, Core.Common.Events.IHandle<RenamePluginEvent>,
                                                                  Core.Common.Events.IHandle<DragCancelledEvent>
     {
@@ -116,7 +113,7 @@ namespace Cockpit.GUI.Views.Profile
             eventAggregator.Publish(new DisplayPropertiesEvent(new[] { LayoutMonitor }));
         }
 
-        private int CockpitFileHash;
+        private int? CockpitFileHash = null;
         public string BuildXmlBuffer()
         {
             string buffer;
@@ -131,11 +128,18 @@ namespace Cockpit.GUI.Views.Profile
                 //var buffer1 = Encoding.GetEncoding("ASCII").GetString(memStream.GetBuffer());
 
             }
-                return buffer;
+                return buffer/*.Replace("xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\"", "")*/;
         }
 
 
-        public bool IsDirty => BuildXmlBuffer().GetHashCode() != CockpitFileHash;
+        public bool IsDirty
+        {
+            get
+            {
+                return BuildXmlBuffer().GetHashCode() != CockpitFileHash;
+            }
+        }
+
         private void ResetDirtyFlag(int hashcode) => CockpitFileHash = hashcode;
         public override void Saved(int hashcode) => ResetDirtyFlag(hashcode);
 
@@ -147,11 +151,15 @@ namespace Cockpit.GUI.Views.Profile
             using (FileStream inputStream = new FileStream(content.FilePath, FileMode.Open))
             using(XmlDictionaryReader reader = XmlDictionaryReader.CreateTextReader(inputStream, new XmlDictionaryReaderQuotas()))
             {
+                var memoryStream = new MemoryStream();
                 content = (MonitorViewModel)dcs.ReadObject(reader, true);
-                //System.Diagnostics.Debug.WriteLine(t);
-
-       
+                inputStream.Seek(0, SeekOrigin.Begin);
+                inputStream.CopyTo(memoryStream);
+                var buffer = Encoding.ASCII.GetString(memoryStream.GetBuffer()).TrimEnd('\0');
+                ResetDirtyFlag(buffer.GetHashCode());
             }
+
+
             var propertieslist = new List<string> { "Layout", "Appearance", "Behavior" };
 
 
@@ -423,6 +431,12 @@ namespace Cockpit.GUI.Views.Profile
             return vm;
         }
         #endregion
+
+        [OnSerializing]
+        void OnSerializingMethod(StreamingContext sc)
+        {
+
+        }
         public  string GetIdentityKey(Type pluginType)
         {
             var identity = GetAttribute<Identity>(pluginType);
@@ -473,21 +487,21 @@ namespace Cockpit.GUI.Views.Profile
             return this;
         }
 
-        public string BuildXMLBuffer(MonitorViewModel document)
-        {
-            string buffer;
-            var types = pluginTypes.Values.SelectMany(x => x).ToArray();
+        //public string BuildXMLBuffer(MonitorViewModel document)
+        //{
+        //    string buffer;
+        //    var types = pluginTypes.Values.SelectMany(x => x).ToArray();
 
-            DataContractSerializer dcs = new DataContractSerializer(typeof(MonitorViewModel), types);
-            using (var memStream = new MemoryStream())
-            {
-                dcs.WriteObject(memStream, document);
-                buffer = Encoding.ASCII.GetString(memStream.GetBuffer()).TrimEnd('\0');
-            }
-            return buffer;
-        }
+        //    DataContractSerializer dcs = new DataContractSerializer(typeof(MonitorViewModel), types);
+        //    using (var memStream = new MemoryStream())
+        //    {
+        //        dcs.WriteObject(memStream, document);
+        //        buffer = Encoding.ASCII.GetString(memStream.GetBuffer()).TrimEnd('\0');
+        //    }
+        //    return buffer;
+        //}
 
-        public int CalculateHashCode() => BuildXmlBuffer().GetHashCode();
+        public int CalculateHashCode(string buffer = null) => buffer == null ? BuildXmlBuffer().GetHashCode() : buffer.GetHashCode();
         //public MonitorViewModel ConfigurePanel(Panel_ViewModel panel)
         //{
         //    this.MonitorHeight = panel.Layout.Height;
@@ -550,7 +564,6 @@ namespace Cockpit.GUI.Views.Profile
             }
         }
         private bool enabled;
-
         [DataMember]
         public bool Enabled
         {

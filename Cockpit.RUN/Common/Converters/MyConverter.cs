@@ -10,7 +10,7 @@ namespace Cockpit.RUN.Common.Converters
 {
     //public class MyConverterAdorner : IValueConverter
     //{
-        // parameter = "coefdiviseur sizetoretract"  "2 10"
+    // parameter = "coefdiviseur sizetoretract"  "2 10"
     //    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     //    {
     //        Point p = new Point();
@@ -154,26 +154,26 @@ namespace Cockpit.RUN.Common.Converters
     //    }
     //}
 
-    //public class MyconverterColorToSolidColorBrush : IValueConverter
-    //{
-    //    public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-    //    {
-    //        try
-    //        {
-    //            Color c = (Color)value;
-    //            return new SolidColorBrush(c);
-    //        }
-    //        catch
-    //        {
-    //            return new SolidColorBrush(Color.FromRgb(0, 0, 0));
-    //        }
-    //    }
+    public class MyConverterColorToSolidColorBrush : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            try
+            {
+                Color c = (Color)value;
+                return new SolidColorBrush(c);
+            }
+            catch
+            {
+                return new SolidColorBrush(Color.FromRgb(0, 0, 0));
+            }
+        }
 
-    //    public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-    //}
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
     //[ValueConversion(typeof(Point[]), typeof(Geometry))]
     //public class PointsToPathConverter : IValueConverter

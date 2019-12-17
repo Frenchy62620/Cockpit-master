@@ -47,7 +47,7 @@
                 </Style>
             </Image.Style>
         </Image>
-        <TextBlock Text="{Binding Appearance.GlyphText}" Foreground="{Binding Appearance.ColorText, Converter={StaticResource MyconverterColorToSolidColorBrush}}"
+        <TextBlock Text="{Binding Appearance.GlyphText}" Foreground="{Binding Appearance.ColorText, Converter={StaticResource MyConverterColorToSolidColorBrush}}"
                    HorizontalAlignment="{Binding Appearance.SelectedHAlignType}" VerticalAlignment="{Binding Appearance.SelectedVAlignType}" 
                    FontFamily="{Binding Appearance.TextFormat.FontFamily}" FontSize="{Binding Appearance.TextFormat.FontSize}" 
                    FontStyle="{Binding Appearance.TextFormat.FontStyle}"
@@ -98,7 +98,7 @@
                                        [Event MouseLeftButtonUp] = [Action MouseLeftButtonUp]" >
         </Rectangle>-->
 
-        <Path StrokeThickness="{Binding Appearance.GlyphThickness}" Stroke="{Binding Appearance.ColorGlyph, Converter={StaticResource MyconverterColorToSolidColorBrush}}" >
+        <Path StrokeThickness="{Binding Appearance.GlyphThickness}" Stroke="{Binding Appearance.ColorGlyph, Converter={StaticResource MyConverterColorToSolidColorBrush}}" >
             <Path.Fill>
                 <MultiBinding Converter="{StaticResource DrawGlyphes}">
                     <Binding Path="Appearance.GlyphSelected"/>

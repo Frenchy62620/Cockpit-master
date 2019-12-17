@@ -13,7 +13,7 @@ using System.Windows.Media;
 
 namespace Cockpit.Core.Plugins.Plugins.Properties
 {
-    [DataContract]
+    [DataContract(Namespace = "")]
     public class PushButtonAppearanceViewModel : PropertyChangedBase, IPluginProperty
     {
         public PushButton_ViewModel PushButton_ViewModel { get; set; }
@@ -321,7 +321,6 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         }
 
         private Color _ColorGlyph;
-        //[DataMember]
         public Color ColorGlyph
         {
             get => _ColorGlyph;
@@ -369,7 +368,6 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         }
 
         private string image;
-        //[DataMember]
         public string Image
         {
             get => image;
@@ -381,7 +379,6 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         }
 
         private string pushedimage;
-        //[DataMember]
         public string PushedImage
         {
             get => pushedimage;
@@ -403,7 +400,6 @@ namespace Cockpit.Core.Plugins.Plugins.Properties
         }
 
         private Color _ColorText;
-        //[DataMember]
         public Color ColorText
         {
             get => _ColorText;

@@ -69,7 +69,6 @@
                     </Rectangle.Fill>
                 </Rectangle>
 
-                <!--<ItemsControl ItemsSource="{Binding MyPluginsContainer}" >-->
                 <ItemsControl ItemsSource="{Binding MyPluginsContainer}" >
                     <ItemsControl.ItemTemplate>
                         

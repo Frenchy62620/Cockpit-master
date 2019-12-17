@@ -1,0 +1,107 @@
+﻿<Window x:Class="Cockpit.RUN.Views.MonitorView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:cal="http://www.caliburnproject.org"
+        mc:Ignorable="d"  
+        Title="CockpitView" SizeToContent="WidthAndHeight"  MaxHeight="1080" MaxWidth="1920"
+        AllowsTransparency="True"  Background="Transparent" WindowStyle="None" Left="0" Top="0" >
+    <!--<Topmost="{Binding TopMost, Mode=OneTime}"></Topmost>-->
+    <Window.Resources>
+
+        <Style x:Key="MainButton" TargetType="{x:Type Button}">
+            <Setter Property="Width" Value="25"/>
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Content" Value="X"/>
+            <Setter Property="RenderTransformOrigin" Value="0.895,7.292"/>
+            <Setter Property="Foreground" Value="#FF190301"/>
+            <Setter Property="Background" >
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" >
+                        <GradientStop Color="#FFFFD190" Offset="0.2"/>
+                        <GradientStop Color="Orange" Offset="0.85"/>
+                        <GradientStop Color="#FFFFD190" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="cal:Message.Attach" Value="[Event Click] = [Action CloseWindowX()]"/>
+        </Style>
+
+        <Style x:Key="ColorFilling" TargetType="{x:Type Rectangle}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=LayoutMonitor.FillBackground}" Value="true">
+                    <Setter Property="Fill" Value="{Binding LayoutMonitor.BackgroundColor}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=LayoutMonitor.FillBackground}" Value="false">
+                    <Setter Property="Fill" Value="Transparent" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <!--<Canvas Width="{Binding ImageWidth, Mode=OneTime}" Height="{Binding ImageHeight, Mode=OneTime}"   Width="1920" Height="1080" -->
+    <Grid Width="800" Height="600" Background="#00060606" Opacity="1.0">
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="6">
+            <Grid>
+                <Rectangle  Width="1920" Height="1080" StrokeThickness="4" Stroke="Black" 
+                           Style ="{StaticResource ColorFilling}" />
+
+                <Image x:Name="BackgroundImage"  Canvas.Left="0" Canvas.Top ="0" Stretch="Fill" Source="{Binding LayoutMonitor.BackgroundImage}" />
+
+                <Button x:Name="btCloseRight" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource MainButton}" Visibility="{Binding ButtonVisible, Mode=OneTime, Converter={StaticResource BoolToVisConverter}}"/>
+                <Button x:Name="btCloseLeft"   HorizontalAlignment="Left" VerticalAlignment="Top"   Style="{StaticResource MainButton}" Visibility="{Binding ElementName=btCloseRight, Path=Visibility, Mode=OneTime}"/>
+                <Button x:Name="btCloseLeftDown"  HorizontalAlignment="Left" VerticalAlignment="Bottom" Style="{StaticResource MainButton}" Visibility="{Binding ElementName=btCloseRight, Path=Visibility, Mode=OneTime}"/>
+                <Button x:Name="btCloseRightDown"   HorizontalAlignment="Right" VerticalAlignment="Bottom" Style="{StaticResource MainButton}" Visibility="{Binding ElementName=btCloseRight, Path=Visibility, Mode=OneTime}"/>
+
+                <ItemsControl ItemsSource="{Binding MyPluginsContainer}" >
+
+                    <ItemsControl.Resources>
+                        <!--<DataTemplate DataType="{x:Type vm:SwitchOffOn_ViewModel}">
+                    <vm:SwitchOffOn_View />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:SwitchOn_Off_On_ViewModel}">
+                    <vm:SwitchOn_Off_On_View />
+                </DataTemplate>-->
+
+                    </ItemsControl.Resources>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <ContentControl cal:View.Model="{Binding .}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <!-- Replace panel with a canvas -->
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <!-- Set position of each element in the canvas -->
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="{x:Type ContentPresenter}">
+                            <Setter Property="Canvas.Left" >
+                                <Setter.Value>
+                                    <MultiBinding Converter="{StaticResource MultiplyConverter}">
+                                        <Binding Path="Layout.UCLeft" />
+                                        <Binding Path="Layout.ParentScaleX" />
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Canvas.Top">
+                                <Setter.Value>
+                                    <MultiBinding Converter="{StaticResource MultiplyConverter}">
+                                        <Binding Path="Layout.UCTop" />
+                                        <Binding Path="Layout.ParentScaleY" />
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+
+                </ItemsControl>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Window>

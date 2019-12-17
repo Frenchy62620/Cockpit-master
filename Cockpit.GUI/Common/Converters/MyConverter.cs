@@ -153,7 +153,7 @@ namespace Cockpit.GUI.Common.Converters
         }
     }
 
-    public class MyconverterStringToSolidColorBrush : IValueConverter
+    public class MyConverterStringToSolidColorBrush : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
@@ -174,7 +174,7 @@ namespace Cockpit.GUI.Common.Converters
         }
     }
 
-    public class MyconverterColorToSolidColorBrush : IValueConverter
+    public class MyConverterColorToSolidColorBrush : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {

@@ -9,7 +9,7 @@ using System.Windows;
 
 namespace Cockpit.Core.Plugins.Plugins.Properties
 {
-    [DataContract]
+    [DataContract(Namespace = "")]
     public class PushButtonBehaviorViewModel : PropertyChangedBase, IPluginProperty
     {
         public readonly string Nothings;

@@ -79,9 +79,11 @@ namespace Cockpit.GUI.Views.Main
             }
         }
 
-        public virtual void Saved(int hashcode)
+        public int HashCode { get; set; } = 0;
+
+        public virtual void Saved(int hascode)
         {
-            
+
         }
 
         public ICommand CloseCommand { get; set; }
