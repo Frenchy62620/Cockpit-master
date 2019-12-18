@@ -66,8 +66,6 @@ namespace Cockpit.GUI.Shells
             ToolBar = mainToolBarViewModel;
 
             DisplayName ="CockpitBuilder";
-
-            //Menu.NewScript();
         }
 
 
@@ -204,7 +202,6 @@ namespace Cockpit.GUI.Shells
 
         public void Handle(ProfileDocumentAddedEvent message)
         {
-            //var panel = Profiles.FirstOrDefault(s => s.ContentId == message.Document.ContentId);
             var panel = Profiles.FirstOrDefault(s => s.ContentId== message.Document.ContentId);
             if (panel == null)
             {

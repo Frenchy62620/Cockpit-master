@@ -155,6 +155,8 @@ namespace Cockpit.GUI.Views.Main.Menu
         }
         public void ClickOnFILE()
         {
+            NotifyOfPropertyChange(() => CanQuickSaveScript);
+            
             //var xml = ActiveDocument as MonitorViewModel;
         }
         private void AddRecentScript(string filePath)
@@ -181,13 +183,13 @@ namespace Cockpit.GUI.Views.Main.Menu
             return SaveScript();
         }
 
-        public bool CanQuickSaveScript => CanSaveScript;
+        public bool CanQuickSaveScript => CanSaveScript && (activeDocument as MonitorViewModel).IsDirty;
 
         public bool CanCloseScript => activeDocument != null;
 
         public bool PathSet => !string.IsNullOrEmpty(activeDocument.FilePath);
 
-        public bool CanSaveScript => activeDocument != null && (activeDocument as MonitorViewModel).IsDirty;
+        public bool CanSaveScript => activeDocument != null;
 
 
         public IEnumerable<IResult> ShowAbout()
