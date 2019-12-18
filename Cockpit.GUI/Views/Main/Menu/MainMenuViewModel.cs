@@ -97,8 +97,7 @@ namespace Cockpit.GUI.Views.Main.Menu
 
             if (!string.IsNullOrEmpty(filePath))
             {
-                //document.LoadFileContent(fileSystem.ReadAllText(filePath));
-                document.LoadFileContent(document);
+                document.LoadFileContent(fileSystem.ReadAllText(filePath));
 
                 AddRecentScript(filePath);
             }
@@ -133,24 +132,15 @@ namespace Cockpit.GUI.Views.Main.Menu
 
         private void Save(PanelViewModel document, string filePath)
         {
-
+            var mdoc = document as MonitorViewModel;
 
             document.FilePath = filePath;
-            var buffer = (document as MonitorViewModel).BuildXmlBuffer();
-            //var buffer = profileEditorFactory().BuildXmlBuffer();
-            var hashcode = (document as MonitorViewModel).CalculateHashCode(buffer);
-            fileSystem.WriteAllText(filePath, buffer);
 
-            //XmlDocument docxml = new XmlDocument();
-            //docxml.Load(filePath);
-            //using (XmlTextWriter writer = new XmlTextWriter($"_{filePath}", null))
-            //{
-            //    writer.Formatting = Formatting.Indented;
-            //    docxml.Save(writer);
-            //}
-
-            document.HashCode = hashcode;
-
+            if (mdoc.IsDirty)
+            {
+                fileSystem.WriteAllText(filePath, mdoc.Xmlfile);
+                mdoc.Saved();
+            }
             AddRecentScript(filePath);
         }
 
@@ -197,23 +187,8 @@ namespace Cockpit.GUI.Views.Main.Menu
 
         public bool PathSet => !string.IsNullOrEmpty(activeDocument.FilePath);
 
-        public bool CanSaveScript => activeDocument != null /*&& (activeDocument as MonitorViewModel).IsDirty*/;
+        public bool CanSaveScript => activeDocument != null && (activeDocument as MonitorViewModel).IsDirty;
 
-        //public void RunScript()
-        //{
-        //    scriptRunning = true;
-        //    PublishScriptStateChange();
-
-        //    currentScriptEngine = scriptEngineFactory();
-        //    currentScriptEngine.Start(activeDocument.FileContent);
-        //}
-
-        //public void StopScript()
-        //{
-        //    scriptRunning = false;
-        //    currentScriptEngine.Stop();
-        //    PublishScriptStateChange();
-        //}
 
         public IEnumerable<IResult> ShowAbout()
         {
@@ -227,20 +202,11 @@ namespace Cockpit.GUI.Views.Main.Menu
             eventAggregator.Publish(new ProfileStateChangedEvent(scriptRunning, activeDocument?.Filename));
         }
 
-        //public bool CanStopScript => scriptRunning;
-
-        //public bool CanRunScript => !scriptRunning && !string.IsNullOrEmpty(activeDocument?.FileContent);
-
         public void Handle(FileEvent message)
         {
             CreateScriptViewModel(message.Data);
         }
 
-        //public void Handle(RunEvent message)
-        //{
-        //    if(CanRunScript)
-        //        RunScript();
-        //}
 
         public void Handle(ProfileUpdatedEvent message)
         {

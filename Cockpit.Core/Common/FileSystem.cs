@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Text;
+using System.Xml;
 
 namespace Cockpit.Core.Common
 {
@@ -17,7 +19,7 @@ namespace Cockpit.Core.Common
 
         public string ReadAllText(string path)
         {
-            return File.ReadAllText(path);
+            return File.ReadAllText(path).Replace("\r\n", string.Empty).Replace("\t", string.Empty);
         }
 
         public bool Exists(string path)

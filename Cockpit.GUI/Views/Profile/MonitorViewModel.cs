@@ -113,55 +113,51 @@ namespace Cockpit.GUI.Views.Profile
             eventAggregator.Publish(new DisplayPropertiesEvent(new[] { LayoutMonitor }));
         }
 
-        private int? CockpitFileHash = null;
+
+        public string Xmlfile;
+
+        /*[DataMember] */
+        public int CockpitFileHash;
+
+        public override string FileContent => Xmlfile;
+
         public string BuildXmlBuffer()
         {
-            string buffer;
             var types = pluginTypes.Values.SelectMany(x => x).ToArray();
 
             DataContractSerializer dcs = new DataContractSerializer(typeof(MonitorViewModel), types);
             using (var memStream = new MemoryStream())
             {
                 dcs.WriteObject(memStream, this);
-                //var buffer = Encoding.Default.GetString(memStream.GetBuffer());
-                buffer = Encoding.ASCII.GetString(memStream.GetBuffer()).TrimEnd('\0');
-                //var buffer1 = Encoding.GetEncoding("ASCII").GetString(memStream.GetBuffer());
-
+                Xmlfile = Encoding.ASCII.GetString(memStream.GetBuffer()).TrimEnd('\0');
             }
-                return buffer/*.Replace("xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\"", "")*/;
+
+
+            return Xmlfile;
         }
 
 
-        public bool IsDirty
-        {
-            get
-            {
-                return BuildXmlBuffer().GetHashCode() != CockpitFileHash;
-            }
-        }
+        public bool IsDirty => BuildXmlBuffer().GetHashCode() != CockpitFileHash;
 
-        private void ResetDirtyFlag(int hashcode) => CockpitFileHash = hashcode;
-        public override void Saved(int hashcode) => ResetDirtyFlag(hashcode);
+        private void ResetDirtyFlag() => CockpitFileHash = Xmlfile.GetHashCode();
+        public override void Saved() => ResetDirtyFlag();
 
         public override bool IsFileContent => true;
-        public void LoadFileContent(MonitorViewModel content)
+        public void LoadFileContent(string xmlcontent)
         {
+            var content = this;
             var types = pluginTypes.Values.SelectMany(x => x).ToArray();
-            DataContractSerializer dcs = new DataContractSerializer(typeof(MonitorViewModel), types);
-            using (FileStream inputStream = new FileStream(content.FilePath, FileMode.Open))
-            using(XmlDictionaryReader reader = XmlDictionaryReader.CreateTextReader(inputStream, new XmlDictionaryReaderQuotas()))
+            var dcs = new DataContractSerializer(typeof(MonitorViewModel), types);
+
+            using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(xmlcontent)))
+            using (var reader = XmlDictionaryReader.CreateTextReader(memoryStream, new XmlDictionaryReaderQuotas()))
             {
-                var memoryStream = new MemoryStream();
                 content = (MonitorViewModel)dcs.ReadObject(reader, true);
-                inputStream.Seek(0, SeekOrigin.Begin);
-                inputStream.CopyTo(memoryStream);
-                var buffer = Encoding.ASCII.GetString(memoryStream.GetBuffer()).TrimEnd('\0');
-                ResetDirtyFlag(buffer.GetHashCode());
+                Xmlfile = xmlcontent;
+                ResetDirtyFlag();
             }
 
-
             var propertieslist = new List<string> { "Layout", "Appearance", "Behavior" };
-
 
             LayoutMonitor.BackgroundImage = content.LayoutMonitor.BackgroundImage;
             LayoutMonitor.FillBackground = content.LayoutMonitor.FillBackground;
@@ -501,7 +497,7 @@ namespace Cockpit.GUI.Views.Profile
         //    return buffer;
         //}
 
-        public int CalculateHashCode(string buffer = null) => buffer == null ? BuildXmlBuffer().GetHashCode() : buffer.GetHashCode();
+
         //public MonitorViewModel ConfigurePanel(Panel_ViewModel panel)
         //{
         //    this.MonitorHeight = panel.Layout.Height;

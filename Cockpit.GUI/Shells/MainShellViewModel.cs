@@ -148,8 +148,10 @@ namespace Cockpit.GUI.Shells
                 }
                 else if (message.Result == MessageBoxResult.Yes)
                 {
-                    foreach (var result in profileDialogStrategy.SaveAs(script, true, path => fileSystem.WriteAllText(path, script.FileContent)))
+                    foreach (var result in profileDialogStrategy.SaveAs(script, true, path => fileSystem.WriteAllText(path, script.Xmlfile)))
                         yield return result;
+                    //foreach (var result in profileDialogStrategy.SaveAs(script, true, path => fileSystem.WriteAllText(path, script.FileContent)))
+                    //    yield return result;
                 }
             }
         } 

@@ -24,12 +24,9 @@ namespace Cockpit.RUN.Plugins
 
     {
         private readonly IEventAggregator eventAggregator;
-        private readonly IResolutionRoot resolutionRoot;
 
         [DataMember] public PanelAppearanceViewModel Appearance { get; private set; }
         [DataMember] public LayoutPropertyViewModel Layout { get; private set; }
-
-        private bool IsFromPreviewView = false;
 
         public string lastNameUC = "";
         private MonitorViewModel OriginPlugin { get; set; }
