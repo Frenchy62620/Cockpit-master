@@ -2,11 +2,11 @@
 
 namespace Cockpit.GUI.Events
 {
-    public class MonitorViewStartedEvent
+    public class MonitorViewLoadedEvent
     {
         public MonitorViewModel MonitorViewModel;
 
-        public MonitorViewStartedEvent(MonitorViewModel monitorviewmodel)
+        public MonitorViewLoadedEvent(MonitorViewModel monitorviewmodel)
         {
             MonitorViewModel = monitorviewmodel;
         }

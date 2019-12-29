@@ -3,11 +3,75 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Cockpit.GUI.Views.Profile.Panels"
              xmlns:cal="clr-namespace:Caliburn.Micro;assembly=Caliburn.Micro"
              xmlns:micro="http://www.caliburnproject.org"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ControlTemplate x:Key="HiddenCheckBoxTemplate" TargetType="{x:Type CheckBox}">
+            <Image Name="ButtonImage" Source="{StaticResource VisibleIcon}" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter TargetName="ButtonImage" Property="Source" Value="{StaticResource ResourceKey=HiddenIcon}" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <Style x:Key="HiddenCheckBox" TargetType="{x:Type CheckBox}">
+            <Setter Property="Template" Value="{StaticResource HiddenCheckBoxTemplate}" />
+        </Style>
+        
+        <ControlTemplate x:Key="LockCheckBoxTemplate" TargetType="{x:Type CheckBox}">
+            <Image Name="ButtonImage" Source="{StaticResource ResourceKey=UnLockedIcon}" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="UnLocked"/>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter TargetName="ButtonImage" Property="Source" Value="{StaticResource ResourceKey=LockedIcon}" />
+                    <Setter TargetName="ButtonImage" Property="ToolTip" Value="Locked" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <Style x:Key="LockCheckBox" TargetType="{x:Type CheckBox}">
+            <Setter Property="Template" Value="{StaticResource LockCheckBoxTemplate}" />
+        </Style>
+        
+        <HierarchicalDataTemplate DataType="{x:Type local:ContainerItem}"
+                                  ItemsSource="{Binding Items}">
+            <StackPanel Orientation="Horizontal" ToolTip="{Binding Path=Type}">
+                <CheckBox HorizontalAlignment="Center"  VerticalAlignment="Center" Margin="2" Focusable="false" 
+                          IsChecked="{Binding Path=IsHidden}" Style="{StaticResource HiddenCheckBox}" />
+                <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2" Focusable="false" 
+                          IsChecked="{Binding Path=IsLocked}" Style="{StaticResource LockCheckBox}" />
+                <TextBlock Text="{Binding Path=Type}"  FontWeight="Bold"/>
+                <TextBlock Text="{Binding Path=NameUC, StringFormat={} [{0}]}" FontWeight="Bold"/>
+            </StackPanel>
+        </HierarchicalDataTemplate>
+
+        <DataTemplate DataType="{x:Type local:PluginItem}">
+            <StackPanel Orientation="Horizontal" ToolTip="{Binding Path=Type}">
+                <CheckBox HorizontalAlignment="Center"  VerticalAlignment="Center" Margin="2" Focusable="false" 
+                          IsChecked="{Binding Path=IsHidden}" Style="{StaticResource HiddenCheckBox}" />
+                <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2" Focusable="false" 
+                          IsChecked="{Binding Path=IsLocked}" Style="{StaticResource LockCheckBox}" />
+                <TextBlock Text="{Binding Path=Type}"  FontWeight="Normal"/>
+                <TextBlock Text="{Binding Path=NameUC, StringFormat={} [{0}]}" FontWeight="Normal"/>
+            </StackPanel>
+            <!--<TextBlock Text="{Binding Path=TypeAndNameUC}" ToolTip="{Binding Path=Type}" FontWeight="Normal" />-->
+        </DataTemplate>
+
+    </UserControl.Resources>
     <Grid>
- 
+        <!--<TreeView>
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type models:TreeItem}" ItemsSource="{Binding Path=Children}" >
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="{Binding Path=Name}"/>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+
+        </TreeView>-->
+        <TreeView  >
+            <TreeViewItem Header="{Binding FileName}" ItemsSource="{Binding RootPluginItems}" IsExpanded="True" Foreground="Blue" FontWeight="Heavy">
+                
+            </TreeViewItem>
+        </TreeView>
     </Grid>
 </UserControl>

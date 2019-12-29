@@ -4,17 +4,31 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         x:Class="MergeGridTest.test1window"
-        mc:Ignorable="d"
+        mc:Ignorable="d" Name="Mainwindow" WindowStartupLocation="CenterScreen"
         Title="test1window" Height="450" Width="800" Loaded="Window_Loaded" >
     <Grid>
-        <DataGrid Background="LightBlue" x:Name="TestGrid" AutoGenerateColumns="False" Margin="50" IsReadOnly="True" UseLayoutRounding="True"
+        <!--<Canvas.Background>
+            <ImageBrush ImageSource="E:\Téléchargement\C#Samples\demonstration_2.png" Stretch="None"/>
+        </Canvas.Background>-->
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Background="Black" BorderThickness="10" >
+            <Grid>
+
+                <!--<DataGrid Background="LightBlue" x:Name="TestGrid" AutoGenerateColumns="False" Margin="50,50,50,290" IsReadOnly="True" UseLayoutRounding="True"
                   CanUserAddRows="False" ItemsSource="{Binding}" 
                   RowHeight="30" HorizontalGridLinesBrush="#FFCB0202" VerticalGridLinesBrush="{x:Null}" VerticalContentAlignment="Center">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Address" Binding="{Binding Name}" Width="*"/>
-                <DataGridTextColumn Header="Score" Binding="{Binding Score}" Width="*"/>
-                <DataGridTextColumn Header="Address" Binding="{Binding Address}" Width="*"/>
-            </DataGrid.Columns>
-        </DataGrid>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Address" Binding="{Binding Name}" Width="*"/>
+                    <DataGridTextColumn Header="Score" Binding="{Binding Score}" Width="*"/>
+                    <DataGridTextColumn Header="Address" Binding="{Binding Address}" Width="*"/>
+                </DataGrid.Columns>
+                </DataGrid> -->
+                <TreeView Margin="20" Background="LightGray" x:Name="tree" />
+
+                <!--<Image Name="LeftImage" Source="E:\Téléchargement\C#Samples\51IgH.png" Stretch="None"/>
+            <Button Content="Button" HorizontalAlignment="Left" Margin="50,160,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>-->
+            </Grid>
+        </ScrollViewer>
+
     </Grid>
 </Window>

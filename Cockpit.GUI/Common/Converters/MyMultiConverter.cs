@@ -10,11 +10,10 @@ namespace Cockpit.GUI.Common.Converters
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            double LeftOrTop, ZoomFactor;
-
-            LeftOrTop = (double)values[0];
-            ZoomFactor = (double)values[1];
-            return LeftOrTop * ZoomFactor;
+            double result = 1d;
+            foreach(var d in values)
+                result *= (double)d;
+            return result;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

@@ -92,47 +92,6 @@ namespace Cockpit.Core.Plugins.Plugins
                 NotifyOfPropertyChange(() => ZoomFactorFromPluginModel);
             }
         }
-        //public double ParentScaleX
-        //{
-        //    get => Layout.ScaleX;
-        //    set => Layout.ScaleX = value;
-        //}
-        //public double ParentScaleY
-        //{
-        //    get => Layout.ScaleY;
-        //    set => Layout.ScaleY = value;
-        //}
-        //public double ScaleX
-        //{
-        //    get => Layout.ScaleX;
-        //    set => Layout.ScaleX = value;
-        //}
-        //public double ScaleY
-        //{
-        //    get => Layout.ScaleY;
-        //    set => Layout.ScaleY = value;
-        //}
-
-        //public double Left
-        //{
-        //    get => Layout.UCLeft;
-        //    set => Layout.UCLeft = value;
-        //}
-        //public double Top
-        //{
-        //    get => Layout.UCTop;
-        //    set => Layout.UCTop = value;
-        //}
-        //public double Width
-        //{
-        //    get => Layout.RealWidth;
-        //    set => Layout.RealWidth = value;
-        //}
-        //public double Height
-        //{
-        //    get => Layout.RealHeight;
-        //    set => Layout.RealHeight = value;
-        //}
 
         public IPluginProperty[] GetProperties()
         {

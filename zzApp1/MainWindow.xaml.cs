@@ -27,12 +27,35 @@ namespace zzApp1
         public int a = 10;
         public ConsoleColor b = ConsoleColor.Green;
         public string c ;
+
+
         public MainWindow()
         {
-            InitializeComponent();
+            var item = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+            foreach (var value in EnumerateValueTuple(item))
+                Console.Out.WriteLine(value); // Prints "1 2 3 4 5 6 7 8 9 10"
+
+
+                InitializeComponent();
 
         }
+        public IEnumerable<object> EnumerateValueTuple(object valueTuple)
+        {
+            var tuples = new Queue<object>();
+            tuples.Enqueue(valueTuple);
 
+            while (tuples.Count > 0 && tuples.Dequeue() is object tuple)
+            {
+                foreach (var field in tuple.GetType().GetFields())
+                {
+                    if (field.Name == "Rest")
+                        tuples.Enqueue(field.GetValue(tuple));
+                    else
+                        yield return field.GetValue(tuple);
+                }
+            }
+        }
         public int count_avg = 0;
         public double sum = 0;
         public double temp_avg = 0;

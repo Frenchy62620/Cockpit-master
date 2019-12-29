@@ -92,6 +92,7 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -157,7 +158,7 @@
     <Compile Include="Events\ExitingEvent.cs" />
     <Compile Include="Events\PanelLoadingViewEvent.cs" />
     <Compile Include="Events\ProfileEvent.cs" />
-    <Compile Include="Events\MonitorViewStartedEvent.cs" />
+    <Compile Include="Events\MonitorViewLoadedEvent.cs" />
     <Compile Include="Events\RemovePanelEvent.cs" />
     <Compile Include="Events\PropertyMonitorEvent.cs" />
     <Compile Include="Events\WindowStateChangedEvent.cs" />
@@ -248,6 +249,7 @@
     <Compile Include="Views\Profile\MonitorViewModel.cs" />
     <Compile Include="Views\Profile\ToolBoxGroup.cs" />
     <Compile Include="Views\Profile\ToolBoxItem.cs" />
+    <Compile Include="Views\Profile\PanelItem.cs" />
     <Page Include="Plugins\Panel_View.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -505,6 +507,14 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\ToolBar\percent128x128.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Layer\HiddenIcon.png" />
+    <Resource Include="Resources\Layer\VisibleIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Layer\LockedIcon.png" />
+    <Resource Include="Resources\Layer\UnLockedIcon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

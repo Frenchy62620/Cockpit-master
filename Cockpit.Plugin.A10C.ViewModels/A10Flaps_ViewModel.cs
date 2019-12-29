@@ -11,7 +11,7 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 namespace Cockpit.Plugin.A10C.ViewModels
 {
     [Identity(GroupName = "A10C", Name = "Flaps", Type = typeof(A10Flaps_ViewModel))]
-    [DataContract]
+    [DataContract(Namespace = "")]
     public class A10Flaps_ViewModel : PropertyChangedBase, IPluginModel
     {
         private readonly IEventAggregator eventAggregator;
@@ -24,7 +24,7 @@ namespace Cockpit.Plugin.A10C.ViewModels
 
         public A10Flaps_ViewModel(IEventAggregator eventAggregator, params object[] settings)
         {
-            Layout = new LayoutPropertyViewModel(eventAggregator: eventAggregator, settings: settings);
+            //Layout = new LayoutPropertyViewModel(eventAggregator: eventAggregator, settings: settings);
             //Appearance = new A10FlapsAppearanceViewModel(settings);
             //Behavior = new A10FlapsBehaviorViewModel(settings);
 

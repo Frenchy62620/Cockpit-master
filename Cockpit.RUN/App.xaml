@@ -38,9 +38,9 @@
                             <MultiDataTrigger.Conditions>
                                 <!--<Condition Binding="{Binding Path=Initialized}" Value="True"/>-->
                                 <Condition Binding="{Binding Path=IsVisible}" Value="False"/>
-                                <Condition Binding="{Binding Path=ScaleXX}" Value="True"/>
+                                    <Condition Binding="{Binding Path=Appearance.LRorTB}" Value="True"/>
                             </MultiDataTrigger.Conditions>
-                            <Setter Property="RenderTransformOrigin" Value="{Binding Path=RenderO, Converter={StaticResource MyConverterRender}}"/>
+                                <Setter Property="RenderTransformOrigin" Value="{Binding Path=Appearance.RBorLT, Converter={StaticResource MyConverterRender}}"/>
                             <MultiDataTrigger.EnterActions>
                                 <BeginStoryboard x:Name="BeginXtoLeft">
                                     <Storyboard FillBehavior="HoldEnd">
@@ -61,9 +61,9 @@
                             <MultiDataTrigger.Conditions>
                                 <!--<Condition Binding="{Binding Path=Initialized}" Value="True"/>-->
                                 <Condition Binding="{Binding Path=IsVisible}" Value="True"/>
-                                <Condition Binding="{Binding Path=ScaleXX}" Value="True"/>
+                                    <Condition Binding="{Binding Path=Appearance.LRorTB}" Value="True"/>
                             </MultiDataTrigger.Conditions>
-                            <Setter Property="RenderTransformOrigin" Value="{Binding Path=RenderO, Converter={StaticResource MyConverterRender}}"/>
+                                <Setter Property="RenderTransformOrigin" Value="{Binding Path=Appearance.RBorLT, Converter={StaticResource MyConverterRender}}"/>
                             <MultiDataTrigger.EnterActions>
                                 <BeginStoryboard x:Name="CancelXtoLeft">
                                     <Storyboard FillBehavior="HoldEnd">
@@ -82,9 +82,9 @@
                             <MultiDataTrigger.Conditions>
                                 <!--<Condition Binding="{Binding Path=Initialized}" Value="True"/>-->
                                 <Condition Binding="{Binding Path=IsVisible}" Value="False"/>
-                                <Condition Binding="{Binding Path=ScaleXX}" Value="False"/>
+                                    <Condition Binding="{Binding Path=Appearance.LRorTB}" Value="False"/>
                             </MultiDataTrigger.Conditions>
-                            <Setter Property="RenderTransformOrigin" Value="{Binding Path=RenderO, Converter={StaticResource MyConverterRender}}"/>
+                                <Setter Property="RenderTransformOrigin" Value="{Binding Path=Appearance.RBorLT, Converter={StaticResource MyConverterRender}}"/>
                             <MultiDataTrigger.EnterActions>
                                 <BeginStoryboard x:Name="BeginYtoUp">
                                     <Storyboard FillBehavior="HoldEnd">
@@ -103,9 +103,9 @@
                             <MultiDataTrigger.Conditions>
                                 <!--<Condition Binding="{Binding Path=Initialized}" Value="True"/>-->
                                 <Condition Binding="{Binding Path=IsVisible}" Value="True"/>
-                                <Condition Binding="{Binding Path=ScaleXX}" Value="False"/>
+                                    <Condition Binding="{Binding Path=Appearance.LRorTB}" Value="False"/>
                             </MultiDataTrigger.Conditions>
-                            <Setter Property="RenderTransformOrigin" Value="{Binding Path=RenderO, Converter={StaticResource MyConverterRender}}"/>
+                                <Setter Property="RenderTransformOrigin" Value="{Binding Path=Appearance.RBorLT, Converter={StaticResource MyConverterRender}}"/>
                             <MultiDataTrigger.EnterActions>
                                 <BeginStoryboard x:Name="CancelYtoUp">
                                     <Storyboard FillBehavior="HoldEnd">

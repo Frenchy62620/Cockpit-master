@@ -16,7 +16,7 @@ namespace Cockpit.Plugin.A10C.ViewModels
 
         public A10FuelFlow_ViewModel(IEventAggregator eventAggregator, params object[] settings)
         {
-            Layout = new LayoutPropertyViewModel(eventAggregator: eventAggregator, settings: settings);
+            //Layout = new LayoutPropertyViewModel(eventAggregator: eventAggregator, settings: settings);
 
             this.eventAggregator = eventAggregator;
         }

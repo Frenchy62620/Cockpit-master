@@ -72,10 +72,6 @@ namespace Cockpit.GUI.Views.Main.Menu
 
         public void NewScript()
         {
-            //if (ActiveDocument != null)
-            //{
-            //    CloseScript();
-            //}
             CreateScriptViewModel(null);
         }
 
@@ -104,16 +100,6 @@ namespace Cockpit.GUI.Views.Main.Menu
 
             eventAggregator.Publish(new ProfileDocumentAddedEvent(document));
         }
-
-        //public void CreatePanelViewModel(Panel_ViewModel panel)
-        //{
-
-        //    var document = profileEditorFactory()
-        //        .ConfigurePanel(panel);
-
-
-        //    eventAggregator.Publish(new ProfileDocumentAddedEvent(document));
-        //}
 
         public IEnumerable<IResult> SaveScript()
         {

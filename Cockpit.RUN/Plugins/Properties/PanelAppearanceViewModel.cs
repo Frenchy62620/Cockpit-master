@@ -19,37 +19,70 @@ namespace Cockpit.RUN.Plugins.Properties
         private readonly Panel_ViewModel PanelViewModel;
         private readonly IEventAggregator eventAggregator;
         public string NameUC { get; private set; }
-        public PanelAppearanceViewModel(IEventAggregator eventAggregator, Panel_ViewModel panel, params object[] settings)
+
+        public PanelAppearanceViewModel(IEventAggregator eventAggregator, string[] BackgroundImages = null, string BackgroundColor = null, bool FillBackground = false,
+                                                                  PanelSideApparition SelectedApparition = PanelSideApparition.FromLeft)
         {
-            PanelViewModel = panel;
-
-            bool IsModeEditor = (bool)settings[0];
-            if (IsModeEditor)
-            {
-                //var view = ViewLocator.LocateForModel(this, null, null);
-                //ViewModelBinder.Bind(this, view, null);
-            }
-
-            NameUC = (string)settings[2];
-
             Apparitions = Enum.GetValues(typeof(PanelSideApparition)).Cast<PanelSideApparition>().ToList();
+            this.SelectedApparition = SelectedApparition;
 
-            SelectedApparition = PanelSideApparition.FromLeft;
+            this.BackgroundImage = BackgroundImages[0];
+            this.ColorBackground = BackgroundColor == null ? Colors.Gray : (Color)ColorConverter.ConvertFromString(BackgroundColor);
+            this.FillBackground = FillBackground;
 
-            var index = 4;
-            BackgroundImage = (string)settings[index];
-            this.eventAggregator = eventAggregator;
-
-
-            BackgroundColor = Colors.Gray;
-            FillBackground = false;
 
             eventAggregator.Subscribe(this);
 
             Name = "Appearance";
+            System.Diagnostics.Debug.WriteLine($"entree {this}");
         }
+        #region serialize
+        [OnSerializing]
+        void OnSerializingMethod(StreamingContext sc)
+        {
+            BackgroundImages = new string[] { BackgroundImage };
+            BackgroundColor = ColorBackground.ToString();
+        }
+        [OnDeserialized]
+        void OnDeserializedMethod(StreamingContext sc)
+        {
+            BackgroundImage = BackgroundImages[0];
+            ColorBackground = (Color)ColorConverter.ConvertFromString(BackgroundColor);
+        }
+        #endregion
+
+        //public PanelAppearanceViewModel(IEventAggregator eventAggregator, Panel_ViewModel panel, params object[] settings)
+        //{
+        //    PanelViewModel = panel;
+
+        //    bool IsModeEditor = (bool)settings[0];
+        //    if (IsModeEditor)
+        //    {
+        //        //var view = ViewLocator.LocateForModel(this, null, null);
+        //        //ViewModelBinder.Bind(this, view, null);
+        //    }
+
+        //    NameUC = (string)settings[2];
+
+        //    Apparitions = Enum.GetValues(typeof(PanelSideApparition)).Cast<PanelSideApparition>().ToList();
+
+        //    SelectedApparition = PanelSideApparition.FromLeft;
+
+        //    var index = 4;
+        //    BackgroundImage = (string)settings[index];
+        //    this.eventAggregator = eventAggregator;
+
+
+        //    BackgroundColor = Colors.Gray;
+        //    FillBackground = false;
+
+        //    eventAggregator.Subscribe(this);
+
+        //    Name = "Appearance";
+        //}
 
         public string Name { get; set; }
+        [DataMember] public string[] BackgroundImages;
 
         public IReadOnlyList<PanelSideApparition> Apparitions { get; }
 
@@ -95,28 +128,32 @@ namespace Cockpit.RUN.Plugins.Properties
         }
 
         private bool fillBackground;
+        [DataMember]
         public bool FillBackground
         {
             get { return fillBackground; }
-            set {
+            set
+            {
                 fillBackground = value;
                 NotifyOfPropertyChange(() => FillBackground);
                 if (value)
-                    FillColor = new SolidColorBrush(BackgroundColor);
+                    FillColor = new SolidColorBrush(ColorBackground);
                 else
                     FillColor = new SolidColorBrush(Colors.Transparent);
             }
         }
 
-        private Color backgroundColor;
-        public Color BackgroundColor
+        [DataMember] public string BackgroundColor { get; set; }
+
+        private Color _ColorBackground;
+        public Color ColorBackground
         {
-            get { return backgroundColor; }
+            get { return _ColorBackground; }
             set
             {
-                backgroundColor = value;
-                NotifyOfPropertyChange(() => BackgroundColor);
-                FillColor = new SolidColorBrush(BackgroundColor);
+                _ColorBackground = value;
+                NotifyOfPropertyChange(() => ColorBackground);
+                FillColor = new SolidColorBrush(ColorBackground);
             }
         }
 
@@ -160,17 +197,39 @@ namespace Cockpit.RUN.Plugins.Properties
             }
 
         }
+        private bool _LRorTB;
+        public bool LRorTB
+        {
+            get { return _LRorTB; }
+            set
+            {
+                _LRorTB = value;
+                NotifyOfPropertyChange(() => LRorTB);
+            }
+        }
+        private string _RBorLT;
+        public string RBorLT
+        {
+            get { return _RBorLT; }
+            set
+            {
+                _RBorLT = value;
+                NotifyOfPropertyChange(() => RBorLT);
+            }
+        }
 
         private void SelectSideApparition()
         {
             //Apparition Side
-            //RenderO = "1.0,0.0";//From Right
-            //RenderO = "0.0,1.0";//From Bottom
-            //RenderO = "0.0,0.0";//From Left
-            //RenderO = "0.0,0.0";//From Top
-            //ScaleXX = true = X, false=Y
-            PanelViewModel.RenderO = (int)SelectedApparition < 2 ? "1.0, 1.0" : "0.0, 0.0";//FromRight/FromBottom or FromLeft/FromTop
-            PanelViewModel.ScaleXX = (int)SelectedApparition % 2 == 0; //FromLeft or FromRight? or FromTop or FromBottom?
+            //RBorLT = "1.0,0.0";//From Right
+            //RBorLT = "0.0,1.0";//From Bottom
+            //RBorLT = "0.0,0.0";//From Left
+            //RBorLT = "0.0,0.0";//From Top
+            //LRorTB= true = X, false=Y
+            RBorLT = (int)SelectedApparition < 2 ? "1.0, 1.0" : "0.0, 0.0";//FromRight/FromBottom or FromLeft/FromTop
+            LRorTB = (int)SelectedApparition % 2 == 0; //FromLeft or FromRight? or FromTop or FromBottom?
+            //PanelViewModel.RenderO = (int)SelectedApparition < 2 ? "1.0, 1.0" : "0.0, 0.0";//FromRight/FromBottom or FromLeft/FromTop
+            //PanelViewModel.ScaleXX = (int)SelectedApparition % 2 == 0; //FromLeft or FromRight? or FromTop or FromBottom?
         }
 
     }

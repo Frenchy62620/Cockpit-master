@@ -27,6 +27,8 @@
 
             </Grid>
         </DataTemplate>
+
+
     </UserControl.Resources>
 
     <Grid >
@@ -81,10 +83,16 @@
                                                                     [Event MouseDoubleClick] = [Action MouseDoubleClickOnContentControl($source, $eventArgs)];
                                                                     [Event PreviewMouseWheel] = [Action PreviewMouseWheelOnContentControl($source, $eventArgs)];
                                                 [Event PreviewMouseLeftButtonDown] = [Action PreviewMouseLeftButtonDownOnContentControl($source, $dataContext, $eventArgs)]">
+                                    <ContentControl.Resources>
+                                        <RotateTransform x:Key="MyRotateTransform" Angle="{Binding Layout.AngleRotation}"  />
+                                        <ScaleTransform x:Key="MyScaleTransform" ScaleX="{Binding Layout.ScaleX}" ScaleY="{Binding Layout.ScaleY}"  />
+                                    </ContentControl.Resources>
                                     <ContentControl.RenderTransform>
                                         <TransformGroup>
-                                            <RotateTransform Angle="{Binding Layout.AngleRotation}" />
-                                            <ScaleTransform ScaleX="{Binding Layout.ScaleX}" ScaleY="{Binding Layout.ScaleY}"  />
+                                            <StaticResource ResourceKey="MyRotateTransform" />
+                                            <StaticResource ResourceKey="MyScaleTransform" />
+                                            <!--<RotateTransform Angle="{Binding Layout.AngleRotation}" />
+                                            <ScaleTransform ScaleX="{Binding Layout.ScaleX}" ScaleY="{Binding Layout.ScaleY}"  />-->
                                         </TransformGroup>
                                     </ContentControl.RenderTransform>
                                 </ContentControl>

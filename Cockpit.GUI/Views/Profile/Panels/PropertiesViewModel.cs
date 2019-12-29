@@ -58,7 +58,7 @@ namespace Cockpit.GUI.Views.Profile.Panels
 
         public void Handle(DisplayPropertiesEvent message)
         {
-            if (message.Clear)
+            if (message.Properties == null)
             {
                 PropertyViewModels.Clear();
                 return;

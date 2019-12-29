@@ -16,11 +16,11 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 namespace Cockpit.RUN.Plugins
 {
     [Identity(GroupName = "Panel", Name = "", Type = typeof(Panel_ViewModel))]
-    [DataContract(Namespace ="")]
+    [DataContract(Namespace = "")]
     //[KnownType(typeof(LayoutPropertyViewModel))]
     //[KnownType(typeof(PanelAppearanceViewModel))]
 
-    public class Panel_ViewModel : PropertyChangedBase,  Core.Common.Events.IHandle<VisibilityPanelEvent>
+    public class Panel_ViewModel : PropertyChangedBase,  IPluginModel, Core.Common.Events.IHandle<VisibilityPanelEvent>
 
     {
         private readonly IEventAggregator eventAggregator;
@@ -53,9 +53,10 @@ namespace Cockpit.RUN.Plugins
             System.Diagnostics.Debug.WriteLine($"sortie {this} {Layout.NameUC}");
         }
 #endif
-        public BindableCollection<IPluginModel> MyPluginsContainer { get; set; }
+        [DataMember] public BindableCollection<IPluginModel> MyPluginsContainer { get; set; }
 
         private bool isvisible;
+        [DataMember]
         public bool IsVisible
         {
             get => isvisible;
@@ -66,30 +67,25 @@ namespace Cockpit.RUN.Plugins
             }
         }
 
-        //public bool ScaleXX { get; set; }
-        private bool _scaleXX;
-        public bool ScaleXX
+
+        #region PluginModel
+
+        private double zoomfactorfrompluginmodel;
+        public double ZoomFactorFromPluginModel
         {
-            get { return _scaleXX; }
+            get => zoomfactorfrompluginmodel;
             set
             {
-                _scaleXX = value;
-                NotifyOfPropertyChange(() => ScaleXX);
+                zoomfactorfrompluginmodel = value;
+                NotifyOfPropertyChange(() => ZoomFactorFromPluginModel);
             }
         }
 
-
-        private string _renderO;
-        public string RenderO
+        public IPluginProperty[] GetProperties()
         {
-            get { return _renderO; }
-            set
-            {
-                _renderO = value;
-                NotifyOfPropertyChange(() => RenderO);
-            }
+            return new IPluginProperty[] { Layout, Appearance/*, Behavior*/ };
         }
-
+        #endregion
 
         #region Mouse Events
         //public void MouseLeftButtonDown(IInputElement elem, MouseButtonEventArgs e)

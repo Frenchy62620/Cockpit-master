@@ -1,18 +1,18 @@
-﻿using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
-using Cockpit.GUI.Views.Main;
+﻿using Cockpit.Core.Contracts;
 using Cockpit.GUI.Events;
+using Cockpit.GUI.Views.Main;
 using Cockpit.GUI.Views.Main.Profile;
-using System.Windows.Controls;
-using System.Windows;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
-using Cockpit.Core.Contracts;
+using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.GUI.Views.Profile.Panels
 {
-    public class PreviewViewModel : PanelViewModel, Core.Common.Events.IHandle<MonitorViewStartedEvent>,
+    public class PreviewViewModel : PanelViewModel, Core.Common.Events.IHandle<MonitorViewLoadedEvent>,
                                                     Core.Common.Events.IHandle<MonitorViewEndedEvent>
     {
         private readonly IEventAggregator eventAggregator;
@@ -97,7 +97,7 @@ namespace Cockpit.GUI.Views.Profile.Panels
             set
             {
                 ZoomPanelVisibility = value ? Visibility.Visible : Visibility.Collapsed;
-                NotifyOfPropertyChange(() => ZoomPanelVisibility);
+                //NotifyOfPropertyChange(() => ZoomPanelVisibility);
                 fullSize = value;
                 if (value)
                 {
@@ -123,7 +123,7 @@ namespace Cockpit.GUI.Views.Profile.Panels
 
         public bool stoploop;
         public bool inloop;
-        private async Task MoveSlider1(double From, double To, bool ToDown)
+        private void MoveSlider1(double From, double To, bool ToDown)
         {
 
             while (!stoploop)
@@ -280,19 +280,17 @@ namespace Cockpit.GUI.Views.Profile.Panels
         }
         public void Handle(MonitorViewEndedEvent message)
         {
-            MonitorViewModel.MyPluginsContainer.Clear();
-            MonitorViewModel.RemoveAdorners();
-            MonitorViewModel.LayoutMonitor.BackgroundImage = "";
-            MonitorViewModel.LayoutMonitor.FillBackground = false;
-            //MonitorViewModel = null;
-            //IsVisible = false;
+            if (!message.monitorViewModel.Equals(MonitorViewModel)) return;
 
+            MonitorViewModel = null;
         }
-        public void Handle(MonitorViewStartedEvent message)
+        public void Handle(MonitorViewLoadedEvent message)
         {
             IsVisible = true;
             MonitorViewModel = message.MonitorViewModel;
             MonitorViewModel.ZoomFactorFromMonitorViewModel = ZoomFactor;
+            foreach (var pm in MonitorViewModel.MyPluginsContainer)
+                pm.ZoomFactorFromPluginModel = ZoomFactor;
         }
     }
 }

@@ -9,7 +9,7 @@
              cal:Message.Attach="[Event MouseEnter] = [Action PreviewViewEnter];
                                  [Event MouseLeave] = [Action PreviewViewLeave];
                                  [Event Loaded] = [Action ViewLoaded($source)]">
-             
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
@@ -35,15 +35,19 @@
                       cal:Message.Attach="[Event SizeChanged]=[Action ScrollViewerSizeChanged($eventArgs)]" 
                       >
             <Grid Width="{Binding PreviewWidth}" Height="{Binding PreviewHeight}">
-                <Rectangle x:Name="MainRectangle"  StrokeThickness="4" Stroke="Black" 
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="79*"/>
+                    <ColumnDefinition Width="55*"/>
+                </Grid.ColumnDefinitions>
+                <Rectangle x:Name="MainRectangle"  StrokeThickness="4" Stroke="Black" Grid.ColumnSpan="2" 
                            >
                     <!--, diag:PresentationTraceSources.TraceLevel=High-->
                     <Rectangle.Fill>
                         <DrawingBrush Viewport="0,0,10,10" ViewportUnits="Absolute" TileMode="Tile">
                             <DrawingBrush.Drawing>
                                 <DrawingGroup>
-                                    <GeometryDrawing Geometry="M0,0 L10,0 10,10, 0,10Z" Brush="{Binding MonitorViewModel.LayoutMonitor.BackgroundColor1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=Black}" />
-                                    <GeometryDrawing Geometry="M0,5 L10,5 10,10, 5,10 5,0 0,0Z" Brush="{Binding MonitorViewModel.LayoutMonitor.BackgroundColor2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=Black}"/>
+                                    <GeometryDrawing Geometry="M0,0 L10,0 10,10, 0,10Z" Brush="{Binding MonitorViewModel.LayoutMonitor.BackgroundColor1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=#293955}" />
+                                    <GeometryDrawing Geometry="M0,5 L10,5 10,10, 5,10 5,0 0,0Z" Brush="{Binding MonitorViewModel.LayoutMonitor.BackgroundColor2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=#293955}"/>
                                 </DrawingGroup>
                             </DrawingBrush.Drawing>
                         </DrawingBrush>
@@ -56,15 +60,19 @@
                        Margin="0,0,0,0"  Source="{Binding MonitorViewModel.LayoutMonitor.BackgroundImage}">
 
                 </Image>
-                <ItemsControl ItemsSource="{Binding MonitorViewModel.MyPluginsContainer}" >
+                <ItemsControl ItemsSource="{Binding MonitorViewModel.MyPluginsContainer}" Grid.ColumnSpan="2" >
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <!--<AdornerDecorator>-->
                             <ContentControl cal:View.Model="{Binding}"  >
+                                <ContentControl.Resources>
+                                    <RotateTransform x:Key="MyRotateTransform" Angle="{Binding Layout.AngleRotation}"  />
+                                    <ScaleTransform x:Key="MyScaleTransform" ScaleX="{Binding ZoomFactorFromPluginModel}" ScaleY="{Binding ZoomFactorFromPluginModel}"  />
+                                </ContentControl.Resources>
                                 <ContentControl.RenderTransform>
                                     <TransformGroup >
-                                        <ScaleTransform ScaleX="{Binding ZoomFactorFromPluginModel}" ScaleY="{Binding ZoomFactorFromPluginModel}"/>
-                                        <RotateTransform Angle="{Binding Layout.AngleRotation}"  />
+                                        <StaticResource ResourceKey="MyRotateTransform" />
+                                        <StaticResource ResourceKey="MyScaleTransform" />
                                     </TransformGroup>
                                 </ContentControl.RenderTransform>
                             </ContentControl>
@@ -85,6 +93,7 @@
                                 <Setter.Value>
                                     <MultiBinding Converter="{StaticResource MultiplyConverter}">
                                         <Binding Path="Layout.UCLeft" />
+                                        <Binding Path="Layout.ParentScaleX" />
                                         <Binding Path="ZoomFactorFromPluginModel" />
                                     </MultiBinding>
                                 </Setter.Value>
@@ -93,6 +102,7 @@
                                 <Setter.Value>
                                     <MultiBinding Converter="{StaticResource MultiplyConverter}">
                                         <Binding Path="Layout.UCTop" />
+                                        <Binding Path="Layout.ParentScaleY" />
                                         <Binding Path="ZoomFactorFromPluginModel" />
                                     </MultiBinding>
                                 </Setter.Value>

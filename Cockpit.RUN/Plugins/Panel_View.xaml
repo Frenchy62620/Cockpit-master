@@ -11,7 +11,7 @@
     cal:Message.Attach="[Event MouseDown] = [Action MouseLeftButtonDownOnPanelView($source, $mousepoint, $eventArgs)]"  >
     <!--cal:Message.Attach="[Event MouseEnter] = [Action MouseEnter($eventArgs)];
                         [Event MouseDoubleClick] = [Action MouseDoubleClickOnPanel($dataContext, $eventArgs)]"-->
-    <UserControl.Resources>
+    <!--<UserControl.Resources>
         <DataTemplate x:Key="BoxDragAdorner">
             <Grid x:Name="Over">
 
@@ -22,12 +22,12 @@
                             Width="{Binding SelectedToolBoxItem.ImageWidth}" 
                             Height="{Binding SelectedToolBoxItem.ImageHeight}" HorizontalAlignment="Center"
                             />
-                <!--, diag:PresentationTraceSources.TraceLevel=High-->
-                <!--<TextBlock Text="{Binding FullName}" HorizontalAlignment="Center"/>-->
+                --><!--, diag:PresentationTraceSources.TraceLevel=High-->
+                <!--<TextBlock Text="{Binding FullName}" HorizontalAlignment="Center"/>--><!--
 
             </Grid>
         </DataTemplate>
-    </UserControl.Resources>
+    </UserControl.Resources>-->
 
     <Grid  Width="{Binding Path=Layout.Width}" Height="{Binding Path=Layout.Height}" >
 

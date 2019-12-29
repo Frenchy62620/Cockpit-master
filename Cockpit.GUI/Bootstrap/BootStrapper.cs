@@ -147,6 +147,7 @@ namespace Cockpit.GUI.Bootstrap
             //assemblies.AddRange(from fileName in fileEntries
             //                    where fileName.Contains("ViewsX.dll")
             //                    select Assembly.LoadFile(fileName));
+            //if (File.Exists(Path.Combine(@"J:\ProjetC#\ExecDebug\Plugins", "Cockpit.Core.Plugins.dll")))
             if (File.Exists(Path.Combine(@"J:\ProjetC#\ExecDebug\Plugins", "Cockpit.Core.Plugins.dll")))
             {
                 assemblies.Add(Assembly.LoadFile(Path.Combine(@"J:\ProjetC#\ExecDebug\Plugins", "Cockpit.Core.Plugins.dll")));

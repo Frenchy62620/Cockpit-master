@@ -10,7 +10,7 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.GUI.Views.Main.ToolBar
 {
-    public class MainToolBarViewModel : PropertyChangedBase, Core.Common.Events.IHandle<MonitorViewStartedEvent>,
+    public class MainToolBarViewModel : PropertyChangedBase, Core.Common.Events.IHandle<MonitorViewLoadedEvent>,
                                                              Core.Common.Events.IHandle<ToolBarEvent>
     {
         public MonitorViewModel MonitorViewModel { get; set; }
@@ -281,7 +281,7 @@ namespace Cockpit.GUI.Views.Main.ToolBar
         }
 
 
-        public void Handle(MonitorViewStartedEvent message)
+        public void Handle(MonitorViewLoadedEvent message)
         {
             MonitorViewModel = message.MonitorViewModel;
         }

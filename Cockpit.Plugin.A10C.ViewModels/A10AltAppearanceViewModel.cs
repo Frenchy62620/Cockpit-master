@@ -4,11 +4,11 @@ using System.Runtime.Serialization;
 
 namespace Cockpit.Plugin.A10C.ViewModels
 {
-    [DataContract]
+    [DataContract(Namespace = "")]
     public class A10AltAppearanceViewModel: PropertyChangedBase, IPluginProperty
     {
         public string Name { get; set; }
-        public A10AltAppearanceViewModel(params object[] settings)
+        public A10AltAppearanceViewModel()
         {
 
             Name = "Appearance";

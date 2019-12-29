@@ -11,7 +11,7 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 
 namespace Cockpit.GUI.Plugins.Properties
 {
-    [DataContract]
+    [DataContract(Namespace = "")]
     public class PanelAppearanceViewModel: PropertyChangedBase, IPluginProperty
     {
 
@@ -200,11 +200,11 @@ namespace Cockpit.GUI.Plugins.Properties
         private void SelectSideApparition()
         {
             //Apparition Side
-            //RenderO = "1.0,0.0";//From Right
-            //RenderO = "0.0,1.0";//From Bottom
-            //RenderO = "0.0,0.0";//From Left
-            //RenderO = "0.0,0.0";//From Top
-            //ScaleXX = true = X, false=Y
+            //RBorLT = "1.0,0.0";//From Right
+            //RBorLT = "0.0,1.0";//From Bottom
+            //RBorLT = "0.0,0.0";//From Left
+            //RBorLT = "0.0,0.0";//From Top
+            //LRorTB = true = X, false=Y
             RBorLT = (int)SelectedApparition < 2 ? "1.0, 1.0" : "0.0, 0.0";//FromRight/FromBottom or FromLeft/FromTop
             LRorTB = (int)SelectedApparition % 2 == 0; //FromLeft or FromRight? or FromTop or FromBottom?
         }

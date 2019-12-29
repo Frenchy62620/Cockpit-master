@@ -17,7 +17,7 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 namespace Cockpit.RUN.Views
 {
     [DataContract(Namespace = "")]
-    public class MonitorViewModel:PropertyChangedBase
+    public class MonitorViewModel : PropertyChangedBase
     {
         public Dictionary<Assembly, List<Type>> pluginTypes;
         private readonly IEventAggregator eventAggregator;

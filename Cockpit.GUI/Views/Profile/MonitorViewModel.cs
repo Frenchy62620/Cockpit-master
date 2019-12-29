@@ -32,18 +32,21 @@ namespace Cockpit.GUI.Views.Profile
         public IPluginModel pm;
         public bool ispanel;
         public BindableCollection<IPluginModel> container { get; set; }
-        public Elements(ContentControl cc, IPluginModel pm, bool ispanel, BindableCollection<IPluginModel> container)
+        public BindableCollection<IPluginModel> contains { get; set; }
+        public Elements(ContentControl cc, IPluginModel pm, bool ispanel, BindableCollection<IPluginModel> container, BindableCollection<IPluginModel> contains)
         {
             this.cc = cc;
             this.pm = pm;
             this.ispanel = ispanel;
             this.container = container;
+            this.contains = contains;
         }
     }
 
     [DataContract(Namespace ="")]
     public class MonitorViewModel : PanelViewModel, IDropTarget, Core.Common.Events.IHandle<RenamePluginEvent>,
-                                                                 Core.Common.Events.IHandle<DragCancelledEvent>
+                                                                 Core.Common.Events.IHandle<DragCancelledEvent>,
+                                                                 Core.Common.Events.IHandle<MonitorViewEndedEvent>
     {
         public Dictionary<Assembly, List<Type>> pluginTypes;
         public Dictionary<string, Identity> Identities;
@@ -63,7 +66,7 @@ namespace Cockpit.GUI.Views.Profile
         private readonly DisplayManager DisplayManager;
 
         private readonly string Nothings = "No Selected";
-
+        public bool IsDropped = false;
         [DataMember] public MonitorPropertyViewModel LayoutMonitor { get; set; }
 
         public List<Key> MoveKeys = new List<Key> { Key.Left, Key.Right , Key.Down, Key.Up};
@@ -102,21 +105,21 @@ namespace Cockpit.GUI.Views.Profile
 
             var types = pluginTypes.Values.SelectMany(x => x).ToArray();
 
-            var nameU = types.Select(t => (t, t.GetProperties().Where(pi => pi.Name == "NameUC"))) ;/*.Where(pi => pi.Name == "NameUC")*/
-
+            //var nameU = types.Select(t => (t, t.GetProperties().Where(pi => pi.Name == "NameUC"))) ;/*.Where(pi => pi.Name == "NameUC")*/
+            System.Diagnostics.Debug.WriteLine($"entree {this} {Title}");
 
         }
 
         public void ViewLoaded()
         {
-            eventAggregator.Publish(new MonitorViewStartedEvent(this));
+            IsDropped = false;
+            eventAggregator.Publish(new MonitorViewLoadedEvent(this));
             eventAggregator.Publish(new DisplayPropertiesEvent(new[] { LayoutMonitor }));
         }
 
 
         public string Xmlfile;
 
-        /*[DataMember] */
         public int CockpitFileHash;
 
         public override string FileContent => Xmlfile;
@@ -164,89 +167,6 @@ namespace Cockpit.GUI.Views.Profile
             LayoutMonitor.BackgroundColor = content.LayoutMonitor.BackgroundColor;
 
             EnumeratePlugins(content.MyPluginsContainer, propertieslist, this);
-
-            return;
-
-            foreach (var model in content.MyPluginsContainer)
-            {
-                var defaultvalues = new Dictionary<string, object>
-                {
-                    { "eventAggregator", eventAggregator },
-                    { "OriginPlugin", this },
-                };
-                System.Diagnostics.Debug.WriteLine(model);
-                var typeClass = model.GetType();
-                //var props = typeClass.GetProperties().Where(prop => propertieslist.Contains(prop.Name) && Attribute.IsDefined(prop, typeof(DataMemberAttribute)));
-                var pluginproperties = typeClass.GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(DataMemberAttribute)));
-                var parameters= typeClass.GetConstructors().FirstOrDefault(c => c.GetParameters().Length > 0).GetParameters().Select(p => p.Name).ToList();
-
-                var ispanel = typeClass.ToString().EndsWith("Panel_ViewModel");
-                var dico = pluginproperties.ToDictionary(p => p.Name, p =>
-                {
-                    var pp = typeClass.GetProperty(p.Name).GetValue(model);
-                    var properties = pp.GetType().GetProperties().Where(property => Attribute.IsDefined(property, typeof(DataMemberAttribute)));
-                    var fields = pp.GetType().GetFields().Where(field => Attribute.IsDefined(field, typeof(DataMemberAttribute)));
-                    return properties.ToDictionary(property => property.Name, x => x.GetValue(pp)).Concat(fields.ToDictionary(field => field.Name, f => f.GetValue(pp)));
-                });
-
-
-                pluginproperties.ToList().ForEach(p =>
-                {
-                    if (propertieslist.Contains(p.Name))
-                    {
-                        foreach (var x in dico[p.Name])
-                        {
-                            defaultvalues[x.Key] = x.Value;
-                        }
-                        defaultvalues[p.Name] = HelperConstructor.MyCreateInstance(p.PropertyType, defaultvalues);
-                    }
-                    else
-                    {
-                        try
-                        {
-                            defaultvalues[p.Name] = p.GetValue(model);
-                        }
-                        catch 
-                        { }
-                    }
-                });
-
-                var instanceplugin = (IPluginModel)HelperConstructor.MyCreateInstance(typeClass, defaultvalues);
-                instanceplugin.ZoomFactorFromPluginModel = ZoomFactorFromMonitorViewModel;
-                MyPluginsContainer.Add(instanceplugin);
-
-                defaultvalues["PluginParentContainer"] = (BindableCollection<IPluginModel>)this.GetType().GetProperty("MyPluginsContainer").GetValue(this, null);
-
-                SortedDico[(string)defaultvalues["NameUC"]] = new Elements(null, null, ispanel, (BindableCollection<IPluginModel>)defaultvalues["PluginParentContainer"]);
-
-                //var values = props.ToDictionary(p => p.Name, p => {
-                //                                                    var vv = p.GetValue(model).GetType().GetProperties().ToDictionary(prop => prop.Name, prop => prop.GetValue(p.GetValue(model)));
-                //                                                    return p.GetValue(model);
-                //                                                  }
-                //                               );
-                //values.ToList().ForEach(p => {
-                //                                foreach(var val in p.Item2)
-                //                                {
-                //                                }
-                //                                defaultvalues.Add(p.p.Name, HelperConstructor.MyCreateInstance(p.p.PropertyType, defaultvalues));
-                //                             }
-                //                       );
-
-
-
-                //values.ToList().ForEach(p => defaultvalues.Add(p.p.Name, HelperConstructor.MyCreateInstance(p.p.PropertyType, defaultvalues)));
-                //props.ToList().ForEach(p => defaultvalues.Add(p.Name, HelperConstructor.MyCreateInstance(p.PropertyType, defaultvalues)));
-                //var param = new Ninject.Parameters.Parameter[]{ new ConstructorArgument("settings", new object[]{ model}, true)};
-                //var viewmodel = resolutionRoot.TryGet(typeClass, param);
-
-                //var v = viewmodel as IPluginModel;
-
-
-                //v.ZoomFactorFromPluginModel = ZoomFactorFromMonitorViewModel;
-
-                //MyPluginsContainer.Add((IPluginModel)viewmodel);
-                
-            }
 
         }
 #if DEBUG
@@ -318,10 +238,12 @@ namespace Cockpit.GUI.Views.Profile
 
                 panelcontainer.Add(instanceplugin);
 
+                
                 if (ispanel)
                     EnumeratePlugins((BindableCollection<IPluginModel>)typeClass.GetProperty("MyPluginsContainer").GetValue(plugin), propertieslist, instanceplugin);
 
-                SortedDico[(string)defaultvalues["NameUC"]] = new Elements(null, null, ispanel, panelcontainer);
+                var contains = ispanel ? (BindableCollection<IPluginModel>)typeClass.GetProperty("MyPluginsContainer").GetValue(plugin) : null;
+                SortedDico[(string)defaultvalues["NameUC"]] = new Elements(null, null, ispanel, panelcontainer, contains);
 
                 foreach (var k in defaultvalues.Keys.ToList().Skip(numberofitems)) defaultvalues.Remove(k);
 
@@ -353,6 +275,7 @@ namespace Cockpit.GUI.Views.Profile
 
         public IPluginModel DropTargetDrop(IDropInfo dropInfo, object instance)
         {
+            IsDropped = true;
             TitleTemp = null;
             var tbg = dropInfo.Data as ToolBoxGroup;
             var selected = tbg.SelectedToolBoxItem;
@@ -387,7 +310,7 @@ namespace Cockpit.GUI.Views.Profile
                 { "Nothings", Nothings },
                 { "IsModeEditor", true },
                 { "IsPanel", ispanel },
-                { "IsPluginDropped", true },
+                { "IsPluginDropped", IsDropped },
                 { "PluginParent", instance },
                 { "OriginPlugin", this },
                 { "PluginParentContainer",  (BindableCollection<IPluginModel>) instance.GetType().GetProperty("MyPluginsContainer").GetValue(instance, null)},
@@ -419,11 +342,9 @@ namespace Cockpit.GUI.Views.Profile
 
             vm.ZoomFactorFromPluginModel = ZoomFactorFromMonitorViewModel;
 
+            var contains = ispanel ? (BindableCollection<IPluginModel>)typeClass.GetProperty("MyPluginsContainer").GetValue(instanceplugin) : null;
+            SortedDico[nameUC] = new Elements(null, null, ispanel, (BindableCollection<IPluginModel>)defaultvalues["PluginParentContainer"], contains);
 
-            //MyPluginsContainer.Add(vm);
-
-            //SortedDico[nameUC] = new Elements(null, null, ispanel ? (vm as Panel_ViewModel).MyPluginsContainer : null);
-            SortedDico[nameUC] = new Elements(null, null, ispanel, (BindableCollection<IPluginModel>)defaultvalues["PluginParentContainer"]);
             return vm;
         }
         #endregion
@@ -450,8 +371,6 @@ namespace Cockpit.GUI.Views.Profile
 
         public Type GetType(string typeName)
         {
-            //var type = Type.GetType(typeName);
-            //if (type != null) return type;
             Type type;
             foreach (var p in pluginTypes.Keys)
             {
@@ -459,12 +378,6 @@ namespace Cockpit.GUI.Views.Profile
                 if (type != null)
                     return type;
             }
-            //foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
-            //{
-            //    type = a.GetType(typeName);
-            //    if (type != null)
-            //        return type;
-            //}
             return null;
         }
 
@@ -482,31 +395,6 @@ namespace Cockpit.GUI.Views.Profile
             }
             return this;
         }
-
-        //public string BuildXMLBuffer(MonitorViewModel document)
-        //{
-        //    string buffer;
-        //    var types = pluginTypes.Values.SelectMany(x => x).ToArray();
-
-        //    DataContractSerializer dcs = new DataContractSerializer(typeof(MonitorViewModel), types);
-        //    using (var memStream = new MemoryStream())
-        //    {
-        //        dcs.WriteObject(memStream, document);
-        //        buffer = Encoding.ASCII.GetString(memStream.GetBuffer()).TrimEnd('\0');
-        //    }
-        //    return buffer;
-        //}
-
-
-        //public MonitorViewModel ConfigurePanel(Panel_ViewModel panel)
-        //{
-        //    this.MonitorHeight = panel.Layout.Height;
-        //    this.MonitorWidth = panel.Layout.Width;
-        //    this.LayoutMonitor.BackgroundImage = panel.Appearance.BackgroundImage;
-
-        //    this.Title = panel.Layout.NameUC;
-        //    return this;
-        //}
 
         public override string Filename
         {
@@ -887,6 +775,7 @@ namespace Cockpit.GUI.Views.Profile
 
         public void ContentControlLoaded(ContentControl cc, IPluginModel pm)
         {
+
             DependencyObject ff = cc;
             while (true)
             {
@@ -904,6 +793,7 @@ namespace Cockpit.GUI.Views.Profile
             SortedDico[key].pm = pm;
 
             RemoveAdorners();
+            if (!IsDropped) return;
             AddNewAdorner(cc, pm);
 
             eventAggregator.Publish(new DisplayPropertiesEvent(SortedDico[AdornersSelectedList.ElementAt(0)].pm.GetProperties()));
@@ -986,14 +876,16 @@ namespace Cockpit.GUI.Views.Profile
             //var list = GetAllNameUC(MyPluginsContainer).ToList();
             var list = SortedDico.Keys.ToList();
             var newname = nameUC;
-
-            var c = list.Count(x => x.StartsWith($"{nameUC}_") || x.Equals($"{nameUC}"));
+            var alreadyExist = list.Contains(nameUC);
             var caller = new System.Diagnostics.StackFrame(1).GetMethod().Name;
+
+
             if (caller.StartsWith("RenamePlugin"))
-                return c == 1 ? newname : "";
+                return alreadyExist ?  "" : nameUC;
                 
-            if (list.Contains(nameUC))
+            if (alreadyExist)
             {
+                var c = list.Count(x => x.StartsWith($"{nameUC}"));
                 for (int i = c; true; i++)
                 {
                     newname = $"{nameUC}_{i}";
@@ -1021,9 +913,10 @@ namespace Cockpit.GUI.Views.Profile
             var pm = SortedDico[oldname].pm;
             var ispanel = SortedDico[oldname].ispanel;
             var container = SortedDico[oldname].container;
+            var contains = SortedDico[oldname].contains;
 
             SortedDico.Remove(oldname);
-            SortedDico.Add(newname, new Elements(cc, pm, ispanel, container));
+            SortedDico.Add(newname, new Elements(cc, pm, ispanel, container, contains));
             if (AdornersSelectedList.Contains(oldname))
             {
                 var list = AdornersSelectedList.ToList();
@@ -1104,14 +997,6 @@ namespace Cockpit.GUI.Views.Profile
             if (PanelNames.Contains(nameUC))
             {
                 RenamePanelSelection(nameUC, Nothings, new string[] { "Behavior.SelectedPanelDnName", "Behavior.SelectedPanelUpName" });
-                //PanelNames.Remove(nameUC);
-                //var properties = new List<string>() { "Behavior.SelectedPanelDnName", "Behavior.SelectedPanelUpName" };
-                //foreach (var pm in SortedDico.Values.Where(v => !v.ispanel).Select(v => v.pm))
-                //{
-                //    foreach (var p in properties)
-                //        if (GetPropertyString(p, pm).Equals(nameUC))
-                //            SetProperty(p, pm, Nothings);
-                //}
             }
         }
 
@@ -1168,6 +1053,13 @@ namespace Cockpit.GUI.Views.Profile
         public void Handle(DragCancelledEvent message)
         {
             TitleTemp = null;
+        }
+
+        public void Handle(MonitorViewEndedEvent message)
+        {
+            if (!message.monitorViewModel.Equals(this)) return;
+
+            eventAggregator.Unsubscribe(this);
         }
 
         private List<string> _PanelNames;

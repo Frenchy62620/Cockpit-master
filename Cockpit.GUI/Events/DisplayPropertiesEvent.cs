@@ -5,10 +5,9 @@ namespace Cockpit.GUI.Events
     public class DisplayPropertiesEvent
     {
         public IPluginProperty[] Properties;
-        public bool Clear;
-        public DisplayPropertiesEvent(IPluginProperty[] properties, bool clear = false)
+
+        public DisplayPropertiesEvent(IPluginProperty[] properties)
         {
-            Clear = clear;
             Properties = properties;
         }
     }

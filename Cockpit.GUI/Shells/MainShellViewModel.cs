@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using Cockpit.Core.Common;
+using Cockpit.Core.Contracts;
 using Cockpit.Core.Persistence;
 using Cockpit.Core.Persistence.Paths;
 using Cockpit.GUI.Common.AvalonDock;
@@ -11,8 +12,10 @@ using Cockpit.GUI.Views.Main;
 using Cockpit.GUI.Views.Main.Menu;
 using Cockpit.GUI.Views.Main.ToolBar;
 using Cockpit.GUI.Views.Profile;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout.Serialization;
@@ -130,9 +133,58 @@ namespace Cockpit.GUI.Shells
 
         public void DocumentClosed(MonitorViewModel document)
         {
-            Profiles.Remove(document);
-        }
+            Unsubscribe(document);
+            document.RemoveAdorners();
+            document.SortedDico.Clear();
+            document.PanelNames.Clear();
+            document.Identities.Clear();
 
+            eventAggregator.Publish(new DisplayPropertiesEvent(null));
+
+            Profiles.Remove(document);
+
+            eventAggregator.Publish(new MonitorViewEndedEvent(document));
+            if (Profiles.Count() > 0) return;
+            ActiveDocument = null;
+ //           eventAggregator.Publish(new MonitorViewEndedEvent(document, true));          
+            document = null;
+
+
+            void Unsubscribe(object panel)
+            {
+                var container = (BindableCollection<IPluginModel>)panel.GetType().GetProperty("MyPluginsContainer").GetValue(panel, null);
+                foreach (var pm in container.ToList())
+                {
+                    var ispanel = pm.ToString().EndsWith("Panel_ViewModel");
+                    var layout = pm.GetType().GetProperty("Layout").GetValue(pm, null);
+                    var appearance = pm.GetType().GetProperty("Appearance").GetValue(pm, null);
+                    var behavior = pm.GetType().GetProperty("Behavior")?.GetValue(pm, null);
+                    //var eventAggregator = (IEventAggregator)target.GetType().GetField("eventAggregator", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                    //                                              .GetValue(target);
+                    eventAggregator.Unsubscribe(layout);
+                    eventAggregator.Unsubscribe(appearance);
+                    eventAggregator.Unsubscribe(behavior);
+                    eventAggregator.Unsubscribe(pm);
+                    if (ispanel)
+                        Unsubscribe(pm);
+
+                    container.Remove(pm);
+                }
+            }
+
+
+        }
+        private (object, object) GetFieldNested(string compoundProperty, object target)
+        {
+            string[] bits = compoundProperty.Split('.');
+            for (int i = 0; i < bits.Length - 1; i++)
+            {
+                PropertyInfo propToGet = target.GetType().GetProperty(bits[i]);
+                target = propToGet.GetValue(target, null);
+            }
+            FieldInfo fieldToGet = target.GetType().GetField(bits.Last(), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            return (fieldToGet.GetValue(target), target);
+        }
         private IEnumerable<IResult> HandleProfileClosing(MonitorViewModel script)
         {
             if (script.IsDirty)
@@ -148,8 +200,6 @@ namespace Cockpit.GUI.Shells
                 {
                     foreach (var result in profileDialogStrategy.SaveAs(script, true, path => fileSystem.WriteAllText(path, script.Xmlfile)))
                         yield return result;
-                    //foreach (var result in profileDialogStrategy.SaveAs(script, true, path => fileSystem.WriteAllText(path, script.FileContent)))
-                    //    yield return result;
                 }
             }
         } 

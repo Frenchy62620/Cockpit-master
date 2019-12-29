@@ -68,7 +68,18 @@
                     </ItemsControl.Resources>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <ContentControl cal:View.Model="{Binding .}" />
+                            <ContentControl cal:View.Model="{Binding .}" >
+                            <ContentControl.Resources>
+                                <RotateTransform x:Key="MyRotateTransform" Angle="{Binding Layout.AngleRotation}"  />
+                                <ScaleTransform x:Key="MyScaleTransform" ScaleX="{Binding Layout.ScaleX}" ScaleY="{Binding Layout.ScaleY}"  />
+                            </ContentControl.Resources>
+                                <ContentControl.RenderTransform>
+                                    <TransformGroup>
+                                        <StaticResource ResourceKey="MyRotateTransform" />
+                                        <StaticResource ResourceKey="MyScaleTransform" />
+                                    </TransformGroup>
+                                </ContentControl.RenderTransform>
+                            </ContentControl>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                     <!-- Replace panel with a canvas -->

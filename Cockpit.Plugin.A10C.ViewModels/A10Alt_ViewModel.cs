@@ -7,16 +7,20 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 namespace Cockpit.Plugin.A10C.ViewModels
 {
     [Identity(GroupName = "A10C", Name = "Altimeter", Type = typeof(A10Alt_ViewModel))]
-    [DataContract]
+    [DataContract(Namespace = "")]
     public class A10Alt_ViewModel : PropertyChangedBase, IPluginModel
     {
+        private readonly IEventAggregator eventAggregator;
         [DataMember] public LayoutPropertyViewModel Layout { get; set; }
         [DataMember] public A10AltAppearanceViewModel Appearance { get; set; }
 
-        public A10Alt_ViewModel(IEventAggregator eventAggregator, params object[] settings)
+        public A10Alt_ViewModel(IEventAggregator eventAggregator, A10AltAppearanceViewModel Appearance, LayoutPropertyViewModel Layout)
         {
-            Layout = new LayoutPropertyViewModel(eventAggregator: eventAggregator, settings: settings);
-            Appearance = new A10AltAppearanceViewModel(settings);
+            this.Layout = Layout;
+
+            this.Appearance = Appearance;
+
+            this.eventAggregator = eventAggregator;
 
         }
 
@@ -43,37 +47,6 @@ namespace Cockpit.Plugin.A10C.ViewModels
             }
         }
 
-        //public double ScaleX
-        //{
-        //    get => Layout.ScaleX;
-        //    set => Layout.ScaleX = value;
-        //}
-        //public double ScaleY
-        //{
-        //    get => Layout.ScaleY;
-        //    set => Layout.ScaleY = value;
-        //}
-
-        //public double Left
-        //{
-        //    get => Layout.UCLeft;
-        //    set => Layout.UCLeft = value;
-        //}
-        //public double Top
-        //{
-        //    get => Layout.UCTop;
-        //    set => Layout.UCTop = value;
-        //}
-        //public double Width
-        //{
-        //    get => Layout.Width;
-        //    set => Layout.Width = value;
-        //}
-        //public double Height
-        //{
-        //    get => Layout.Height;
-        //    set => Layout.Height = value;
-        //}
 
         public IPluginProperty[] GetProperties()
         {

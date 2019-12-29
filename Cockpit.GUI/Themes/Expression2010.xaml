@@ -43,6 +43,11 @@
     <BitmapImage x:Key="SpaceVertical" UriSource="../Resources/ToolBar/SpaceVertical.png" />
     <BitmapImage x:Key="Locker" UriSource="../Resources/ToolBar/Locker.png" />
     <BitmapImage x:Key="Unlocker" UriSource="../Resources/ToolBar/Unlocker.png" />
+
+    <BitmapImage x:Key="LockedIcon" UriSource="../Resources/Layer/LockedIcon.png" />
+    <BitmapImage x:Key="UnLockedIcon" UriSource="../Resources/Layer/UnLockedIcon.png" />
+    <BitmapImage x:Key="VisibleIcon" UriSource="../Resources/Layer/VisibleIcon.png" />
+    <BitmapImage x:Key="HiddenIcon" UriSource="../Resources/Layer/HiddenIcon.png" />
     <!-- Main Colors -->
 
     <SolidColorBrush x:Key="WindowBackground" Color="#EBEEFA" />

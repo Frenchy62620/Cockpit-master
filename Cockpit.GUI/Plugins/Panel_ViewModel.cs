@@ -26,7 +26,7 @@ using IEventAggregator = Cockpit.Core.Common.Events.IEventAggregator;
 namespace Cockpit.GUI.Plugins
 {
     [Identity(GroupName = "Panel", Name = "", Type = typeof(Panel_ViewModel))]
-    [DataContract]
+    [DataContract(Namespace = "")]
     //[KnownType(typeof(LayoutPropertyViewModel))]
     //[KnownType(typeof(PanelAppearanceViewModel))]
 
@@ -60,31 +60,7 @@ namespace Cockpit.GUI.Plugins
 
             System.Diagnostics.Debug.WriteLine($"entree {this} {Layout.NameUC}");
         }
-        //    public Panel_ViewModel(IEventAggregator eventAggregator, IResolutionRoot resolutionRoot, params object[] settings)
-        //{
-        //    this.resolutionRoot = resolutionRoot;
-        //    this.eventAggregator = eventAggregator;
-        //    this.eventAggregator.Subscribe(this);
 
-        //    mv = (MonitorViewModel)settings[1];
-        //    Layout = new LayoutPropertyViewModel(eventAggregator: eventAggregator, settings: settings, IsPanel: true);
-        //    Appearance = new PanelAppearanceViewModel(eventAggregator, this, settings);
-
-        //    MyPluginsContainer = new BindableCollection<IPluginModel>();
-
-        //    //RenderO = (int)Appearance.SelectedApparition < 2 ? "1.0, 1.0" : "0.0, 0.0";//ToLeft/ToTop or ToRight/ToBottom
-        //    //ScaleXX = (int)Appearance.SelectedApparition % 2 == 0; //ToLeft or ToRight? or ToUp or ToBottom?
-
-        //    //RenderO = "1.0, 1.0";
-        //    //ScaleXX = true;
-
-
-        //    //RenderO = settings.Side < 2 ? "1.0, 1.0" : "0.0, 0.0";//ToLeft/ToTop or ToRight/ToBottom
-        //    //ScaleXX = settings.Side % 2 == 0; //ToLeft or ToRight? or ToUp or ToBottom?
-        //    IsVisible = true;
-
-        //    NameUC = (string)settings[2];
-        //}
 #if DEBUG
         ~Panel_ViewModel()
         {
@@ -107,29 +83,31 @@ namespace Cockpit.GUI.Plugins
             }
         }
 
+        public void UnsubscribeEvent() => eventAggregator.Unsubscribe(this);
+
         //public bool ScaleXX { get; set; }
-        private bool _scaleXX;
-        public bool ScaleXX
-        {
-            get { return _scaleXX; }
-            set
-            {
-                _scaleXX = value;
-                NotifyOfPropertyChange(() => ScaleXX);
-            }
-        }
+        //private bool _scaleXX;
+        //public bool ScaleXX
+        //{
+        //    get { return _scaleXX; }
+        //    set
+        //    {
+        //        _scaleXX = value;
+        //        NotifyOfPropertyChange(() => ScaleXX);
+        //    }
+        //}
 
 
-        private string _renderO;
-        public string RenderO
-        {
-            get { return _renderO; }
-            set
-            {
-                _renderO = value;
-                NotifyOfPropertyChange(() => RenderO);
-            }
-        }
+        //private string _renderO;
+        //public string RenderO
+        //{
+        //    get { return _renderO; }
+        //    set
+        //    {
+        //        _renderO = value;
+        //        NotifyOfPropertyChange(() => RenderO);
+        //    }
+        //}
 
         #region PluginModel
 
