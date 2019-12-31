@@ -273,7 +273,7 @@ namespace Cockpit.GUI.Views.Profile
             MyPluginsContainer.Add(pm);
         }
 
-        public IPluginModel DropTargetDrop(IDropInfo dropInfo, object instance)
+        public IPluginModel DropTargetDrop(IDropInfo dropInfo, object instanceContainer)
         {
             IsDropped = true;
             TitleTemp = null;
@@ -301,6 +301,8 @@ namespace Cockpit.GUI.Views.Profile
 
             var props = GetType(model).GetProperties().Where(prop => propertieslist.Contains(prop.Name) && Attribute.IsDefined(prop, typeof(DataMemberAttribute)));
 
+
+
             if (ispanel)
                 PanelNames.Add(nameUC);
 
@@ -311,9 +313,9 @@ namespace Cockpit.GUI.Views.Profile
                 { "IsModeEditor", true },
                 { "IsPanel", ispanel },
                 { "IsPluginDropped", IsDropped },
-                { "PluginParent", instance },
+                { "PluginParent", instanceContainer },
                 { "OriginPlugin", this },
-                { "PluginParentContainer",  (BindableCollection<IPluginModel>) instance.GetType().GetProperty("MyPluginsContainer").GetValue(instance, null)},
+                { "PluginParentContainer",  (BindableCollection<IPluginModel>) instanceContainer.GetType().GetProperty("MyPluginsContainer").GetValue(instanceContainer, null)},
                 { "NameUC", nameUC },
                 { "UCLeft", left },
                 { "UCTop", top },
@@ -344,6 +346,10 @@ namespace Cockpit.GUI.Views.Profile
 
             var contains = ispanel ? (BindableCollection<IPluginModel>)typeClass.GetProperty("MyPluginsContainer").GetValue(instanceplugin) : null;
             SortedDico[nameUC] = new Elements(null, null, ispanel, (BindableCollection<IPluginModel>)defaultvalues["PluginParentContainer"], contains);
+
+            var typeInstanceContainer = instanceContainer.GetType();
+            string namecontainer = typeInstanceContainer.ToString().EndsWith("Panel_ViewModel") ? GetPropertyString("Layout.NameUC", instanceContainer) : null;
+            eventAggregator.Publish(new AddPluginEvent(nameUC, model.Split('.').Last().Split('_').First(), namecontainer));
 
             return vm;
         }
@@ -848,6 +854,7 @@ namespace Cockpit.GUI.Views.Profile
                 cc.Focus();
             }
             NbrSelected = AdornersSelectedList.Count();
+            eventAggregator.Publish(new SelectedItemEvent(key));
         }
 
         public void UpdateFirstAdorner()
@@ -988,6 +995,7 @@ namespace Cockpit.GUI.Views.Profile
 
         public void RemovePlugin(string nameUC)
         {
+            eventAggregator.Publish(new RemovePluginEvent(nameUC));
             var pluginmodel = SortedDico[nameUC].pm;
             var container = SortedDico[nameUC].container;
 

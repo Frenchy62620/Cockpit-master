@@ -152,6 +152,8 @@
     <Compile Include="Events\DisplayPropertiesEvent.cs" />
     <Compile Include="Events\DragCancelledEvent.cs" />
     <Compile Include="Events\MonitorViewEndedEvent .cs" />
+    <Compile Include="Events\AddPluginEvent.cs" />
+    <Compile Include="Events\RemovePluginEvent.cs" />
     <Compile Include="Events\ToolBarEvent.cs" />
     <Compile Include="Events\PreviewViewEvent.cs" />
     <Compile Include="Events\ProfileDocumentAddedEvent.cs" />
@@ -159,7 +161,7 @@
     <Compile Include="Events\PanelLoadingViewEvent.cs" />
     <Compile Include="Events\ProfileEvent.cs" />
     <Compile Include="Events\MonitorViewLoadedEvent.cs" />
-    <Compile Include="Events\RemovePanelEvent.cs" />
+    <Compile Include="Events\SelectedItemEvent.cs" />
     <Compile Include="Events\PropertyMonitorEvent.cs" />
     <Compile Include="Events\WindowStateChangedEvent.cs" />
     <Compile Include="Events\ProfileStateChangedEvent.cs" />

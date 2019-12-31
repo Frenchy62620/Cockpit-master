@@ -2,11 +2,11 @@
 
 namespace Cockpit.GUI.Events
 {
-    public class RemovePanelEvent
+    public class SelectedItemEvent
     {
         public bool IsPanel;
         public string NameUC;
-        public RemovePanelEvent(string NameUC ="", bool IsPanel = false)
+        public SelectedItemEvent(string NameUC ="", bool IsPanel = false)
         {
             this.IsPanel = IsPanel;
             this.NameUC = NameUC;

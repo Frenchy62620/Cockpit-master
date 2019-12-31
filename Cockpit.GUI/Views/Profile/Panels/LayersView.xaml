@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Cockpit.GUI.Views.Profile.Panels"
-             xmlns:cal="clr-namespace:Caliburn.Micro;assembly=Caliburn.Micro"
-             xmlns:micro="http://www.caliburnproject.org"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -58,6 +58,17 @@
             <!--<TextBlock Text="{Binding Path=TypeAndNameUC}" ToolTip="{Binding Path=Type}" FontWeight="Normal" />-->
         </DataTemplate>
 
+        <Style x:Key="TreeViewItemStyle" TargetType="{x:Type TreeViewItem}">
+            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+            <Setter Property="Foreground" Value="Black" />
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Foreground" Value="Red" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
     </UserControl.Resources>
     <Grid>
         <!--<TreeView>
@@ -68,8 +79,9 @@
             </TreeView.ItemTemplate>
 
         </TreeView>-->
-        <TreeView  >
-            <TreeViewItem Header="{Binding FileName}" ItemsSource="{Binding RootPluginItems}" IsExpanded="True" Foreground="Blue" FontWeight="Heavy">
+        <TreeView  x:Name="Items"  cal:Message.Attach="[Event SelectedItemChanged] = [ Action SelectedItemChanged($this.SelectedItem, $source]"
+                    >
+            <TreeViewItem Header="{Binding FileName}" ItemsSource="{Binding RootPluginItems}" IsExpanded="True" Foreground="Blue" FontWeight="Heavy" ItemContainerStyle="{StaticResource TreeViewItemStyle}">
                 
             </TreeViewItem>
         </TreeView>
